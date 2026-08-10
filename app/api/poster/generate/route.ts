@@ -137,6 +137,19 @@ The final result must be a faithful personalization of the original Classic Indi
       expiresAt,
     });
 
+    const sessionId = request.headers.get('x-session-id');
+    if (sessionId) {
+      await import('@/lib/models/AnalyticsEvent').then(({ AnalyticsEvent }) => 
+        AnalyticsEvent.create({
+          eventName: 'poster_generation_success',
+          sessionId,
+          posterId,
+          templateId,
+          properties: { generationTimeMs: aiResult.generationTimeMs, width: 1080, height: 1350 }
+        }).catch(err => console.error('Analytics error:', err))
+      );
+    }
+
     // 4. Create a lower-resolution preview for the frontend
     const previewBuffer = await sharp(normalizedBuffer)
       .resize(540, 675, { fit: 'cover' }) // Half resolution for preview
@@ -153,6 +166,18 @@ The final result must be a faithful personalization of the original Classic Indi
     });
   } catch (error: any) {
     console.error('Error generating poster:', error);
+    
+    const sessionId = request.headers.get('x-session-id');
+    if (sessionId) {
+      await import('@/lib/models/AnalyticsEvent').then(({ AnalyticsEvent }) => 
+        AnalyticsEvent.create({
+          eventName: 'poster_generation_failed',
+          sessionId,
+          properties: { failureCategory: error.message.includes('OpenRouter') ? 'provider_error' : 'internal_error' }
+        }).catch(err => console.error('Analytics error:', err))
+      );
+    }
+
     return NextResponse.json(
       { error: 'Failed to generate poster', details: error.message },
       { status: 500 }

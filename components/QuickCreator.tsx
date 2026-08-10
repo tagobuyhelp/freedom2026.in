@@ -7,6 +7,7 @@ import {
   Edit3, Download, Share2, ArrowRight, Info
 } from "lucide-react";
 import IndianFlag from "./IndianFlag";
+import { trackClientEvent } from "@/lib/analytics";
 
 interface QuickCreatorProps {
   onGenerate: (data: {
@@ -60,6 +61,7 @@ export default function QuickCreator({ onGenerate }: QuickCreatorProps) {
       setPhotoUrl(url);
       setPhotoFile(file);
       setError(null);
+      trackClientEvent("photo_selected");
     }
   };
 
@@ -70,6 +72,7 @@ export default function QuickCreator({ onGenerate }: QuickCreatorProps) {
       return;
     }
     setError(null);
+    trackClientEvent("poster_generation_started", { templateId: selectedTemplate });
     onGenerate({
       name: name.trim(),
       city: city.trim(),

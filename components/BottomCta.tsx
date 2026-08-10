@@ -3,6 +3,7 @@
 import React from "react";
 import { Sparkles, Play } from "lucide-react";
 import IndianFlag from "./IndianFlag";
+import { trackClientEvent } from "@/lib/analytics";
 
 interface BottomCtaProps {
   onScrollToCreator: () => void;
@@ -10,6 +11,11 @@ interface BottomCtaProps {
 }
 
 export default function BottomCta({ onScrollToCreator, onScrollToVideo }: BottomCtaProps) {
+  const handleCreatorClick = () => {
+    trackClientEvent("poster_creator_started");
+    onScrollToCreator();
+  };
+
   return (
     <section className="py-16 bg-gradient-to-r from-orange-500/10 via-white to-emerald-500/10 relative overflow-hidden">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 relative z-10">
@@ -25,7 +31,7 @@ export default function BottomCta({ onScrollToCreator, onScrollToVideo }: Bottom
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
           <button
-            onClick={onScrollToCreator}
+            onClick={handleCreatorClick}
             className="w-full sm:w-auto saffron-gradient text-white px-8 py-3.5 rounded-full font-extrabold text-base flex items-center justify-center gap-2 shadow-lg shadow-orange-500/25 hover:scale-105 transition-all cursor-pointer"
           >
             <Sparkles className="w-5 h-5" />

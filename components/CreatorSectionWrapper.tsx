@@ -56,8 +56,13 @@ export default function CreatorSectionWrapper() {
         return;
       }
 
+      const { getSessionId } = await import("@/lib/analytics");
+
       const response = await fetch("/api/poster/generate", {
         method: "POST",
+        headers: {
+          "x-session-id": getSessionId(),
+        },
         body: formData,
       });
 

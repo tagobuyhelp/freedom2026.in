@@ -75,6 +75,19 @@ export async function POST(request: Request) {
       
       if (finalSession && finalSession.shareUnlocked) {
         newlyUnlocked = true;
+        
+        const sessionId = request.headers.get('x-session-id');
+        if (sessionId) {
+          await import('@/lib/models/AnalyticsEvent').then(({ AnalyticsEvent }) => 
+            AnalyticsEvent.create({
+              eventName: 'share_unlock_completed',
+              sessionId,
+              posterId,
+              templateId: finalSession.templateId,
+              properties: { unlockMethod: 'share' }
+            }).catch(err => console.error('Analytics error:', err))
+          );
+        }
       }
     }
 

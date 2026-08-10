@@ -11,6 +11,7 @@ import { SITE_CONFIG } from "@/lib/siteConfig";
 import HeroSection from "@/components/HeroSection";
 import CreatorSectionWrapper from "@/components/CreatorSectionWrapper";
 import IndianFlag from "@/components/IndianFlag";
+import AnalyticsTracker from "@/components/AnalyticsTracker";
 
 export const metadata: Metadata = {
   title: "15 August 2026 Poster Maker – Create Independence Day Posters | Freedom2026",
@@ -94,6 +95,7 @@ export default function HomePage() {
   return (
     <>
       <JsonLd data={[webPageSchema, webAppSchema]} />
+      <AnalyticsTracker />
 
       {/* ══════════════════════════════════════════════════════════════════════
           SECTION 1 — HERO

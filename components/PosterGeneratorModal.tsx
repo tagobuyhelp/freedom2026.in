@@ -68,10 +68,21 @@ export default function PosterGeneratorModal({ isOpen, onClose, data }: PosterGe
 
   const isUnlocked = posterStatus?.shareUnlocked || posterStatus?.paymentUnlocked || posterStatus?.status === 'unlocked';
 
+  useEffect(() => {
+    if (isOpen && data.posterId && !data.isLoading && !isUnlocked) {
+      import("@/lib/analytics").then(({ trackClientEvent }) => {
+        trackClientEvent("unlock_screen_viewed", { posterId: data.posterId, templateId: data.template });
+      });
+    }
+  }, [isOpen, data.posterId, data.isLoading, isUnlocked, data.template]);
+
   const handleShare = async () => {
     if (!data.posterId || !data.shareActionToken) return;
     setErrorMsg(null);
     setIsSharing(true);
+
+    const { trackClientEvent, getSessionId } = await import("@/lib/analytics");
+    trackClientEvent("share_started", { posterId: data.posterId, templateId: data.template });
 
     try {
       const shareData = {
@@ -83,17 +94,22 @@ export default function PosterGeneratorModal({ isOpen, onClose, data }: PosterGe
       if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
         await navigator.share(shareData);
         // Only if share succeeds (promise resolves), we record the action
+        trackClientEvent("share_completed", { posterId: data.posterId, templateId: data.template });
       } else {
         // Fallback for browsers without Web Share API
         // For MVP we trigger the fallback as a successful action
         await navigator.clipboard.writeText(shareData.url);
         alert("Link copied to clipboard! Share it with your friends.");
+        trackClientEvent("share_completed", { posterId: data.posterId, templateId: data.template });
       }
 
       // Record share action on server
       const res = await fetch("/api/poster/share", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "x-session-id": getSessionId()
+        },
         body: JSON.stringify({
           posterId: data.posterId,
           shareActionToken: data.shareActionToken,
@@ -124,12 +140,18 @@ export default function PosterGeneratorModal({ isOpen, onClose, data }: PosterGe
     if (!data.posterId) return;
     setErrorMsg(null);
     setIsProcessingPayment(true);
+    
+    const { trackClientEvent, getSessionId } = await import("@/lib/analytics");
+    trackClientEvent("payment_started", { posterId: data.posterId, templateId: data.template });
 
     try {
       // 1. Create Order
       const orderRes = await fetch("/api/payment/create-order", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "x-session-id": getSessionId()
+        },
         body: JSON.stringify({ posterId: data.posterId }),
       });
       const orderData = await orderRes.json();
@@ -262,7 +284,7 @@ export default function PosterGeneratorModal({ isOpen, onClose, data }: PosterGe
                     <span>🎉 Download Unlocked! Click below to download.</span>
                   </div>
                   <a
-                    href={`/api/poster/download?posterId=${data.posterId}`}
+                    href={`/api/poster/download?posterId=${data.posterId}&sessionId=${typeof window !== 'undefined' ? localStorage.getItem('freedom2026_anon_id') || '' : ''}`}
                     className="w-full bg-[#f97316] hover:bg-[#ea580c] saffron-gradient text-white py-4 rounded-xl font-extrabold text-base sm:text-lg flex items-center justify-center gap-2.5 shadow-lg shadow-orange-500/25 hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer border border-orange-400/30"
                     download
                   >

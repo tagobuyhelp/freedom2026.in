@@ -50,6 +50,12 @@ export async function POST(request: Request) {
     );
 
     if (!isAuthentic) {
+      const sessionId = request.headers.get('x-session-id');
+      if (sessionId) {
+        import('@/lib/models/AnalyticsEvent').then(({ AnalyticsEvent }) => 
+          AnalyticsEvent.create({ eventName: 'payment_failed', sessionId, properties: { failureCategory: 'invalid_signature' } }).catch(() => {})
+        );
+      }
       return NextResponse.json({ error: 'Payment verification failed' }, { status: 400 });
     }
 
@@ -57,6 +63,12 @@ export async function POST(request: Request) {
     const payment = await getRazorpay().payments.fetch(razorpay_payment_id);
     
     if (payment.status !== 'captured' && payment.status !== 'authorized') {
+       const sessionId = request.headers.get('x-session-id');
+       if (sessionId) {
+         import('@/lib/models/AnalyticsEvent').then(({ AnalyticsEvent }) => 
+           AnalyticsEvent.create({ eventName: 'payment_failed', sessionId, properties: { failureCategory: 'invalid_status' } }).catch(() => {})
+         );
+       }
        return NextResponse.json({ error: 'Payment not successful' }, { status: 400 });
     }
 
@@ -87,6 +99,21 @@ export async function POST(request: Request) {
       { returnDocument: 'after' }
     );
 
+    if (finalSession) {
+      const sessionId = request.headers.get('x-session-id');
+      if (sessionId) {
+        await import('@/lib/models/AnalyticsEvent').then(({ AnalyticsEvent }) => 
+          AnalyticsEvent.create({
+            eventName: 'payment_success',
+            sessionId,
+            posterId,
+            templateId: finalSession.templateId,
+            properties: { unlockMethod: 'payment', amountInr: 10 }
+          }).catch(err => console.error('Analytics error:', err))
+        );
+      }
+    }
+
     if (!finalSession) {
       // It might already be unlocked
       return NextResponse.json({ success: true, message: 'Payment verified, already unlocked' });
@@ -96,6 +123,16 @@ export async function POST(request: Request) {
 
   } catch (error: any) {
     console.error('Error verifying payment:', error);
+    const sessionId = request.headers.get('x-session-id');
+    if (sessionId) {
+      import('@/lib/models/AnalyticsEvent').then(({ AnalyticsEvent }) => 
+        AnalyticsEvent.create({
+          eventName: 'payment_failed',
+          sessionId,
+          properties: { failureCategory: 'internal_error' }
+        }).catch(err => console.error('Analytics error:', err))
+      );
+    }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

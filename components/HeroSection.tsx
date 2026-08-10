@@ -10,8 +10,11 @@ interface HeroSectionProps {
   onScrollToVideo?: () => void;
 }
 
+import { trackClientEvent } from "@/lib/analytics";
+
 export default function HeroSection({ onScrollToCreator, onScrollToVideo }: HeroSectionProps) {
   const handleCreatorClick = () => {
+    trackClientEvent("poster_creator_started");
     if (onScrollToCreator) {
       onScrollToCreator();
     } else {

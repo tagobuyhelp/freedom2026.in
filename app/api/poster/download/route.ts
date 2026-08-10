@@ -40,6 +40,18 @@ export async function GET(request: Request) {
     try {
       const fileBuffer = await fs.readFile(filePath);
       
+      const sessionId = searchParams.get('sessionId');
+      if (sessionId) {
+        import('@/lib/models/AnalyticsEvent').then(({ AnalyticsEvent }) => 
+          AnalyticsEvent.create({
+            eventName: 'poster_downloaded',
+            sessionId,
+            posterId,
+            templateId: session.templateId
+          }).catch(err => console.error('Analytics error:', err))
+        );
+      }
+      
       return new NextResponse(fileBuffer, {
         headers: {
           'Content-Type': 'image/png',
