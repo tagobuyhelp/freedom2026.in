@@ -31,8 +31,8 @@ export default function IndianFlag({ className = "w-5 h-3.5", width = 20, height
             key={i}
             x1="0"
             y1="0"
-            x2={2.6 * Math.cos((i * 15 * Math.PI) / 180)}
-            y2={2.6 * Math.sin((i * 15 * Math.PI) / 180)}
+            x2={Number((2.6 * Math.cos((i * 15 * Math.PI) / 180)).toFixed(4))}
+            y2={Number((2.6 * Math.sin((i * 15 * Math.PI) / 180)).toFixed(4))}
             stroke="#000080"
             strokeWidth="0.25"
           />

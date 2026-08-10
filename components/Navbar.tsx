@@ -61,8 +61,8 @@ export default function Navbar() {
                     key={i}
                     x1="28"
                     y1="28"
-                    x2={28 + 14 * Math.cos((i * 15 * Math.PI) / 180)}
-                    y2={28 + 14 * Math.sin((i * 15 * Math.PI) / 180)}
+                    x2={Number((28 + 14 * Math.cos((i * 15 * Math.PI) / 180)).toFixed(4))}
+                    y2={Number((28 + 14 * Math.sin((i * 15 * Math.PI) / 180)).toFixed(4))}
                     stroke="#0038a8"
                     strokeWidth="1.2"
                   />

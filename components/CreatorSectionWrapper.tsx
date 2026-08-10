@@ -66,9 +66,14 @@ export default function CreatorSectionWrapper() {
         body: formData,
       });
 
-      const result = await response.json();
+      let result: any = {};
+      try {
+        result = await response.json();
+      } catch (parseError) {
+        console.error("Failed to parse JSON response from server:", parseError);
+      }
       
-      if (result.success) {
+      if (response.ok && result.success) {
         setPosterData((prev) => ({
           ...prev,
           posterUrl: result.posterUrl,
@@ -77,12 +82,13 @@ export default function CreatorSectionWrapper() {
           isLoading: false,
         }));
       } else {
-        alert("Failed to generate poster: " + (result.error || "Unknown error"));
+        const errorMsg = result.error || result.details || "Server error while creating poster. Please try again.";
+        alert("Failed to generate poster: " + errorMsg);
         setModalOpen(false);
       }
-    } catch (error) {
-      console.error(error);
-      alert("Something went wrong while generating the poster.");
+    } catch (error: any) {
+      console.error("Poster generation error:", error);
+      alert("Network or server error while generating your poster. Please try again.");
       setModalOpen(false);
     }
   };

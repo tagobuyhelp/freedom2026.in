@@ -6,6 +6,8 @@ import Footer from "@/components/Footer";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import JsonLd, { websiteSchema, organizationSchema } from "@/components/JsonLd";
 
+import Script from "next/script";
+
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
@@ -42,6 +44,9 @@ export const metadata: Metadata = {
     "Freedom2026",
   ],
   metadataBase: new URL(SITE_URL),
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: "Independence Day 2026 – Posters, Wishes, Quotes, Status & Videos | Freedom2026",
     description:
@@ -100,6 +105,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const adsenseClient = process.env.NEXT_PUBLIC_ADSENSE_CLIENT || "ca-pub-7058990081803760";
+
   return (
     <html lang="en" className={`${inter.variable} ${hindSiliguri.variable} h-full`}>
       <head>
@@ -108,14 +115,17 @@ export default function RootLayout({
         <link rel="icon" href="/favicon-96x96.png" sizes="96x96" type="image/png" />
         <link rel="icon" href="/icon-192.png" sizes="192x192" type="image/png" />
         <link rel="apple-touch-icon" href="/apple-icon.png" sizes="180x180" />
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7058990081803760"
-          crossOrigin="anonymous"
-        />
         <JsonLd data={[websiteSchema(), organizationSchema()]} />
       </head>
       <body className="min-h-full flex flex-col bg-white text-slate-900 antialiased selection:bg-orange-100 selection:text-orange-700">
+        {adsenseClient && (
+          <script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`}
+            crossOrigin="anonymous"
+            suppressHydrationWarning
+          />
+        )}
         <GoogleAnalytics />
         <Navbar />
         <main className="flex-1">{children}</main>

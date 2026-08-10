@@ -10,6 +10,9 @@ import crypto from 'crypto';
 import dbConnect from '@/lib/db';
 import { PosterSession } from '@/lib/models/PosterSession';
 
+export const maxDuration = 60; // Allow up to 60 seconds for AI poster generation
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();

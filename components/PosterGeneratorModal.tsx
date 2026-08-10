@@ -64,8 +64,6 @@ export default function PosterGeneratorModal({ isOpen, onClose, data }: PosterGe
     }
   }, [isOpen, data.posterId, fetchStatus]);
 
-  if (!isOpen) return null;
-
   const isUnlocked = posterStatus?.shareUnlocked || posterStatus?.paymentUnlocked || posterStatus?.status === 'unlocked';
 
   useEffect(() => {
@@ -75,6 +73,8 @@ export default function PosterGeneratorModal({ isOpen, onClose, data }: PosterGe
       });
     }
   }, [isOpen, data.posterId, data.isLoading, isUnlocked, data.template]);
+
+  if (!isOpen) return null;
 
   const handleShare = async () => {
     if (!data.posterId || !data.shareActionToken) return;
