@@ -257,23 +257,23 @@ export default function PosterGeneratorModal({ isOpen, onClose, data }: PosterGe
             <div className="space-y-4">
               {isUnlocked ? (
                 <div className="space-y-3">
-                  <div className="flex items-center justify-center gap-2 text-emerald-600 font-bold text-sm mb-2">
-                    <CheckCircle2 className="w-5 h-5" />
-                    <span>Download Unlocked</span>
+                  <div className="flex items-center justify-center gap-2 text-emerald-700 font-extrabold text-xs sm:text-sm py-2.5 px-4 rounded-xl bg-emerald-50 border border-emerald-200/80 shadow-2xs">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span>🎉 Download Unlocked! Click below to download.</span>
                   </div>
                   <a
                     href={`/api/poster/download?posterId=${data.posterId}`}
-                    className="w-full saffron-gradient text-white py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-md hover:scale-[1.01] transition-transform"
+                    className="w-full bg-[#f97316] hover:bg-[#ea580c] saffron-gradient text-white py-4 rounded-xl font-extrabold text-base sm:text-lg flex items-center justify-center gap-2.5 shadow-lg shadow-orange-500/25 hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer border border-orange-400/30"
                     download
                   >
-                    <Download className="w-5 h-5" />
-                    <span>Download Poster</span>
+                    <Download className="w-5 h-5 stroke-[2.5]" />
+                    <span>Download High-Res Poster</span>
                   </a>
                   <button
                     onClick={onClose}
-                    className="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 py-3.5 rounded-xl font-bold text-sm flex items-center justify-center transition-colors cursor-pointer"
+                    className="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 py-3 rounded-xl font-bold text-sm flex items-center justify-center transition-colors cursor-pointer"
                   >
-                    Create Another
+                    Create Another Poster
                   </button>
                 </div>
               ) : (

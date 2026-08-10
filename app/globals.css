@@ -168,3 +168,10 @@
 .animate-spin-slow {
   animation: spinSlow 25s linear infinite;
 }
+
+.saffron-gradient {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+}
+.saffron-gradient:hover {
+  background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+}
