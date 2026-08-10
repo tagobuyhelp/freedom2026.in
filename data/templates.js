@@ -1,0 +1,196 @@
+// data/templates.js
+// Template data for Independence Day 2026 poster templates.
+// Architecture is ready to be fetched from MongoDB/API in future.
+
+export const TEMPLATE_CATEGORIES = [
+  "All",
+  "Classic",
+  "Modern",
+  "India Map",
+  "Portrait",
+  "Bengali",
+  "Hindi",
+  "Business",
+  "Student",
+  "Premium",
+];
+
+/**
+ * @typedef {Object} Template
+ * @property {string} id
+ * @property {string} title
+ * @property {string} category
+ * @property {string} tier - "free" | "premium"
+ * @property {string} language - "en" | "bn" | "hi" | "all"
+ * @property {string} previewBg - Tailwind gradient class
+ * @property {string} headerText
+ * @property {string} description
+ * @property {boolean} isNew
+ * @property {boolean} isFeatured
+ * @property {string[]} tags
+ * @property {string} [thumbnailImage]
+ * @property {any} [canvasConfig]
+ */
+
+/** @type {Template[]} */
+export const TEMPLATES = [
+  {
+    id: "classic-india",
+    title: "Classic India",
+    category: "Classic",
+    tier: "free",
+    language: "en",
+    previewBg: "from-orange-500 via-white to-emerald-600",
+    headerText: "HAPPY INDEPENDENCE DAY 2026",
+    description: "A timeless tricolor design celebrating India's Independence.",
+    isNew: false,
+    isFeatured: true,
+    isAvailable: true,
+    tags: ["classic", "tricolor", "flag"],
+    thumbnailImage: "/images/classic-india-style.png",
+    canvasConfig: {
+      width: 1080,
+      height: 1350,
+      personArea: { x: 540, y: 580, radius: 240 },
+      textLayers: [
+        { id: "user-name", text: "{{name}}", x: 540, y: 980, font: "bold 64px Inter", color: "#ffffff" },
+        { id: "user-city", text: "{{city}}", x: 540, y: 1050, font: "bold 42px Inter", color: "#f97316" }
+      ]
+    }
+  },
+  {
+    id: "modern-india",
+    title: "Modern India",
+    category: "Modern",
+    tier: "free",
+    language: "en",
+    previewBg: "from-slate-900 via-slate-800 to-orange-950",
+    headerText: "HAPPY INDEPENDENCE DAY 2026",
+    description: "A bold modern design for the digital generation.",
+    isNew: true,
+    isFeatured: true,
+    isAvailable: false,
+    tags: ["modern", "dark", "bold"],
+    thumbnailImage: "/images/modern-india-style.png",
+  },
+  {
+    id: "india-map",
+    title: "India Map",
+    category: "India Map",
+    tier: "free",
+    language: "en",
+    previewBg: "from-emerald-700 via-white to-orange-500",
+    headerText: "HAPPY INDEPENDENCE DAY 2026",
+    description: "Feature India's proud silhouette in your Independence Day poster.",
+    isNew: false,
+    isFeatured: false,
+    isAvailable: false,
+    tags: ["map", "india", "patriotic"],
+    thumbnailImage: "/images/india-map-style.png",
+  },
+  {
+    id: "portrait",
+    title: "Portrait",
+    category: "Portrait",
+    tier: "free",
+    language: "en",
+    previewBg: "from-orange-100 via-white to-emerald-100",
+    headerText: "HAPPY INDEPENDENCE DAY 2026",
+    description: "Clean portrait template that puts your photo first.",
+    isNew: false,
+    isFeatured: false,
+    isAvailable: false,
+    tags: ["portrait", "photo", "personal"],
+    thumbnailImage: "/images/portrait-style.png",
+  },
+  {
+    id: "bengali",
+    title: "Bengali",
+    category: "Bengali",
+    tier: "free",
+    language: "bn",
+    previewBg: "from-orange-600 via-amber-50 to-green-700",
+    headerText: "শুভ স্বাধীনতা দিবস ২০২৬",
+    description: "Independence Day wishes in Bengali — perfect for West Bengal.",
+    isNew: true,
+    isFeatured: true,
+    isAvailable: false,
+    tags: ["bengali", "বাংলা", "west bengal"],
+    thumbnailImage: "/images/bengali-style.png",
+  },
+  {
+    id: "hindi",
+    title: "Hindi",
+    category: "Hindi",
+    tier: "free",
+    language: "hi",
+    previewBg: "from-amber-600 via-orange-100 to-emerald-600",
+    headerText: "स्वतंत्रता दिवस 2026 की शुभकामनाएं",
+    description: "Independence Day wishes in Hindi — celebrating India's national language.",
+    isNew: false,
+    isFeatured: false,
+    isAvailable: false,
+    tags: ["hindi", "हिन्दी", "national"],
+    thumbnailImage: "/images/hindi-style.png",
+  },
+  {
+    id: "student",
+    title: "Student",
+    category: "Student",
+    tier: "free",
+    language: "en",
+    previewBg: "from-blue-600 via-blue-50 to-orange-500",
+    headerText: "HAPPY INDEPENDENCE DAY 2026",
+    description: "Perfect for students to celebrate Independence Day at school or college.",
+    isNew: false,
+    isFeatured: false,
+    isAvailable: false,
+    tags: ["student", "school", "college"],
+    thumbnailImage: "/images/student-style.png",
+  },
+  {
+    id: "professional",
+    title: "Professional",
+    category: "Modern",
+    tier: "free",
+    language: "en",
+    previewBg: "from-slate-700 via-slate-100 to-orange-400",
+    headerText: "HAPPY INDEPENDENCE DAY 2026",
+    description: "A professional Independence Day greeting for your LinkedIn or workplace.",
+    isNew: false,
+    isFeatured: false,
+    isAvailable: false,
+    tags: ["professional", "linkedin", "workplace"],
+    thumbnailImage: "/images/professional-style.png",
+  },
+  {
+    id: "business",
+    title: "Business",
+    category: "Business",
+    tier: "free",
+    language: "en",
+    previewBg: "from-slate-800 via-slate-600 to-orange-600",
+    headerText: "CELEBRATING INDEPENDENCE DAY 2026",
+    description: "Add your business logo and brand to an Independence Day greeting.",
+    isNew: false,
+    isFeatured: true,
+    isAvailable: false,
+    tags: ["business", "brand", "corporate"],
+    thumbnailImage: "/images/professional-style.png",
+  },
+  {
+    id: "premium-ai",
+    title: "Premium AI",
+    category: "Premium",
+    tier: "premium",
+    language: "en",
+    previewBg: "from-purple-900 via-indigo-800 to-orange-600",
+    headerText: "YOUR FREEDOM STORY",
+    description: "AI-powered premium creative — professionally composed Independence Day poster.",
+    isNew: true,
+    isFeatured: true,
+    isAvailable: false,
+    tags: ["premium", "ai", "professional"],
+    thumbnailImage: "/images/hero_poster_main.png",
+  },
+];

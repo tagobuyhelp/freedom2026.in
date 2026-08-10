@@ -1,26 +1,170 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --font-inter: "Inter", sans-serif;
+    --font-bengali: var(--font-bengali), sans-serif;
+  }
+
+  .font-bengali {
+    font-family: var(--font-bengali);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    font-family: var(--font-inter);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Focus styles for keyboard navigation */
+  :focus-visible {
+    outline: 2px solid #ea580c;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Smooth scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+  }
+
+  *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  *::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 3px;
+  }
+
+  /* Hide scrollbar for horizontal scroll containers */
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Prose styles for legal pages */
+  .prose h2 {
+    @apply text-xl font-black text-slate-900 mt-8 mb-3;
+  }
+  .prose p {
+    @apply text-slate-600 leading-relaxed mb-3;
+  }
+  .prose ul {
+    @apply list-disc pl-5 space-y-1 text-slate-600 mb-3;
+  }
+  .prose a {
+    @apply text-orange-600 hover:text-orange-700 underline underline-offset-2;
+  }
+  .prose strong {
+    @apply text-slate-800 font-bold;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Custom Micro-Animations */
+@keyframes birdFloat1 {
+  0%, 100% {
+    transform: translateY(0px) rotate(-12deg) scale(1);
+  }
+  50% {
+    transform: translateY(-8px) rotate(-8deg) scale(1.05);
+  }
+}
+
+@keyframes birdFloat2 {
+  0%, 100% {
+    transform: translateY(0px) rotate(12deg) scale(1);
+  }
+  50% {
+    transform: translateY(-6px) rotate(15deg) scale(1.04);
+  }
+}
+
+@keyframes birdFloat3 {
+  0%, 100% {
+    transform: translateY(0px) rotate(-6deg) scale(1);
+  }
+  50% {
+    transform: translateY(-10px) rotate(-2deg) scale(1.06);
+  }
+}
+
+@keyframes floatPosterCenter {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-7px) scale(1.01);
+  }
+}
+
+@keyframes floatPosterLeft {
+  0%, 100% {
+    transform: translateY(0px) rotate(-12deg);
+  }
+  50% {
+    transform: translateY(-5px) rotate(-10deg);
+  }
+}
+
+@keyframes floatPosterRight {
+  0%, 100% {
+    transform: translateY(0px) rotate(12deg);
+  }
+  50% {
+    transform: translateY(-5px) rotate(14deg);
+  }
+}
+
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-bird-1 {
+  animation: birdFloat1 3.5s ease-in-out infinite;
+}
+
+.animate-bird-2 {
+  animation: birdFloat2 4s ease-in-out infinite 0.5s;
+}
+
+.animate-bird-3 {
+  animation: birdFloat3 3.8s ease-in-out infinite 1s;
+}
+
+.animate-float-center {
+  animation: floatPosterCenter 5s ease-in-out infinite;
+}
+
+.animate-float-left {
+  animation: floatPosterLeft 5.5s ease-in-out infinite;
+}
+
+.animate-float-right {
+  animation: floatPosterRight 6s ease-in-out infinite 0.5s;
+}
+
+.animate-spin-slow {
+  animation: spinSlow 25s linear infinite;
 }

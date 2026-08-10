@@ -1,0 +1,7 @@
+# www to non-www redirect
+https://www.freedom2026.in/* https://freedom2026.in/:splat 301!
+
+# Legacy redirects
+/wishes /independence-day-wishes 301
+/quotes /independence-day-quotes 301
+/status /independence-day-status 301
