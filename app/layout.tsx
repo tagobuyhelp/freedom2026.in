@@ -42,9 +42,6 @@ export const metadata: Metadata = {
     "Freedom2026",
   ],
   metadataBase: new URL(SITE_URL),
-  alternates: {
-    canonical: "/",
-  },
   openGraph: {
     title: "Independence Day 2026 – Posters, Wishes, Quotes, Status & Videos | Freedom2026",
     description:

@@ -1,13 +1,35 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { ImageIcon } from "lucide-react";
-import JsonLd, { breadcrumbSchema, articleSchema } from "@/components/JsonLd";
+import JsonLd, { breadcrumbSchema, webPageSchema } from "@/components/JsonLd";
 import SEOPageLayout from "@/components/SEOPageLayout";
 
 export const metadata: Metadata = {
-  title: "Independence Day 2026 Images – 15 August 2026 Photos & Images",
+  title: "Independence Day Images 2026 – 15 August HD Images | Freedom2026",
   description:
     "Browse and download Independence Day 2026 images for 15 August. Beautiful patriotic images for WhatsApp, Facebook, Instagram and social media. Create personalised images free.",
-  alternates: { canonical: "/independence-day-images" },
+  alternates: { canonical: "https://freedom2026.in/independence-day-images" },
+  openGraph: {
+    title: "Independence Day Images 2026 – 15 August HD Images | Freedom2026",
+    description:
+      "Browse and download Independence Day 2026 images for 15 August. Beautiful patriotic images for WhatsApp, Facebook and Instagram.",
+    url: "https://freedom2026.in/independence-day-images",
+    images: [
+      {
+        url: "https://freedom2026.in/images/og-default.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Freedom2026 — Independence Day 2026 Images",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Independence Day Images 2026 – 15 August HD Images | Freedom2026",
+    description:
+      "Browse and download Independence Day 2026 images for 15 August.",
+    images: ["https://freedom2026.in/images/og-default.jpg"],
+  },
 };
 
 const RELATED = [
@@ -27,6 +49,15 @@ const IMAGE_TYPES = [
   { title: "Business Independence Day Images", desc: "Brand your business with Independence Day images for 15 August 2026." },
 ];
 
+const IMAGE_GALLERY = [
+  { src: "/images/classic-india-style.png", alt: "15 August 2026 Independence Day Indian flag poster" },
+  { src: "/images/modern-india-style.png", alt: "Modern 15 August 2026 Independence Day poster design" },
+  { src: "/images/india-map-style.png", alt: "India Map silhouette Independence Day 2026 poster" },
+  { src: "/images/portrait-style.png", alt: "Personalized 15 August Independence Day image with photo" },
+  { src: "/images/student-style.png", alt: "Youth and student 15 August 2026 Independence Day image" },
+  { src: "/images/professional-style.png", alt: "Professional Independence Day 2026 poster for businesses" },
+];
+
 export default function IndependenceDayImagesPage() {
   return (
     <>
@@ -35,8 +66,8 @@ export default function IndependenceDayImagesPage() {
           { name: "Home", href: "/" },
           { name: "Independence Day Images", href: "/independence-day-images" },
         ]),
-        articleSchema({
-          title: "Independence Day 2026 Images – 15 August 2026 Photos",
+        webPageSchema({
+          title: "Independence Day Images 2026 – 15 August HD Images",
           description: "Browse Independence Day 2026 images for 15 August.",
           url: "/independence-day-images",
         }),
@@ -78,6 +109,30 @@ export default function IndependenceDayImagesPage() {
                 <div className="text-slate-500 text-xs leading-relaxed">{t.desc}</div>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* Actual Image Gallery */}
+        <section className="mb-10">
+          <h2 className="text-xl font-black text-slate-900 mb-5">Download Independence Day 2026 Images</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {IMAGE_GALLERY.map((img) => (
+              <div key={img.src} className="bg-slate-100 rounded-xl overflow-hidden border border-slate-200 shadow-sm">
+                <img 
+                  src={img.src} 
+                  alt={img.alt} 
+                  className="w-full h-auto object-cover" 
+                  loading="lazy" 
+                  width={600}
+                  height={800}
+                />
+              </div>
+            ))}
+          </div>
+          <div className="text-center mt-6">
+            <Link href="/create" className="inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white font-bold px-6 py-3 rounded-xl transition-all">
+              Create these images with your photo
+            </Link>
           </div>
         </section>
 

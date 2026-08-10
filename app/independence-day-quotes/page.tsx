@@ -7,13 +7,25 @@ export const metadata: Metadata = {
   title: "Independence Day 2026 Quotes – Patriotic Quotes for 15 August",
   description:
     "Read the best Independence Day 2026 quotes from Mahatma Gandhi, Netaji, Nehru and other freedom fighters. Share patriotic quotes for 15 August 2026.",
-  alternates: { canonical: "/independence-day-quotes" },
+  alternates: { canonical: "https://freedom2026.in/independence-day-quotes" },
+  openGraph: {
+    title: "Independence Day 2026 Quotes – Patriotic Quotes for 15 August",
+    description: "Read the best Independence Day 2026 quotes from Mahatma Gandhi, Netaji, Nehru and other freedom fighters.",
+    url: "https://freedom2026.in/independence-day-quotes",
+    images: ["https://freedom2026.in/images/og-default.jpg"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Independence Day 2026 Quotes – Patriotic Quotes",
+    description: "Read the best Independence Day 2026 quotes from Mahatma Gandhi, Netaji, Nehru and other freedom fighters.",
+    images: ["https://freedom2026.in/images/og-default.jpg"],
+  },
 };
 
 const RELATED = [
   { label: "Independence Day Wishes", href: "/independence-day-wishes" },
   { label: "WhatsApp Status", href: "/independence-day-status" },
-  { label: "Create Poster", href: "/create" },
+  { label: "Poster Maker", href: "/independence-day-poster" },
   { label: "Images", href: "/independence-day-images" },
   { label: "Bengali Wishes", href: "/independence-day-wishes-bengali" },
 ];

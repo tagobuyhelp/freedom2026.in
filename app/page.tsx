@@ -13,12 +13,12 @@ import CreatorSectionWrapper from "@/components/CreatorSectionWrapper";
 import IndianFlag from "@/components/IndianFlag";
 
 export const metadata: Metadata = {
-  title: "Independence Day 2026 Poster Maker | Create Your Freedom Story",
+  title: "15 August 2026 Poster Maker – Create Independence Day Posters | Freedom2026",
   description:
     "Create a personalized Independence Day 2026 poster with your photo, name and city. Celebrate 15 August with free patriotic posters, wishes, quotes, images and social media creatives.",
   alternates: { canonical: "https://freedom2026.in/" },
   openGraph: {
-    title: "Independence Day 2026 Poster Maker | Create Your Freedom Story",
+    title: "15 August 2026 Poster Maker – Create Independence Day Posters | Freedom2026",
     description:
       "Create your personalized Independence Day 2026 poster with your photo, name and city. Celebrate 15 August with Freedom2026.in.",
     url: "https://freedom2026.in/",
@@ -28,13 +28,13 @@ export const metadata: Metadata = {
         url: "https://freedom2026.in/images/og-default.jpg",
         width: 1200,
         height: 630,
-        alt: "Freedom2026 — Independence Day 2026 Poster Maker",
+        alt: "Freedom2026 — 15 August 2026 Poster Maker",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Independence Day 2026 Poster Maker | Create Your Freedom Story",
+    title: "15 August 2026 Poster Maker – Create Independence Day Posters | Freedom2026",
     description:
       "Create your personalized Independence Day 2026 poster with your photo, name and city. Celebrate 15 August with Freedom2026.in.",
     images: ["https://freedom2026.in/images/og-default.jpg"],
@@ -60,7 +60,7 @@ export default function HomePage() {
   const webPageSchema = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    name: "Independence Day 2026 Poster Maker | Create Your Freedom Story",
+    name: "15 August 2026 Poster Maker – Create Independence Day Posters | Freedom2026",
     description:
       "Create a personalized Independence Day 2026 poster with your photo, name and city. Celebrate 15 August with free patriotic posters, wishes, quotes, images and social media creatives.",
     url: "https://freedom2026.in/",
@@ -249,10 +249,10 @@ export default function HomePage() {
                   Tell your Independence Day story with a personalised poster or video.
                 </p>
                 <Link
-                  href="/create"
+                  href="/independence-day-poster"
                   className="inline-flex items-center gap-1 text-orange-600 hover:text-orange-700 font-bold text-xs"
                 >
-                  Create Now <ArrowRight className="w-3.5 h-3.5" />
+                  Explore Poster Maker <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
               <div className="mt-8 pt-4 border-t border-orange-100 flex justify-end">
@@ -441,7 +441,7 @@ export default function HomePage() {
           </h2>
 
           <p className="text-slate-500 text-sm sm:text-base max-w-md mx-auto leading-relaxed">
-            Create your personalized Independence Day 2026 poster today. Free, no signup required.
+            Create your personalized <Link href="/independence-day-poster" className="text-orange-600 hover:underline hover:text-orange-700">15 August 2026 poster</Link> today. Free, no signup required.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">

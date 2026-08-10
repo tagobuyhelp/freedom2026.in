@@ -111,6 +111,28 @@ export function articleSchema({
   };
 }
 
+export function webPageSchema({
+  title,
+  description,
+  url,
+}: {
+  title: string;
+  description: string;
+  url: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: title,
+    description,
+    url: `https://freedom2026.in${url}`,
+    publisher: {
+      "@type": "Organization",
+      name: "Tagobuy Technologies Private Limited",
+    },
+  };
+}
+
 export function faqSchema(faqs: { question: string; answer: string }[]) {
   return {
     "@context": "https://schema.org",

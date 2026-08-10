@@ -72,7 +72,7 @@ export default function HeroSection({ onScrollToCreator, onScrollToVideo }: Hero
             {/* Subtitle */}
             <p className="text-slate-600 text-xs sm:text-base lg:text-lg max-w-xs sm:max-w-lg mx-auto lg:mx-0 font-medium leading-relaxed">
               Add your name, photo and city.<br className="hidden sm:inline" />
-              Create a personalized Independence Day poster or video in seconds.
+              Create a personalized <strong>15 August 2026 poster</strong> or video in seconds.
             </p>
 
             {/* CTA Buttons */}

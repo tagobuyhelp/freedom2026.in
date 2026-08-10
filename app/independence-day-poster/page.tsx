@@ -6,10 +6,31 @@ import JsonLd, { breadcrumbSchema, faqSchema } from "@/components/JsonLd";
 import IndianFlag from "@/components/IndianFlag";
 
 export const metadata: Metadata = {
-  title: "15 August 2026 Poster – Create Your Independence Day Poster | Freedom2026",
+  title: "15 August Poster 2026 – Independence Day Poster Maker | Freedom2026",
   description:
     "Create a personalized 15 August 2026 poster with your photo. Explore Independence Day 2026 poster designs, choose your style, customize your poster and share it with friends.",
-  alternates: { canonical: "/independence-day-poster" },
+  alternates: { canonical: "https://freedom2026.in/independence-day-poster" },
+  openGraph: {
+    title: "15 August Poster 2026 – Independence Day Poster Maker | Freedom2026",
+    description:
+      "Create a personalized 15 August 2026 poster with your photo. Explore Independence Day 2026 poster designs and share it with friends.",
+    url: "https://freedom2026.in/independence-day-poster",
+    images: [
+      {
+        url: "https://freedom2026.in/images/og-default.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Freedom2026 — 15 August Poster 2026 Maker",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "15 August Poster 2026 – Independence Day Poster Maker | Freedom2026",
+    description:
+      "Create a personalized 15 August 2026 poster with your photo. Explore Independence Day 2026 poster designs.",
+    images: ["https://freedom2026.in/images/og-default.jpg"],
+  },
 };
 
 const TEMPLATE_DESIGNS = [
@@ -53,7 +74,7 @@ export default function IndependenceDayPosterPage() {
             {/* Left Copy */}
             <div className="max-w-xl mx-auto lg:mx-0 text-center lg:text-left">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 leading-tight mb-5">
-                15 August 2026 Poster – Create Your Own Independence Day Poster 🇮🇳
+                15 August Poster 2026 – Create Your Independence Day Poster 🇮🇳
               </h1>
               <p className="text-slate-600 text-sm sm:text-base leading-relaxed mb-8">
                 Celebrate India's Independence Day with a personalized 15 August 2026 poster featuring your own photo, name and patriotic style. Explore beautiful Independence Day 2026 poster designs and create a shareable poster for WhatsApp, Facebook, Instagram and other social platforms.
@@ -177,7 +198,7 @@ export default function IndependenceDayPosterPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
             <div>
               <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mb-5">
-                15 August Poster 2026 With Your Photo
+                Personalized Independence Day Posters
               </h2>
               <div className="space-y-4 text-slate-600 text-sm leading-relaxed">
                 <p>
@@ -236,7 +257,7 @@ export default function IndependenceDayPosterPage() {
             
             <div>
               <h2 className="text-2xl sm:text-3xl font-black mb-5">
-                Independence Day Poster Making Online
+                Independence Day Poster Making
               </h2>
               <div className="space-y-4 text-slate-300 text-sm leading-relaxed">
                 <p>
@@ -287,7 +308,7 @@ export default function IndependenceDayPosterPage() {
             {/* Social Media */}
             <div className="bg-blue-50/50 border border-blue-100 rounded-3xl p-8">
               <h2 className="text-xl sm:text-2xl font-black text-slate-900 mb-4">
-                15 August 2026 Poster for WhatsApp and Social Media
+                Social Media Independence Day Posters
               </h2>
               <p className="text-slate-600 text-sm mb-6 leading-relaxed">
                 Create the perfect patriotic creative for your social feeds. Our posters are perfectly sized and formatted for:
@@ -310,7 +331,7 @@ export default function IndependenceDayPosterPage() {
             {/* Business */}
             <div className="bg-emerald-50/50 border border-emerald-100 rounded-3xl p-8">
               <h2 className="text-xl sm:text-2xl font-black text-slate-900 mb-4">
-                Independence Day 2026 Poster for Businesses
+                Independence Day Posters for Businesses
               </h2>
               <p className="text-slate-600 text-sm mb-6 leading-relaxed">
                 Freedom2026 is being developed to support personalized business creatives with your business name, logo and branding for:

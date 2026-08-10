@@ -7,15 +7,28 @@ export const metadata: Metadata = {
   title: "Independence Day 2026 WhatsApp Status – 15 August Status in English, Bengali & Hindi",
   description:
     "Best Independence Day 2026 WhatsApp status messages for 15 August. Short patriotic captions in English, Bengali and Hindi — ready to copy and share.",
-  alternates: { canonical: "/independence-day-status" },
+  alternates: { canonical: "https://freedom2026.in/independence-day-status" },
+  openGraph: {
+    title: "Independence Day 2026 WhatsApp Status – 15 August Status",
+    description: "Best Independence Day 2026 WhatsApp status messages for 15 August. Short patriotic captions in English, Bengali and Hindi.",
+    url: "https://freedom2026.in/independence-day-status",
+    images: ["https://freedom2026.in/images/og-default.jpg"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Independence Day 2026 WhatsApp Status – 15 August Status",
+    description: "Best Independence Day 2026 WhatsApp status messages for 15 August.",
+    images: ["https://freedom2026.in/images/og-default.jpg"],
+  },
 };
 
 const RELATED = [
   { label: "Independence Day Wishes", href: "/independence-day-wishes" },
   { label: "Independence Day Quotes", href: "/independence-day-quotes" },
-  { label: "Create Poster", href: "/create" },
+  { label: "Poster Maker", href: "/independence-day-poster" },
   { label: "Bengali Wishes", href: "/independence-day-wishes-bengali" },
   { label: "15 August Status", href: "/15-august-status" },
+  { label: "Images", href: "/independence-day-images" },
 ];
 
 const CAPTION_IDEAS = [

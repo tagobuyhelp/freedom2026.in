@@ -8,11 +8,18 @@ export const metadata: Metadata = {
   title: "Independence Day 2026 Wishes – 15 August Wishes in English, Bengali & Hindi",
   description:
     "Find the best Independence Day 2026 wishes for 15 August. Share heartfelt wishes for Independence Day with friends, family and colleagues in English, Bengali and Hindi.",
-  alternates: { canonical: "/independence-day-wishes" },
+  alternates: { canonical: "https://freedom2026.in/independence-day-wishes" },
   openGraph: {
-    title: "Independence Day 2026 Wishes – 15 August Wishes",
+    title: "Independence Day 2026 Wishes – 15 August Wishes in English, Bengali & Hindi",
     description: "Find the best Independence Day 2026 wishes for 15 August. Share heartfelt messages in English, Bengali and Hindi.",
     url: "https://freedom2026.in/independence-day-wishes",
+    images: ["https://freedom2026.in/images/og-default.jpg"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Independence Day 2026 Wishes – 15 August Wishes",
+    description: "Find the best Independence Day 2026 wishes for 15 August. Share heartfelt messages.",
+    images: ["https://freedom2026.in/images/og-default.jpg"],
   },
 };
 
@@ -21,7 +28,7 @@ const RELATED = [
   { label: "WhatsApp Status", href: "/independence-day-status" },
   { label: "Bengali Wishes", href: "/independence-day-wishes-bengali" },
   { label: "Hindi Wishes", href: "/independence-day-wishes-hindi" },
-  { label: "Create Poster", href: "/create" },
+  { label: "Poster Maker", href: "/independence-day-poster" },
   { label: "Images", href: "/independence-day-images" },
 ];
 
