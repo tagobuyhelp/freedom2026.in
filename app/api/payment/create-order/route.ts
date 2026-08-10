@@ -3,16 +3,15 @@ import Razorpay from 'razorpay';
 import dbConnect from '@/lib/db';
 import { PosterSession } from '@/lib/models/PosterSession';
 
-let razorpayInstance: Razorpay | null = null;
-
 function getRazorpay() {
-  if (!razorpayInstance) {
-    razorpayInstance = new Razorpay({
-      key_id: process.env.RAZORPAY_KEY_ID || 'dummy_key',
-      key_secret: process.env.RAZORPAY_KEY_SECRET || 'dummy_secret',
-    });
+  const key_id = process.env.RAZORPAY_KEY_ID;
+  const key_secret = process.env.RAZORPAY_KEY_SECRET;
+
+  if (!key_id || !key_secret) {
+    throw new Error('Razorpay API keys (RAZORPAY_KEY_ID / RAZORPAY_KEY_SECRET) are missing from environment variables.');
   }
-  return razorpayInstance;
+
+  return new Razorpay({ key_id, key_secret });
 }
 
 export async function POST(request: Request) {

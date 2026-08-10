@@ -48,7 +48,7 @@ export async function POST(request: Request) {
         $inc: { shareCount: 1 },
         $set: { lastShareActionAt: now }
       },
-      { new: true }
+      { returnDocument: 'after' }
     );
 
     if (!updatedSession) {
@@ -70,7 +70,7 @@ export async function POST(request: Request) {
             unlockedAt: now,
           }
         },
-        { new: true }
+        { returnDocument: 'after' }
       );
       
       if (finalSession && finalSession.shareUnlocked) {
