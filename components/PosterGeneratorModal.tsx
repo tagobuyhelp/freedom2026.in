@@ -36,6 +36,79 @@ declare global {
   }
 }
 
+function PosterLoadingState() {
+  const [stepIndex, setStepIndex] = useState(0);
+  const [progress, setProgress] = useState(12);
+
+  const steps = [
+    "Analyzing face & photo features...",
+    "Applying Classic India traditional attire...",
+    "Blending patriotic tricolor & India Gate background...",
+    "Rendering HD 1080x1350 poster artwork...",
+    "Finalizing typography & quality check..."
+  ];
+
+  useEffect(() => {
+    const stepInterval = setInterval(() => {
+      setStepIndex((prev) => (prev + 1) % steps.length);
+    }, 3800);
+
+    const progressInterval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 92) return 92;
+        return prev + Math.floor(Math.random() * 8) + 4;
+      });
+    }, 1200);
+
+    return () => {
+      clearInterval(stepInterval);
+      clearInterval(progressInterval);
+    };
+  }, [steps.length]);
+
+  return (
+    <div className="absolute inset-0 bg-gradient-to-b from-orange-50/80 via-white/95 to-emerald-50/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 space-y-5 text-center select-none z-20">
+      {/* Animated Tricolor Glowing Spinner Icon */}
+      <div className="relative flex items-center justify-center">
+        <div className="absolute w-20 h-20 rounded-full bg-gradient-to-r from-orange-500 via-amber-400 to-emerald-500 blur-md opacity-40 animate-pulse" />
+        <div className="w-16 h-16 rounded-full border-4 border-transparent border-t-orange-500 border-r-white border-b-emerald-600 border-l-blue-600 animate-spin" />
+        <div className="absolute w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center border border-slate-100">
+          <Sparkles className="w-5 h-5 text-orange-500 animate-bounce" />
+        </div>
+      </div>
+
+      {/* Dynamic Status Text */}
+      <div className="space-y-1.5 max-w-xs">
+        <div className="text-xs font-black text-orange-600 uppercase tracking-widest flex items-center justify-center gap-1.5">
+          <IndianFlag className="w-4 h-3 inline-block" />
+          <span>AI CREATING YOUR POSTER</span>
+        </div>
+        <p className="text-sm font-bold text-slate-800 transition-all duration-300 min-h-[40px] flex items-center justify-center">
+          {steps[stepIndex]}
+        </p>
+      </div>
+
+      {/* Animated Progress Bar */}
+      <div className="w-full max-w-xs space-y-1.5">
+        <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden border border-slate-200 shadow-inner p-0.5">
+          <div
+            className="h-full bg-gradient-to-r from-orange-500 via-amber-400 to-emerald-500 rounded-full transition-all duration-700 ease-out"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+        <div className="flex justify-between items-center text-[10px] font-extrabold text-slate-400 px-1">
+          <span>Processing Artwork</span>
+          <span>{progress}%</span>
+        </div>
+      </div>
+
+      <p className="text-[11px] text-slate-400 font-medium italic">
+        Please wait a few seconds. Do not close this window.
+      </p>
+    </div>
+  );
+}
+
 export default function PosterGeneratorModal({ isOpen, onClose, data }: PosterGeneratorModalProps) {
   const [posterStatus, setPosterStatus] = useState<PosterStatus | null>(null);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
@@ -77,33 +150,53 @@ export default function PosterGeneratorModal({ isOpen, onClose, data }: PosterGe
   if (!isOpen) return null;
 
   const handleShare = async () => {
-    if (!data.posterId || !data.shareActionToken) return;
+    if (!data.posterId || !data.shareActionToken || isSharing) return;
     setErrorMsg(null);
     setIsSharing(true);
 
-    const { trackClientEvent, getSessionId } = await import("@/lib/analytics");
-    trackClientEvent("share_started", { posterId: data.posterId, templateId: data.template });
-
     try {
+      const { trackClientEvent, getSessionId } = await import("@/lib/analytics");
+
+      // 1. Track share_started immediately when user clicks Share
+      trackClientEvent("share_started", { posterId: data.posterId, templateId: data.template });
+
       const shareData = {
-        title: "Create Your Freedom Story — Freedom2026.in",
-        text: "Create your personalized Independence Day 2026 poster on Freedom2026.in",
-        url: `https://freedom2026.in`,
+        title: "My Freedom Story — Independence Day 2026",
+        text: "I created my Freedom Story for Independence Day 2026!\n\nCreate your own Freedom Story and celebrate 15 August with your personalized poster. ❤️🇮🇳\n\nhttps://freedom2026.in",
+        url: "https://freedom2026.in",
       };
 
-      if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
-        await navigator.share(shareData);
-        // Only if share succeeds (promise resolves), we record the action
-        trackClientEvent("share_completed", { posterId: data.posterId, templateId: data.template });
-      } else {
-        // Fallback for browsers without Web Share API
-        // For MVP we trigger the fallback as a successful action
-        await navigator.clipboard.writeText(shareData.url);
-        alert("Link copied to clipboard! Share it with your friends.");
-        trackClientEvent("share_completed", { posterId: data.posterId, templateId: data.template });
+      // 2. Check if Web Share API is available
+      if (!navigator.share) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(shareData.url);
+          alert("Web Share is not supported on this browser. Link copied to clipboard!");
+        } else {
+          alert("Web Share is not supported on this browser.");
+        }
+        // DO NOT call /api/poster/share, DO NOT increment share count
+        return;
       }
 
-      // Record share action on server
+      // 3. Record start time before launching native share sheet
+      const shareStartTime = Date.now();
+
+      // Trigger native share sheet and WAIT for user to complete or cancel
+      await navigator.share(shareData);
+
+      const elapsedTime = Date.now() - shareStartTime;
+
+      // Guard: If navigator.share() resolves in under 500ms without actual user interaction,
+      // it means the OS wrapper or browser auto-resolved immediately without native share completion.
+      if (elapsedTime < 500) {
+        console.log(`Share dismissed or auto-resolved too quickly (${elapsedTime}ms). Count not incremented.`);
+        return;
+      }
+
+      // ONLY REACHED IF navigator.share() RESOLVED AFTER REAL USER ENGAGEMENT (>500ms)
+      // (If user pressed Cancel, navigator.share() rejected and control jumped to catch block)
+
+      // 4. Record share action on server
       const res = await fetch("/api/poster/share", {
         method: "POST",
         headers: { 
@@ -120,17 +213,34 @@ export default function PosterGeneratorModal({ isOpen, onClose, data }: PosterGe
       if (!res.ok) {
         if (res.status === 429) {
           setErrorMsg("Please wait a moment before sharing again.");
+        } else {
+          setErrorMsg(json.error || "Could not register share action on server.");
         }
-      } else if (json.success) {
-        // Refresh status
+        return;
+      }
+
+      if (json.success) {
+        // 5. ONLY AFTER server accepted the share action, track share_completed
+        trackClientEvent("share_completed", { 
+          posterId: data.posterId, 
+          templateId: data.template,
+          shareCount: json.shareCount
+        });
+
+        if (json.unlocked) {
+          trackClientEvent("share_unlock_completed", {
+            posterId: data.posterId,
+            templateId: data.template
+          });
+        }
+
+        // 6. Refresh authoritative status from server
         await fetchStatus();
       }
     } catch (error: any) {
-      if (error.name === "AbortError") {
-        // User cancelled share, do nothing
-      } else {
-        console.error("Error sharing", error);
-      }
+      // User cancelled native share sheet or share failed
+      console.log("Share sheet cancelled or rejected by user. Count not incremented.", error?.name || error);
+      // DO NOT call /api/poster/share, DO NOT increment share count, DO NOT track share_completed
     } finally {
       setIsSharing(false);
     }
@@ -249,10 +359,7 @@ export default function PosterGeneratorModal({ isOpen, onClose, data }: PosterGe
           {/* Rendered Poster Preview */}
           <div className="relative bg-slate-100 rounded-2xl overflow-hidden shadow-inner border border-slate-200 flex items-center justify-center mb-6 min-h-[400px]">
             {data.isLoading ? (
-              <div className="absolute inset-0 bg-white/90 flex flex-col items-center justify-center space-y-3">
-                <div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
-                <p className="text-xs font-bold text-slate-700">Rendering high-res poster on server...</p>
-              </div>
+              <PosterLoadingState />
             ) : data.posterUrl ? (
               <img
                 src={data.posterUrl}
@@ -320,7 +427,7 @@ export default function PosterGeneratorModal({ isOpen, onClose, data }: PosterGe
                       className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-sm transition-transform hover:scale-[1.01] disabled:opacity-70"
                     >
                       <Share2 className="w-4 h-4" />
-                      <span>{isSharing ? "Opening Share..." : "Share My Poster"}</span>
+                      <span>{isSharing ? "Opening Share..." : "🇮🇳 Share My Freedom Story"}</span>
                     </button>
                   </div>
 
