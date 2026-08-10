@@ -111,6 +111,11 @@ export default function RootLayout({
         <link rel="icon" href="/favicon-96x96.png" sizes="96x96" type="image/png" />
         <link rel="icon" href="/icon-192.png" sizes="192x192" type="image/png" />
         <link rel="apple-touch-icon" href="/apple-icon.png" sizes="180x180" />
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7058990081803760"
+          crossOrigin="anonymous"
+        />
         <JsonLd data={[websiteSchema(), organizationSchema()]} />
       </head>
       <body className="min-h-full flex flex-col bg-white text-slate-900 antialiased selection:bg-orange-100 selection:text-orange-700">
