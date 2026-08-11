@@ -6,6 +6,8 @@ const ALLOWED_EVENTS = [
   'page_view',
   'poster_creator_started',
   'photo_selected',
+  'pre_generation_offer_viewed',
+  'pre_generation_confirmed',
   'poster_generation_started',
   'unlock_screen_viewed',
   'share_started',

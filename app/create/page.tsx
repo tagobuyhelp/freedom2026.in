@@ -1,370 +1,294 @@
 "use client";
 
-import React, { useState } from "react";
-import Link from "next/link";
-import { Sparkles, User, Camera, LayoutTemplate, Download, Info, AlertCircle } from "lucide-react";
+import React, { useState, useRef } from "react";
+import { Sparkles, Camera, Check, AlertCircle, ChevronRight } from "lucide-react";
 import IndianFlag from "@/components/IndianFlag";
-
 import PosterGeneratorModal from "@/components/PosterGeneratorModal";
 
 const TEMPLATES_PREVIEW = [
-  { id: "classic-india", title: "Classic India", image: "/images/classic-india-style.png", selected: true },
-  { id: "modern-india", title: "Modern India (Coming Soon)", image: "/images/modern-india-style.png" },
-  { id: "bengali", title: "Bengali (Coming Soon)", image: "/images/bengali-style.png" },
-  { id: "hindi", title: "Hindi (Coming Soon)", image: "/images/hindi-style.png" },
-  { id: "india-map", title: "India Map (Coming Soon)", image: "/images/india-map-style.png" },
-  { id: "business", title: "Business (Coming Soon)", image: "/images/professional-style.png" },
+  { id: "classic-india",  title: "Classic India",   image: "/images/classic-india-style.png",  gender: "Male",   isAvailable: true },
+  { id: "modern-india",   title: "Modern India",    image: "/images/modern-india-style.png",   gender: "Female", isAvailable: true },
+  { id: "bengali",        title: "Bengali",         image: "/images/bengali-style.png",                          isAvailable: false },
+  { id: "hindi",          title: "Hindi",           image: "/images/hindi-style.png",                            isAvailable: false },
+  { id: "india-map",      title: "India Map",       image: "/images/india-map-style.png",                        isAvailable: false },
+  { id: "business",       title: "Business",        image: "/images/professional-style.png",                     isAvailable: false },
 ];
 
-const STEPS = [
-  { num: 1, icon: <User className="w-5 h-5" />, title: "Your Details", desc: "Enter your name and city" },
-  { num: 2, icon: <Camera className="w-5 h-5" />, title: "Your Photo", desc: "Upload a clear photo of yourself" },
-  { num: 3, icon: <LayoutTemplate className="w-5 h-5" />, title: "Choose Template", desc: "Pick from 50+ designs" },
-  { num: 4, icon: <Download className="w-5 h-5" />, title: "Download & Share", desc: "Save in HD and share" },
-];
+import PreGenerationModal from "@/components/PreGenerationModal";
 
 export default function CreatePage() {
   const [name, setName] = useState("");
   const [city, setCity] = useState("");
+  const [selectedTemplate, setSelectedTemplate] = useState("classic-india");
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [showCommitment, setShowCommitment] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [posterData, setPosterData] = useState<{
-    name: string;
-    city: string;
-    posterUrl: string | null;
-    posterId: string | null;
-    shareActionToken: string | null;
-    template: string;
-    isLoading: boolean;
-  }>({
-    name: "",
-    city: "",
-    posterUrl: null,
-    posterId: null,
-    shareActionToken: null,
-    template: "classic-india",
-    isLoading: false,
-  });
+    name: string; city: string; posterUrl: string | null;
+    posterId: string | null; shareActionToken: string | null;
+    template: string; isLoading: boolean;
+  }>({ name: "", city: "", posterUrl: null, posterId: null, shareActionToken: null, template: "classic-india", isLoading: false });
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    
-    if (file.size > 10 * 1024 * 1024) {
-      setError("Please choose a photo smaller than 10 MB.");
-      return;
-    }
-    
-    if (!file.type.match(/^image\/(jpeg|png|webp)$/)) {
-      setError("Please upload a JPG, PNG or WebP image.");
-      return;
-    }
-
+    if (file.size > 10 * 1024 * 1024) { setError("Photo must be smaller than 10 MB."); return; }
+    if (!file.type.match(/^image\/(jpeg|png|webp)$/)) { setError("Please upload a JPG, PNG or WebP."); return; }
     setPhoto(file);
     setPhotoPreview(URL.createObjectURL(file));
     setError(null);
   };
 
-  const handleGenerate = async () => {
-    if (!name || !city || !photo) {
-      setError("Please fill in your name, city, and upload a photo.");
-      return;
-    }
-
-    setIsGenerating(true);
+  const handlePreGenerate = async () => {
+    if (!name || !city || !photo) { setError("Please fill in your name, city, and upload a photo."); return; }
     setError(null);
-    setPosterData({
-      name: name.trim(),
-      city: city.trim(),
-      posterUrl: null,
-      posterId: null,
-      shareActionToken: null,
-      template: "classic-india",
-      isLoading: true,
-    });
-    setModalOpen(true);
-
-    const formData = new FormData();
-    formData.append("name", name.trim());
-    formData.append("city", city.trim());
-    formData.append("templateId", "classic-india");
-    formData.append("photo", photo);
-
+    setShowCommitment(true);
     try {
-      const { getSessionId } = await import("@/lib/analytics");
-      const res = await fetch("/api/poster/generate", {
-        method: "POST",
-        headers: {
-          "x-session-id": getSessionId(),
-        },
-        body: formData,
-      });
-
-      let data: any = {};
-      try {
-        data = await res.json();
-      } catch (e) {
-        console.error("Failed to parse JSON", e);
-      }
-
-      if (!res.ok || !data.success) {
-        const errorMsg = data.error || data.details || "Something went wrong while creating your poster. Please try again.";
-        throw new Error(errorMsg);
-      }
-
-      setPosterData((prev) => ({
-        ...prev,
-        posterUrl: data.posterUrl,
-        posterId: data.posterId,
-        shareActionToken: data.shareActionToken,
-        isLoading: false,
-      }));
-    } catch (err: any) {
-      setError(err.message || "Something went wrong while creating your poster. Please try again.");
-      setModalOpen(false);
-    } finally {
-      setIsGenerating(false);
-    }
+      const { trackClientEvent } = await import("@/lib/analytics");
+      trackClientEvent("pre_generation_offer_viewed", { templateId: selectedTemplate });
+    } catch (e) { console.error(e); }
   };
 
+  const confirmGeneration = async () => {
+    if (isGenerating) return;
+    setShowCommitment(false);
+    setIsGenerating(true); setError(null);
+    setPosterData({ name: name.trim(), city: city.trim(), posterUrl: null, posterId: null, shareActionToken: null, template: selectedTemplate, isLoading: true });
+    setModalOpen(true);
+    
+    try {
+      const { trackClientEvent, getSessionId } = await import("@/lib/analytics");
+      trackClientEvent("pre_generation_confirmed", { templateId: selectedTemplate });
+      trackClientEvent("poster_generation_started", { templateId: selectedTemplate });
+      
+      const formData = new FormData();
+      formData.append("name", name.trim()); formData.append("city", city.trim());
+      formData.append("templateId", selectedTemplate); formData.append("photo", photo!);
+      
+      const res = await fetch("/api/poster/generate", { method: "POST", headers: { "x-session-id": getSessionId() }, body: formData });
+      let data: any = {};
+      try { data = await res.json(); } catch (e) { console.error(e); }
+      if (!res.ok || !data.success) throw new Error(data.error || data.details || "Something went wrong.");
+      setPosterData((prev) => ({ ...prev, posterUrl: data.posterUrl, posterId: data.posterId, shareActionToken: data.shareActionToken, isLoading: false }));
+    } catch (err: any) { setError(err.message || "Something went wrong."); setModalOpen(false); }
+    finally { setIsGenerating(false); }
+  };
+
+  const isReady = !!name.trim() && !!city.trim() && !!photo;
+  const selectedTmpl = TEMPLATES_PREVIEW.find(t => t.id === selectedTemplate);
+
   return (
-    <div className="min-h-screen bg-slate-50">
-      {/* Page Header */}
-      <div className="bg-white border-b border-slate-200 py-8 sm:py-10">
+    <div className="min-h-screen bg-slate-50 pb-28 sm:pb-0">
+      {/* Header */}
+      <div className="bg-white border-b border-slate-200 py-4 sm:py-10">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center gap-2 bg-orange-50 border border-orange-200 text-orange-700 text-xs font-bold px-3 py-1.5 rounded-full mb-4">
-            <IndianFlag className="w-4 h-3 sm:w-5 sm:h-3.5" />
-            <span>FREE POSTER CREATOR</span>
+          <div className="inline-flex items-center gap-2 bg-orange-50 border border-orange-200 text-orange-700 text-xs font-bold px-3 py-1 rounded-full mb-2 sm:mb-3">
+            <IndianFlag className="w-4 h-3" /><span>FREE POSTER CREATOR</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 mb-3">
+          <h1 className="text-xl sm:text-3xl lg:text-4xl font-black text-slate-900 mb-1 sm:mb-2 leading-tight">
             Create Your Independence Day 2026 Poster
           </h1>
-          <p className="text-slate-500 text-base max-w-xl mx-auto">
-            Add your name, photo and city, choose a template, and download your personalised Independence Day poster in seconds.
+          <p className="hidden sm:block text-slate-500 text-sm sm:text-base max-w-xl mx-auto">
+            Add your name, photo and city, choose a template, and download your personalised poster in seconds.
           </p>
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        {/* Progress Steps */}
-        <div className="flex items-center justify-center gap-0 mb-10 overflow-x-auto pb-2">
-          {STEPS.map((step, idx) => (
-            <div key={step.num} className="flex items-center">
-              <div className="flex flex-col items-center">
-                <div className={`w-9 h-9 rounded-full flex items-center justify-center font-extrabold text-sm border-2 ${
-                  posterData.posterUrl ? (step.num === 4 ? "bg-orange-600 border-orange-600 text-white" : "bg-white border-slate-300 text-slate-400") :
-                  (step.num === 1 ? "bg-orange-600 border-orange-600 text-white shadow-md shadow-orange-500/30" : "bg-white border-slate-300 text-slate-400")
-                }`}>
-                  {step.num}
-                </div>
-                <span className={`text-xs font-bold mt-1.5 whitespace-nowrap ${
-                  (posterData.posterUrl && step.num === 4) || (!posterData.posterUrl && step.num === 1) ? "text-orange-600" : "text-slate-400"
-                }`}>
-                  {step.title}
-                </span>
+      <div className="max-w-5xl mx-auto px-3 sm:px-6 lg:px-8 pt-4 sm:pt-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
+
+          {/* Template Picker - order 1 on mobile */}
+          <div className="lg:col-span-7 order-1 lg:order-2">
+            <div className="bg-white rounded-2xl border border-slate-200 p-3 sm:p-6 shadow-xs">
+              <h2 className="text-sm sm:text-base font-black text-slate-900 mb-3 flex items-center gap-2">
+                <span className="w-5 h-5 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-xs font-black">1</span>
+                Choose Your Template
+              </h2>
+              <div className="flex gap-3 overflow-x-auto scrollbar-none pb-2 pt-3 pr-2">
+                {TEMPLATES_PREVIEW.map((tmpl) => {
+                  const isSelected = selectedTemplate === tmpl.id;
+                  return (
+                    <div key={tmpl.id} className="relative shrink-0 w-[110px] sm:w-[140px]">
+                      {tmpl.gender && tmpl.isAvailable && (
+                        <div className={`absolute -top-2 -right-2 shadow-sm px-1.5 py-0.5 rounded text-[7px] uppercase font-bold text-white tracking-wider z-20 ${tmpl.gender === "Male" ? "bg-blue-600" : "bg-pink-600"}`}>
+                          {tmpl.gender}
+                        </div>
+                      )}
+                      <div onClick={() => tmpl.isAvailable && setSelectedTemplate(tmpl.id)}
+                        className={`border-2 rounded-xl overflow-hidden transition-all cursor-pointer ${
+                          isSelected ? "border-orange-500 shadow-md shadow-orange-500/20" :
+                          tmpl.isAvailable ? "border-slate-200 hover:border-orange-300" :
+                          "border-slate-100 opacity-50 grayscale cursor-not-allowed"}`}>
+                        <div className="aspect-[3/4] relative bg-slate-100 overflow-hidden">
+                          <img src={tmpl.image} alt={tmpl.title} className="w-full h-full object-cover" />
+                          {!tmpl.isAvailable && (
+                            <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                              <span className="bg-white/90 text-slate-800 text-[9px] font-bold px-2 py-0.5 rounded">Soon</span>
+                            </div>
+                          )}
+                          {isSelected && (
+                            <div className="absolute top-1.5 left-1.5 w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center z-10">
+                              <Check className="w-3 h-3 text-white" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="bg-white py-1.5 text-center border-t border-slate-100">
+                          <div className="text-[10px] font-bold text-slate-800 truncate px-1">{tmpl.title}</div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-              {idx < STEPS.length - 1 && (
-                <div className="w-16 sm:w-24 h-0.5 bg-slate-200 mx-2 mt-[-1rem] shrink-0" />
+              {selectedTmpl && (
+                <div className="mt-2 flex items-center gap-1.5 text-xs text-slate-600">
+                  <Check className="w-3.5 h-3.5 text-orange-500" />
+                  <span>Selected: <span className="font-bold text-slate-900">{selectedTmpl.title}</span></span>
+                  {selectedTmpl.gender && (
+                    <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold text-white ${selectedTmpl.gender === "Male" ? "bg-blue-600" : "bg-pink-600"}`}>
+                      {selectedTmpl.gender}
+                    </span>
+                  )}
+                </div>
               )}
             </div>
-          ))}
-        </div>
+          </div>
 
-        {/* Form State */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left: Details Form */}
-          <div className="lg:col-span-5 bg-white rounded-2xl border border-slate-200 p-6 space-y-5 shadow-xs">
-            <h2 className="font-black text-slate-900 flex items-center gap-2">
-              <User className="w-5 h-5 text-orange-600" />
-              Enter Your Details
-            </h2>
+          {/* Details Form - order 2 on mobile */}
+          <div className="lg:col-span-5 order-2 lg:order-1">
+            <div className="bg-white rounded-2xl border border-slate-200 p-3 sm:p-6 shadow-xs space-y-4">
+              <h2 className="text-sm sm:text-base font-black text-slate-900 flex items-center gap-2">
+                <span className="w-5 h-5 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-xs font-black">2</span>
+                Your Details
+              </h2>
+              {/* Name + City side by side on mobile */}
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-1 sm:gap-4">
+                <div>
+                  <label htmlFor="poster-name" className="block text-[11px] sm:text-xs font-bold text-slate-700 mb-1">
+                    Your Name <span className="text-orange-600">*</span>
+                  </label>
+                  <input id="poster-name" type="text" value={name} onChange={(e) => setName(e.target.value)}
+                    placeholder="Full name" maxLength={30} disabled={isGenerating}
+                    className="w-full px-3 py-2.5 sm:px-4 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500/25 focus:border-orange-500 text-sm transition-all" />
+                </div>
+                <div>
+                  <label htmlFor="poster-city" className="block text-[11px] sm:text-xs font-bold text-slate-700 mb-1">
+                    Your City <span className="text-orange-600">*</span>
+                  </label>
+                  <input id="poster-city" type="text" value={city} onChange={(e) => setCity(e.target.value)}
+                    placeholder="Your city" maxLength={30} disabled={isGenerating}
+                    className="w-full px-3 py-2.5 sm:px-4 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500/25 focus:border-orange-500 text-sm transition-all" />
+                </div>
+              </div>
 
-            {/* Name */}
-            <div>
-              <label htmlFor="poster-name" className="block text-xs font-bold text-slate-700 mb-1.5">
-                Your Name <span className="text-orange-600">*</span>
-              </label>
-              <input
-                id="poster-name"
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Enter your full name"
-                maxLength={30}
-                className="w-full px-4 py-2.5 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500/25 focus:border-orange-500 text-sm transition-all"
-                disabled={isGenerating}
-              />
-            </div>
-
-            {/* City */}
-            <div>
-              <label htmlFor="poster-city" className="block text-xs font-bold text-slate-700 mb-1.5">
-                Your City <span className="text-orange-600">*</span>
-              </label>
-              <input
-                id="poster-city"
-                type="text"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                placeholder="Enter your city"
-                maxLength={30}
-                className="w-full px-4 py-2.5 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500/25 focus:border-orange-500 text-sm transition-all"
-                disabled={isGenerating}
-              />
-            </div>
-
-            {/* Photo Upload */}
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1.5">Upload Your Photo <span className="text-orange-600">*</span></label>
-              <p className="text-xs text-slate-500 mb-3">Upload a clear photo of yourself for the best personalized poster.</p>
-              
-              <div className="relative border-2 border-dashed border-slate-300 rounded-xl overflow-hidden hover:border-orange-400 transition-colors bg-slate-50 flex flex-col items-center justify-center p-6" style={{ minHeight: '160px' }}>
-                <input 
-                  type="file" 
-                  accept="image/png, image/jpeg, image/jpg, image/webp"
-                  onChange={handlePhotoUpload}
-                  disabled={isGenerating}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
-                />
+              {/* Photo upload */}
+              <div>
+                <label className="block text-[11px] sm:text-xs font-bold text-slate-700 mb-1">
+                  Your Photo <span className="text-orange-600">*</span>
+                </label>
+                <input ref={fileInputRef} type="file" accept="image/png, image/jpeg, image/jpg, image/webp"
+                  onChange={handlePhotoUpload} disabled={isGenerating} className="hidden" />
                 {photoPreview ? (
-                  <div className="relative z-20 w-full flex flex-col items-center">
-                    <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 border-white shadow-md mb-3">
-                      <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
+                  <div className="flex items-center gap-3 p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
+                    <img src={photoPreview} alt="Preview" className="w-14 h-14 rounded-full object-cover border-2 border-emerald-300 shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-bold text-emerald-700 flex items-center gap-1">
+                        <Check className="w-3.5 h-3.5" /> Photo ready
+                      </div>
+                      <div className="text-xs text-slate-500 truncate">{photo?.name}</div>
                     </div>
-                    <div className="text-sm font-bold text-emerald-600 flex items-center gap-1 mb-1">
-                      ✓ Your photo is ready
-                    </div>
-                    <div className="text-xs text-slate-500 truncate max-w-[200px] mb-3">
-                      {photo?.name}
-                    </div>
-                    <button 
-                      type="button" 
-                      onClick={(e) => { e.preventDefault(); setPhoto(null); setPhotoPreview(null); setError(null); }}
-                      className="text-xs font-bold text-orange-600 bg-orange-50 border border-orange-200 px-4 py-2 rounded-full hover:bg-orange-100 transition-colors"
-                      disabled={isGenerating}
-                    >
-                      Remove / Change
+                    <button type="button" disabled={isGenerating}
+                      onClick={() => { setPhoto(null); setPhotoPreview(null); setError(null); fileInputRef.current?.click(); }}
+                      className="text-xs font-bold text-orange-600 bg-orange-50 border border-orange-200 px-3 py-1.5 rounded-lg shrink-0">
+                      Change
                     </button>
                   </div>
                 ) : (
-                  <div className="text-center relative z-0">
-                    <Camera className="w-10 h-10 text-slate-400 mx-auto mb-3" />
-                    <div className="text-sm font-bold text-slate-700 mb-1">Click to upload photo</div>
-                    <div className="text-xs text-slate-500">JPG, PNG, WebP</div>
-                    <div className="text-[10px] text-slate-400 mt-1.5 uppercase tracking-wider font-bold">Up to 10 MB</div>
-                  </div>
+                  <button type="button" onClick={() => fileInputRef.current?.click()} disabled={isGenerating}
+                    className="w-full border-2 border-dashed border-slate-300 rounded-xl bg-slate-50 hover:border-orange-400 hover:bg-orange-50/30 transition-all flex items-center gap-3 px-4 py-4">
+                    <div className="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center shrink-0">
+                      <Camera className="w-5 h-5 text-slate-500" />
+                    </div>
+                    <div className="text-left">
+                      <div className="text-sm font-bold text-slate-700">Tap to upload your photo</div>
+                      <div className="text-xs text-slate-400">JPG, PNG, WebP · Max 10 MB</div>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-slate-400 ml-auto" />
+                  </button>
                 )}
               </div>
-              
-              {/* Guidelines */}
+
               {!photoPreview && (
-                <div className="mt-4 bg-orange-50/50 border border-orange-100 rounded-xl p-4 sm:p-5">
-                  <h4 className="text-xs font-bold text-slate-800 mb-2.5 flex items-center gap-1.5">
-                    <Info className="w-4 h-4 text-orange-600" />
-                    For the best result
-                  </h4>
-                  <ul className="text-[11px] sm:text-xs text-slate-600 space-y-2 pl-4 list-disc marker:text-orange-400">
-                    <li><span className="font-semibold text-slate-800">Best: Clear portrait or selfie</span></li>
-                    <li>Use a clear photo where your face is clearly visible</li>
-                    <li>Front-facing or slightly angled photos work best</li>
-                    <li>Upload a photo with only one person</li>
-                    <li>Use a well-lit photo</li>
-                    <li>Avoid sunglasses, masks or anything covering your face</li>
-                    <li>Avoid blurry or extremely low-resolution photos</li>
-                  </ul>
+                <div className="bg-orange-50/60 border border-orange-100 rounded-xl p-3 text-[11px] text-slate-600">
+                  <span className="font-bold text-slate-800">Tips: </span>
+                  Clear selfie · Face visible · No sunglasses · Well-lit · One person only
                 </div>
               )}
             </div>
           </div>
 
-          {/* Right: Template Selection */}
-          <div className="lg:col-span-7 bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4 flex flex-col">
-            <div className="flex items-center justify-between">
-              <h2 className="font-black text-slate-900 flex items-center gap-2">
-                <LayoutTemplate className="w-5 h-5 text-orange-600" />
-                Choose Your Template
-              </h2>
-            </div>
-
-            {/* Template grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 flex-grow">
-              {TEMPLATES_PREVIEW.map((tmpl, i) => (
-                <div key={tmpl.id} className={`border-2 rounded-xl overflow-hidden transition-all ${
-                  i === 0 ? "border-orange-600 shadow-md shadow-orange-500/15" : "border-slate-100 opacity-60 grayscale"
-                }`}>
-                  <div className="aspect-[3/4] relative bg-slate-100 overflow-hidden">
-                    <img 
-                      src={tmpl.image} 
-                      alt={tmpl.title} 
-                      className="w-full h-full object-cover" 
-                    />
-                    {i !== 0 && (
-                      <div className="absolute inset-0 bg-black/30 flex items-center justify-center backdrop-blur-[1px]">
-                        <span className="bg-white/90 text-slate-800 text-[10px] font-bold px-2 py-1 rounded shadow-xs">Soon</span>
-                      </div>
-                    )}
-                  </div>
-                  <div className="bg-white py-1.5 text-center">
-                    <div className="text-[10px] font-bold text-slate-800 truncate px-1">{tmpl.title}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {error && (
-              <div className="bg-red-50 text-red-700 text-sm font-medium p-3 rounded-lg flex items-start gap-2 border border-red-200 mt-2">
-                <AlertCircle className="w-5 h-5 shrink-0" />
-                <p>{error}</p>
-              </div>
-            )}
-
-            {/* Generate button */}
-            <button
-              onClick={handleGenerate}
-              disabled={isGenerating || !name || !city || !photo}
-              className={`w-full py-4 rounded-xl font-extrabold text-base flex flex-col items-center justify-center gap-1 mt-4 transition-all ${
-                isGenerating 
-                  ? "bg-orange-500 text-white cursor-wait opacity-80" 
-                  : !name || !city || !photo 
-                    ? "bg-slate-200 text-slate-400 cursor-not-allowed" 
-                    : "bg-orange-600 text-white shadow-lg shadow-orange-600/25 hover:bg-orange-700 hover:-translate-y-0.5"
-              }`}
-            >
-              {isGenerating ? (
-                <>
-                  <div className="flex items-center gap-2">
-                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <span>Creating your personalized poster...</span>
-                  </div>
-                  <span className="text-[11px] text-orange-200 font-medium">This may take a few seconds.</span>
-                </>
-              ) : error ? (
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-5 h-5" />
-                  <span>Try Again</span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-5 h-5" />
-                  <span>Generate My Poster</span>
-                </div>
-              )}
-            </button>
-          </div>
         </div>
       </div>
 
-      <PosterGeneratorModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        data={posterData}
-      />
+      {/* Floating bottom CTA - mobile only */}
+      <div className="fixed bottom-0 left-0 right-0 p-3 bg-white/95 backdrop-blur-sm border-t border-slate-200 shadow-lg z-40 sm:hidden">
+        {error && (
+          <div className="bg-red-50 text-red-700 text-xs font-medium p-2 rounded-lg flex items-start gap-2 border border-red-200 mb-2">
+            <AlertCircle className="w-4 h-4 shrink-0" /><p>{error}</p>
+          </div>
+        )}
+        <button onClick={handlePreGenerate} disabled={isGenerating || !isReady}
+          className={`w-full py-4 rounded-2xl font-extrabold text-base flex items-center justify-center gap-2 transition-all ${
+            isGenerating ? "bg-orange-500 text-white opacity-80" :
+            !isReady ? "bg-slate-200 text-slate-400 cursor-not-allowed" :
+            "bg-orange-600 text-white shadow-lg shadow-orange-600/30 active:scale-[0.98]"}`}>
+          {isGenerating ? (
+            <><svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg><span>Creating poster...</span></>
+          ) : (
+            <><Sparkles className="w-5 h-5" /><span>Generate My Freedom Story</span></>
+          )}
+        </button>
+        {!isReady && !isGenerating && (
+          <p className="text-center text-[10px] text-slate-400 mt-1.5">
+            {!name ? "Enter name · " : ""}{!city ? "Enter city · " : ""}{!photo ? "Upload photo" : ""}
+          </p>
+        )}
+      </div>
+
+      {/* Desktop generate button */}
+      <div className="hidden sm:block max-w-xl mx-auto px-6 pb-10 mt-6">
+        {error && (
+          <div className="bg-red-50 text-red-700 text-sm font-medium p-3 rounded-lg flex items-start gap-2 border border-red-200 mb-4">
+            <AlertCircle className="w-5 h-5 shrink-0" /><p>{error}</p>
+          </div>
+        )}
+        <button onClick={handlePreGenerate} disabled={isGenerating || !isReady}
+          className={`w-full py-4 rounded-xl font-extrabold text-base flex flex-col items-center justify-center gap-1 transition-all ${
+            isGenerating ? "bg-orange-500 text-white cursor-wait opacity-80" :
+            !isReady ? "bg-slate-200 text-slate-400 cursor-not-allowed" :
+            "bg-orange-600 text-white shadow-lg shadow-orange-600/25 hover:bg-orange-700 hover:-translate-y-0.5"}`}>
+          {isGenerating ? (
+            <><div className="flex items-center gap-2">
+              <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg><span>Creating your personalized poster...</span>
+            </div><span className="text-[11px] text-orange-200 font-medium">This may take a few seconds.</span></>
+          ) : (
+            <div className="flex items-center gap-2"><Sparkles className="w-5 h-5" /><span>Generate My Freedom Story Poster</span></div>
+          )}
+        </button>
+      </div>
+
+      <PreGenerationModal isOpen={showCommitment} onClose={() => setShowCommitment(false)} onConfirm={confirmGeneration} isGenerating={isGenerating} />
+      <PosterGeneratorModal isOpen={modalOpen} onClose={() => setModalOpen(false)} data={posterData} />
     </div>
   );
 }

@@ -20,15 +20,15 @@ interface QuickCreatorProps {
 }
 
 const TEMPLATE_CARDS = [
-  { id: "classic-india", title: "Classic", tag: "Free", thumb: "/images/classic-india-style.png", alt: "Classic India Independence Day 2026 poster template" },
-  { id: "modern-india",  title: "Modern",  tag: "Free", thumb: "/images/modern-india-style.png",  alt: "Modern India Independence Day 2026 poster template" },
-  { id: "india-map",     title: "India",   tag: "Free", thumb: "/images/india-map-style.png",     alt: "India Map Independence Day 2026 poster template" },
-  { id: "portrait",      title: "Portrait",tag: "Free", thumb: "/images/portrait-style.png",      alt: "Portrait style Independence Day 2026 poster template" },
+  { id: "classic-india", title: "Classic", tag: "Free", gender: "Male", isAvailable: true, thumb: "/images/classic-india-style.png", alt: "Classic India Independence Day 2026 poster template" },
+  { id: "modern-india",  title: "Modern",  tag: "Free", gender: "Female", isAvailable: true, thumb: "/images/modern-india-style.png",  alt: "Modern India Independence Day 2026 poster template" },
+  { id: "india-map",     title: "India",   tag: "Free", isAvailable: false, thumb: "/images/india-map-style.png",     alt: "India Map Independence Day 2026 poster template" },
+  { id: "portrait",      title: "Portrait",tag: "Free", isAvailable: false, thumb: "/images/portrait-style.png",      alt: "Portrait style Independence Day 2026 poster template" },
 ];
 
 const STYLE_TEMPLATES = [
-  { id: "classic-india", title: "Classic India", type: "Free",        isAvailable: true,  thumb: "/images/classic-india-style.png", alt: "Classic India Independence Day 2026 poster template" },
-  { id: "modern-india",  title: "Modern India",  type: "Coming Soon", isAvailable: false, thumb: "/images/modern-india-style.png",  alt: "Modern India Independence Day 2026 poster template" },
+  { id: "classic-india", title: "Classic India", type: "Free", gender: "Male", isAvailable: true,  thumb: "/images/classic-india-style.png", alt: "Classic India Independence Day 2026 poster template" },
+  { id: "modern-india",  title: "Modern India",  type: "Free", gender: "Female", isAvailable: true, thumb: "/images/modern-india-style.png",  alt: "Modern India Independence Day 2026 poster template" },
   { id: "india-map",     title: "India Map",     type: "Coming Soon", isAvailable: false, thumb: "/images/india-map-style.png",     alt: "India Map Independence Day 2026 poster template" },
   { id: "portrait",      title: "Portrait",      type: "Coming Soon", isAvailable: false, thumb: "/images/portrait-style.png",      alt: "Portrait style Independence Day 2026 poster template" },
   { id: "bengali",       title: "Bengali",       type: "Coming Soon", isAvailable: false, thumb: "/images/bengali-style.png",       alt: "Bengali Independence Day 2026 poster template" },
@@ -192,13 +192,13 @@ export default function QuickCreator({ onGenerate }: QuickCreatorProps) {
                   Choose Template
                 </label>
                 <div
-                  className="flex items-center gap-2 overflow-x-auto scrollbar-none pb-1"
-                  role="radiogroup"
+                  className="flex items-center gap-2 overflow-x-auto scrollbar-none pb-1 pt-3"
+                  role="radiogroup:ChooseTemplate"
                   aria-label="Select an Independence Day poster template"
                 >
                   {TEMPLATE_CARDS.map((tmpl) => {
                     const isSelected = selectedTemplate === tmpl.id;
-                    const isAvailable = tmpl.id === "classic-india";
+                    const isAvailable = tmpl.isAvailable;
                     return (
                       <button
                         key={tmpl.id}
@@ -208,12 +208,17 @@ export default function QuickCreator({ onGenerate }: QuickCreatorProps) {
                             setSelectedTemplate(tmpl.id);
                           }
                         }}
-                        className={`flex flex-col items-center gap-1 p-1.5 rounded-xl border-2 transition-all shrink-0 cursor-pointer ${
+                        className={`flex flex-col items-center gap-1 p-1.5 rounded-xl border-2 transition-all shrink-0 cursor-pointer relative ${
                           isSelected
                             ? "border-[#f97316] bg-orange-50/50 shadow-xs"
                             : "border-slate-200 bg-white opacity-70"
                         }`}
                       >
+                        {tmpl.gender && isAvailable && (
+                          <div className={`absolute -top-1.5 -right-1.5 shadow-sm px-1 py-0.5 rounded text-[7px] uppercase font-bold text-white tracking-wider z-20 ${tmpl.gender === "Male" ? "bg-blue-600" : "bg-pink-600"}`}>
+                            {tmpl.gender}
+                          </div>
+                        )}
                         <div className="w-10 h-12 rounded-lg bg-slate-100 overflow-hidden relative border border-slate-200/50">
                          <img src={tmpl.thumb} alt={tmpl.alt} className={`w-full h-full object-cover ${!isAvailable ? "grayscale" : ""}`} />
                           {!isAvailable && (
@@ -355,7 +360,7 @@ export default function QuickCreator({ onGenerate }: QuickCreatorProps) {
           {/* 8 Template Cards Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
             {STYLE_TEMPLATES.map((tmpl) => {
-              const isAvailable = tmpl.id === "classic-india";
+              const isAvailable = tmpl.isAvailable;
               return (
                 <div 
                   key={tmpl.id} 
@@ -364,8 +369,13 @@ export default function QuickCreator({ onGenerate }: QuickCreatorProps) {
                       setSelectedTemplate(tmpl.id);
                     }
                   }}
-                  className="group cursor-pointer"
+                  className="group cursor-pointer relative"
                 >
+                  {tmpl.gender && isAvailable && (
+                    <div className={`absolute -top-2 -right-2 shadow-sm px-1.5 py-0.5 rounded text-[8px] uppercase font-bold text-white tracking-wider z-20 ${tmpl.gender === "Male" ? "bg-blue-600" : "bg-pink-600"}`}>
+                      {tmpl.gender}
+                    </div>
+                  )}
                   <div className={`aspect-[3/4] rounded-xl overflow-hidden relative shadow-xs border border-slate-200 bg-white transition-all ${
                     isAvailable ? "group-hover:shadow-md border-orange-400" : "opacity-75 grayscale"
                   }`}>

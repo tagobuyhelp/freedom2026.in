@@ -8,6 +8,8 @@ import JsonLd, { websiteSchema, organizationSchema } from "@/components/JsonLd";
 
 import Script from "next/script";
 
+import DisableRightClick from "@/components/DisableRightClick";
+
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
@@ -118,6 +120,7 @@ export default function RootLayout({
         <JsonLd data={[websiteSchema(), organizationSchema()]} />
       </head>
       <body className="min-h-full flex flex-col bg-white text-slate-900 antialiased selection:bg-orange-100 selection:text-orange-700">
+        <DisableRightClick />
         {adsenseClient && (
           <script
             async
