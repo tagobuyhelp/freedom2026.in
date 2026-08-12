@@ -34,22 +34,24 @@ export const metadata: Metadata = {
 };
 
 const TEMPLATE_DESIGNS = [
-  { name: "Classic India", desc: "Traditional tricolor patriotic design", file: "classic-india-style.png", alt: "Classic India 15 August 2026 Independence Day poster" },
-  { name: "Modern India", desc: "Bold minimal design for digital spaces", file: "modern-india-style.png", alt: "Modern India Independence Day poster design" },
-  { name: "Professional", desc: "Clean corporate and business style", file: "professional-style.png", alt: "Professional Independence Day 2026 poster design" },
-  { name: "Bengali", desc: "Independence Day in Bengali script", file: "bengali-style.png", alt: "Bengali 15 August 2026 poster design" },
-  { name: "Hindi", desc: "Patriotic design in Hindi script", file: "hindi-style.png", alt: "Hindi Independence Day 2026 poster" },
-  { name: "Student", desc: "Youth-focused energetic design", file: "student-style.png", alt: "Student 15 August 2026 poster making" },
-  { name: "India Map", desc: "Featuring India's proud silhouette", file: "india-map-style.png", alt: "India Map Independence Day poster 2026" },
-  { name: "Portrait", desc: "Photo-forward clean vertical design", file: "portrait-style.png", alt: "Portrait 15 August poster 2026 with photo" },
+  { name: "Classic India", desc: "A traditional tricolour-inspired Independence Day design, ideal for personal greetings, family celebrations, and patriotic social posts.", file: "classic-india-style.png", alt: "Classic India 15 August 2026 Independence Day poster" },
+  { name: "Modern India", desc: "A clean, contemporary patriotic design suited for Instagram, Facebook, and modern digital greetings where you want a sleek aesthetic.", file: "modern-india-style.png", alt: "Modern India Independence Day poster design" },
+  { name: "Professional", desc: "A polished and minimal creative suitable for offices, brands, and formal business communication.", file: "professional-style.png", alt: "Professional Independence Day 2026 poster design" },
+  { name: "Bengali", desc: "A Bengali-language patriotic design for users who want to celebrate Independence Day with a regional-language greeting.", file: "bengali-style.png", alt: "Bengali 15 August 2026 poster design" },
+  { name: "Hindi", desc: "A Hindi-language Independence Day design, perfect for sending personalized patriotic greetings in the national language.", file: "hindi-style.png", alt: "Hindi Independence Day 2026 poster" },
+  { name: "Student", desc: "A youthful, energetic design suitable for school and college celebrations, student profiles, and social sharing.", file: "student-style.png", alt: "Student 15 August 2026 poster making" },
+  { name: "India Map", desc: "A patriotic design featuring India's map silhouette as a central visual element for a strong geographic statement.", file: "india-map-style.png", alt: "India Map Independence Day poster 2026" },
+  { name: "Portrait", desc: "A photo-focused vertical design where your personal portrait remains the prominent visual element against a patriotic background.", file: "portrait-style.png", alt: "Portrait 15 August poster 2026 with photo" },
 ];
 
 const FAQS = [
   { q: "When is Independence Day 2026?", a: "India's Independence Day will be celebrated on 15 August 2026." },
   { q: "Where can I create a 15 August 2026 poster?", a: "You can use Freedom2026 to explore Independence Day 2026 poster designs and create a personalized poster with your photo." },
   { q: "Can I create a 15 August poster with my photo?", a: "Yes. Select a supported template, upload a clear photo and create a personalized Independence Day poster." },
+  { q: "What type of photo works best for a personalized poster?", a: "A clear, well-lit photo with your face clearly visible generally produces the best results. Portrait-oriented photos often fit perfectly in vertical layouts." },
   { q: "Can I share my Independence Day poster on WhatsApp?", a: "Yes. Your personalized poster can be downloaded and shared on WhatsApp and other social media platforms." },
-  { q: "Do I need Photoshop to create an Independence Day poster?", a: "No. Freedom2026 is designed to make poster creation simple without requiring professional graphic design software." },
+  { q: "What size works best for a WhatsApp Status poster?", a: "9:16 vertical, commonly 1080 × 1920 pixels, works well for WhatsApp Status and Instagram Stories." },
+  { q: "Do I need Photoshop to create an Independence Day poster?", a: "No. Freedom2026 is designed to make poster creation simple and instant without requiring professional graphic design software like Photoshop." },
   { q: "Can I create a Hindi or Bengali Independence Day poster?", a: "Yes. Freedom2026 is designed to support different languages and styles, including Hindi and Bengali Independence Day creatives." },
 ];
 
@@ -77,7 +79,7 @@ export default function IndependenceDayPosterPage() {
                 15 August Poster 2026 – Create Your Independence Day Poster 🇮🇳
               </h1>
               <p className="text-slate-600 text-sm sm:text-base leading-relaxed mb-8">
-                Celebrate India's Independence Day with a personalized 15 August 2026 poster featuring your own photo, name and patriotic style. Explore beautiful Independence Day 2026 poster designs and create a shareable poster for WhatsApp, Facebook, Instagram and other social platforms.
+                Celebrate India's Independence Day on 15 August 2026 with a personalized poster featuring your own photo and name. Choose from multiple patriotic design styles and instantly complete your poster creation for WhatsApp, Facebook, and Instagram sharing.
               </p>
               
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
@@ -100,10 +102,10 @@ export default function IndependenceDayPosterPage() {
             {/* Right Visuals (Poster Examples) */}
             <div className="relative h-[400px] sm:h-[500px] w-full flex items-center justify-center">
               <div className="absolute top-1/2 left-1/2 -translate-x-[60%] -translate-y-1/2 w-[180px] sm:w-[220px] -rotate-6 z-10 shadow-2xl rounded-xl overflow-hidden border-4 border-white">
-                <img src="/images/classic-india-style.png" alt="15 August 2026 poster classic" className="w-full h-auto" />
+                <img src="/images/classic-india-style.png" alt="15 August 2026 poster classic" className="w-full h-auto" width="600" height="800" fetchPriority="high" />
               </div>
               <div className="absolute top-1/2 left-1/2 -translate-x-1/3 -translate-y-[45%] w-[180px] sm:w-[220px] rotate-6 z-20 shadow-2xl rounded-xl overflow-hidden border-4 border-white">
-                <img src="/images/portrait-style.png" alt="15 august poster 2026 with photo" className="w-full h-auto" />
+                <img src="/images/portrait-style.png" alt="15 august poster 2026 with photo" className="w-full h-auto" width="600" height="800" fetchPriority="high" />
               </div>
             </div>
 
@@ -127,17 +129,18 @@ export default function IndependenceDayPosterPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
             {[
-              { num: "1", title: "Choose a poster style", icon: <ImageIcon className="w-5 h-5" /> },
-              { num: "2", title: "Upload your photo", icon: <Upload className="w-5 h-5" /> },
-              { num: "3", title: "Create your poster", icon: <Sparkles className="w-5 h-5" /> },
-              { num: "4", title: "Download or share", icon: <Share2 className="w-5 h-5" /> },
+              { num: "1", title: "Choose a poster style", icon: <ImageIcon className="w-5 h-5" />, desc: "Select from traditional, modern, student, professional, or photo-focused patriotic styles." },
+              { num: "2", title: "Upload your photo", icon: <Upload className="w-5 h-5" />, desc: "A clear, well-lit image with your face clearly visible generally produces the best results." },
+              { num: "3", title: "Create your poster", icon: <Sparkles className="w-5 h-5" />, desc: "Our system instantly generates your personalized creative with your photo and name." },
+              { num: "4", title: "Download or share", icon: <Share2 className="w-5 h-5" />, desc: "Your finished artwork is ready to be downloaded or shared instantly to WhatsApp, Facebook, or Instagram." },
             ].map((step) => (
               <div key={step.num} className="bg-slate-50 border border-slate-100 rounded-2xl p-5 text-center flex flex-col items-center">
                 <div className="w-12 h-12 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mb-4">
                   {step.icon}
                 </div>
                 <div className="text-xs font-bold text-slate-400 mb-1">Step {step.num}</div>
-                <h3 className="font-bold text-slate-900">{step.title}</h3>
+                <h3 className="font-bold text-slate-900 mb-2">{step.title}</h3>
+                <p className="text-xs text-slate-500 leading-relaxed">{step.desc}</p>
               </div>
             ))}
           </div>
@@ -160,7 +163,7 @@ export default function IndependenceDayPosterPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12">
             <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mb-4">
-              Independence Day 2026 Poster Designs
+              Explore Independence Day Poster Designs
             </h2>
             <p className="text-slate-600">
               Freedom2026 provides multiple patriotic poster styles. Find the perfect <Link href="/templates" className="text-orange-600 hover:underline">Independence Day poster designs</Link> for your personal or professional use.
@@ -171,7 +174,7 @@ export default function IndependenceDayPosterPage() {
             {TEMPLATE_DESIGNS.map((tmpl) => (
               <div key={tmpl.name} className="bg-white rounded-2xl p-3 border border-slate-200 shadow-sm flex flex-col">
                 <div className="aspect-[3/4] rounded-xl overflow-hidden bg-slate-100 mb-3 border border-slate-100">
-                  <img src={`/images/${tmpl.file}`} alt={tmpl.alt} className="w-full h-full object-cover" loading="lazy" />
+                  <img src={`/images/${tmpl.file}`} alt={tmpl.alt} className="w-full h-full object-cover" loading="lazy" width="300" height="400" />
                 </div>
                 <h3 className="font-bold text-slate-900 text-sm">{tmpl.name}</h3>
                 <p className="text-xs text-slate-500 mt-1 flex-1">{tmpl.desc}</p>
@@ -191,14 +194,51 @@ export default function IndependenceDayPosterPage() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════════════════
-          SECTION 4 — PERSONALIZED POSTER
+          NEW SECTION 3B — POSTER IDEAS
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="py-14 sm:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mb-4">
+              15 August 2026 Poster Ideas
+            </h2>
+            <p className="text-slate-600">
+              Need inspiration? Here are some popular Independence Day design ideas that you can instantly customize using our templates.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              { title: "Classic Tricolour Poster", desc: "Use a balanced saffron, white, and green background with a clean profile picture.", link: "/create?style=classic-india" },
+              { title: "Personalized Photo Poster", desc: "Focus heavily on your portrait, placing subtle patriotic elements around the borders.", link: "/create?style=portrait" },
+              { title: "India Map Poster", desc: "Integrate the silhouette of India as the central framing device for your personalized greeting.", link: "/create?style=india-map" },
+              { title: "Student Independence Day Poster", desc: "Add energetic, youth-focused text and vibrant colors perfect for school or college groups.", link: "/create?style=student" },
+              { title: "Professional/Business Poster", desc: "Keep it minimal with ample whitespace, letting the national colors speak for your brand's patriotism.", link: "/create?style=professional" },
+              { title: "Social Media Poster", desc: "Use a clean, high-contrast aesthetic that pops instantly when viewed on a mobile feed.", link: "/create?style=modern-india" },
+              { title: "Bengali Independence Day Poster", desc: "Connect locally by combining traditional patriotic symbols with Bengali typography.", link: "/create?style=bengali" },
+              { title: "Hindi Independence Day Poster", desc: "Share national pride natively by using elegant Hindi script for your 15 August greetings.", link: "/create?style=hindi" },
+            ].map((idea, i) => (
+              <div key={i} className="bg-slate-50 border border-slate-100 rounded-2xl p-6 hover:shadow-md transition-shadow">
+                <h3 className="font-bold text-slate-900 mb-2">{idea.title}</h3>
+                <p className="text-sm text-slate-600 mb-4">{idea.desc}</p>
+                <Link href={idea.link} className="text-sm font-bold text-orange-600 flex items-center gap-1 group">
+                  Use Design <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          SECTION 4 — PERSONALIZED POSTER
+      ══════════════════════════════════════════════════════════════════════ */}
+      <section className="py-14 sm:py-20 bg-slate-50 border-t border-slate-100">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
             <div>
               <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mb-5">
-                Personalized Independence Day Posters
+                Create a Poster With Your Photo
               </h2>
               <div className="space-y-4 text-slate-600 text-sm leading-relaxed">
                 <p>
@@ -241,8 +281,42 @@ export default function IndependenceDayPosterPage() {
             
             <div className="bg-orange-50 rounded-3xl p-6 border border-orange-100 flex items-center justify-center h-full min-h-[300px]">
                <div className="relative w-full max-w-[280px] aspect-[3/4] shadow-xl rounded-2xl overflow-hidden border-[6px] border-white rotate-2 hover:rotate-0 transition-transform duration-300">
-                  <img src="/images/modern-india-style.png" alt="independence day poster 2026 personalized" className="w-full h-full object-cover" loading="lazy" />
+                  <img src="/images/modern-india-style.png" alt="independence day poster 2026 personalized" className="w-full h-full object-cover" loading="lazy" width="600" height="800" />
                </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          NEW SECTION 4B — WHAT MAKES A GREAT POSTER
+      ══════════════════════════════════════════════════════════════════════ */}
+      <section className="py-14 sm:py-20 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mb-4">
+              What Makes a Great Independence Day Poster?
+            </h2>
+            <p className="text-slate-600">
+              Follow these simple design principles to ensure your 15 August 2026 poster looks professional and patriotic.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100">
+              <h3 className="font-bold text-slate-900 mb-2">Patriotic Visuals & Balance</h3>
+              <p className="text-sm text-slate-600">Maintain a balanced use of saffron, white, and green. Let the tricolour serve as a proud background without overwhelming the subject.</p>
+            </div>
+            <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100">
+              <h3 className="font-bold text-slate-900 mb-2">Clear Message</h3>
+              <p className="text-sm text-slate-600">Ensure your Independence Day wishes are legible. Use strong contrast and readable typography against the background.</p>
+            </div>
+            <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100">
+              <h3 className="font-bold text-slate-900 mb-2">Focal Element</h3>
+              <p className="text-sm text-slate-600">Whether it's your photo or the national flag, choose one clear focal element so the design remains clean and impactful.</p>
+            </div>
+            <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100">
+              <h3 className="font-bold text-slate-900 mb-2">Correct Layout</h3>
+              <p className="text-sm text-slate-600">Choose the appropriate aspect ratio for your intended platform (e.g., vertical 9:16 layouts for WhatsApp Status).</p>
             </div>
           </div>
         </div>
@@ -278,13 +352,13 @@ export default function IndependenceDayPosterPage() {
                 <Sparkles className="w-5 h-5 text-orange-400" />
                 Best photo for best results
               </h3>
-              <ul className="space-y-3">
+              <ul className="space-y-3 mb-4">
                 {[
-                  "Clear photo",
-                  "Good lighting",
+                  "Clear, high-resolution photo",
+                  "Good natural lighting",
                   "Face clearly visible",
-                  "Preferably upper-body or half-body photo",
-                  "Good image resolution"
+                  "Suitable crop (upper-body preferred)",
+                  "Avoid heavily blurred or extremely dark photos"
                 ].map((item, i) => (
                   <li key={i} className="flex items-center gap-3 text-sm text-slate-300">
                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
@@ -292,6 +366,9 @@ export default function IndependenceDayPosterPage() {
                   </li>
                 ))}
               </ul>
+              <div className="bg-slate-700/50 p-3 rounded-lg text-xs text-slate-300 border border-slate-600/50">
+                <strong className="text-white">Pro Tip:</strong> Portrait-oriented (vertical) photos often work better for mobile-friendly vertical poster layouts.
+              </div>
             </div>
 
           </div>
@@ -308,13 +385,13 @@ export default function IndependenceDayPosterPage() {
             {/* Social Media */}
             <div className="bg-blue-50/50 border border-blue-100 rounded-3xl p-8">
               <h2 className="text-xl sm:text-2xl font-black text-slate-900 mb-4">
-                Social Media Independence Day Posters
+                Share Your Independence Day Creation
               </h2>
               <p className="text-slate-600 text-sm mb-6 leading-relaxed">
-                Create the perfect patriotic creative for your social feeds. Our posters are perfectly sized and formatted for:
+                Create the perfect patriotic creative for your social feeds. Our vertical and square layouts are perfectly sized and formatted for:
               </p>
               <ul className="grid grid-cols-2 gap-3 mb-8">
-                {["WhatsApp Status", "WhatsApp sharing", "Facebook", "Instagram", "Instagram Stories", "Social media posts", "Personal greetings"].map(item => (
+                {["WhatsApp Status", "Instagram Stories", "Instagram posts", "Facebook posts", "Personal greetings"].map(item => (
                   <li key={item} className="flex items-center gap-2 text-sm text-slate-700 font-medium">
                     <ArrowRight className="w-3.5 h-3.5 text-blue-500" /> {item}
                   </li>
@@ -331,13 +408,13 @@ export default function IndependenceDayPosterPage() {
             {/* Business */}
             <div className="bg-emerald-50/50 border border-emerald-100 rounded-3xl p-8">
               <h2 className="text-xl sm:text-2xl font-black text-slate-900 mb-4">
-                Independence Day Posters for Businesses
+                Independence Day Designs for Businesses
               </h2>
               <p className="text-slate-600 text-sm mb-6 leading-relaxed">
-                Freedom2026 is being developed to support personalized business creatives with your business name, logo and branding for:
+                Freedom2026 is being developed to support professional creatives that integrate your business name, logo, and branding for:
               </p>
               <ul className="grid grid-cols-2 gap-3 mb-8">
-                {["Independence Day greetings", "Customer appreciation", "Social media posts", "WhatsApp marketing", "Promotional campaigns", "Brand awareness"].map(item => (
+                {["Customer greetings", "Brand awareness", "Social media creatives", "WhatsApp communication", "Independence Day promotions", "Corporate messaging"].map(item => (
                   <li key={item} className="flex items-center gap-2 text-sm text-slate-700 font-medium">
                     <ArrowRight className="w-3.5 h-3.5 text-emerald-600" /> {item}
                   </li>
@@ -377,6 +454,23 @@ export default function IndependenceDayPosterPage() {
           <div className="mt-8 text-sm text-slate-500">
              You can also explore our <Link href="/independence-day-images" className="text-orange-600 hover:underline">15 August images</Link> or <Link href="/independence-day-video" className="text-orange-600 hover:underline">video creator</Link>.
           </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          NEW SECTION 8B — BACKGROUND / IMAGE BRIDGE
+      ══════════════════════════════════════════════════════════════════════ */}
+      <section className="py-14 sm:py-20 bg-orange-50 border-b border-slate-100">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mb-4">
+            Looking for Independence Day Images or Backgrounds?
+          </h2>
+          <p className="text-slate-600 text-sm sm:text-base leading-relaxed mb-6">
+            If you prefer to design your own creative from scratch or need high-quality visuals for a school project, you can browse our curated collection of HD resources instead of using the personalized tool.
+          </p>
+          <Link href="/independence-day-images" className="inline-flex items-center gap-2 bg-white border border-slate-300 hover:border-slate-400 text-slate-800 font-bold px-6 py-3 rounded-xl transition-all shadow-sm">
+            Explore Independence Day images and backgrounds
+          </Link>
         </div>
       </section>
 
