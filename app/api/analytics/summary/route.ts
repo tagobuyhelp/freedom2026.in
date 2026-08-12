@@ -74,7 +74,7 @@ export async function GET(request: Request) {
     const paidConversionRate = unlockScreenViews > 0 ? (paidUnlocks / unlockScreenViews) * 100 : 0;
     const downloadConversionRate = generationsSuccess > 0 ? (downloads / generationsSuccess) * 100 : 0;
 
-    const revenue = paidUnlocks * 10; // ₹10 per paid unlock
+    const revenue = paidUnlocks * 49; // ₹49 per paid unlock
     const revenuePerVisitor = visitors > 0 ? revenue / visitors : 0;
     const revenuePerGeneratedPoster = generationsSuccess > 0 ? revenue / generationsSuccess : 0;
 

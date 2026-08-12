@@ -82,7 +82,7 @@ export default function PreGenerationModal({ isOpen, onClose, onConfirm, isGener
             <div className="text-left space-y-1 sm:space-y-1.5 flex-1 relative z-10">
 
               <h4 className="text-[17px] sm:text-2xl font-black text-[#0f172a] flex items-center justify-start gap-1.5 sm:gap-2 leading-none">
-                <span className="text-orange-500">₹10</span>
+                <span className="text-orange-500">₹49</span>
                 <span className="text-[#94a3b8] text-sm sm:text-xl font-medium">—</span>
                 Instant Download
               </h4>
@@ -140,8 +140,8 @@ export default function PreGenerationModal({ isOpen, onClose, onConfirm, isGener
               <div className="flex items-center justify-center gap-1.5 sm:gap-2">
                 {isGenerating ? "Processing..." : (
                   <>
-                    <span className="hidden sm:inline">Pay ₹10 & Generate</span>
-                    <span className="sm:hidden">Pay ₹10 & Generate</span>
+                    <span className="hidden sm:inline">Pay ₹49 & Generate</span>
+                    <span className="sm:hidden">Pay ₹49 & Generate</span>
                   </>
                 )}
                 {!isGenerating && <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />}

@@ -41,7 +41,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Poster is already unlocked' }, { status: 400 });
     }
 
-    const priceInr = parseInt(process.env.POSTER_DOWNLOAD_PRICE_INR || '10', 10);
+    const priceInr = parseInt(process.env.POSTER_DOWNLOAD_PRICE_INR || '49', 10);
     const amountInPaise = priceInr * 100;
 
     const options = {
