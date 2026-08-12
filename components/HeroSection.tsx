@@ -44,7 +44,8 @@ export default function HeroSection({ onScrollToCreator, onScrollToVideo }: Hero
     <section id="home" className="relative pt-4 pb-6 sm:pt-12 sm:pb-20 overflow-hidden bg-white">
       
       {/* Background Tricolour Brush Splash Texture */}
-      <div className="absolute top-0 right-0 w-[350px] sm:w-[600px] h-[350px] sm:h-[600px] bg-gradient-to-bl from-orange-200/35 via-amber-100/15 to-emerald-200/35 rounded-full blur-3xl -z-10 pointer-events-none" />
+      {/* Tricolour blob — translate-x-1/4 keeps it partially off-canvas on narrow viewports without causing overflow */}
+      <div aria-hidden="true" className="absolute top-0 right-0 w-44 h-44 sm:w-[360px] sm:h-[360px] lg:w-[600px] lg:h-[600px] bg-gradient-to-bl from-orange-200/35 via-amber-100/15 to-emerald-200/35 rounded-full blur-3xl -z-10 pointer-events-none translate-x-1/4 -translate-y-1/4" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-12 items-center">
@@ -133,7 +134,7 @@ export default function HeroSection({ onScrollToCreator, onScrollToVideo }: Hero
             <div className="relative w-full max-w-xs sm:max-w-xl flex items-center justify-center py-2 sm:py-6 min-h-[270px] sm:min-h-[420px]">
               
               {/* Left Side Card (Proud To Be Indian) */}
-              <div className="absolute left-1 sm:left-4 top-4 sm:top-10 w-28 sm:w-48 bg-white p-1 rounded-2xl shadow-xl border border-slate-200/90 animate-float-left hover:z-30 hover:scale-105 transition-all duration-300">
+              <div className="absolute left-1 sm:left-4 top-4 sm:top-10 w-28 sm:w-48 bg-white p-1 rounded-2xl shadow-xl border border-slate-200/90 hero-float-left hover:z-30 hover:scale-105 transition-all duration-300">
                 <div className="aspect-[4/5] rounded-xl overflow-hidden relative shadow-inner">
                   <img
                     src="/images/modern-india-style.png"
@@ -141,12 +142,14 @@ export default function HeroSection({ onScrollToCreator, onScrollToVideo }: Hero
                     className="w-full h-full object-cover"
                     loading="eager"
                     fetchPriority="high"
+                    width={480}
+                    height={600}
                   />
                 </div>
               </div>
 
               {/* Right Side Card (Waving Flag Sunset) */}
-              <div className="absolute right-1 sm:right-4 top-6 sm:top-14 w-28 sm:w-48 bg-white p-1 rounded-2xl shadow-xl border border-slate-200/90 animate-float-right hover:z-30 hover:scale-105 transition-all duration-300">
+              <div className="absolute right-1 sm:right-4 top-6 sm:top-14 w-28 sm:w-48 bg-white p-1 rounded-2xl shadow-xl border border-slate-200/90 hero-float-right hover:z-30 hover:scale-105 transition-all duration-300">
                 <div className="aspect-[4/5] rounded-xl overflow-hidden relative shadow-inner">
                   <img
                     src="/images/india-map-style.png"
@@ -154,12 +157,14 @@ export default function HeroSection({ onScrollToCreator, onScrollToVideo }: Hero
                     className="w-full h-full object-cover"
                     loading="eager"
                     fetchPriority="high"
+                    width={480}
+                    height={600}
                   />
                 </div>
               </div>
 
               {/* Center Prominent Main Poster Card (TARIK AZIZ) */}
-              <div className="relative w-48 sm:w-80 bg-white p-1.5 sm:p-2 rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 z-20 animate-float-center hover:scale-[1.03] transition-transform duration-300">
+              <div className="relative w-48 sm:w-80 bg-white p-1.5 sm:p-2 rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 z-20 hero-float-center hover:scale-[1.03] transition-transform duration-300">
                 <div className="aspect-[4/5.2] rounded-xl sm:rounded-2xl overflow-hidden relative shadow-inner">
                   <img
                     src="/images/classic-india-style.png"
@@ -167,6 +172,8 @@ export default function HeroSection({ onScrollToCreator, onScrollToVideo }: Hero
                     className="w-full h-full object-cover"
                     loading="eager"
                     fetchPriority="high"
+                    width={480}
+                    height={624}
                   />
                 </div>
               </div>

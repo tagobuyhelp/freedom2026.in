@@ -153,15 +153,18 @@
   animation: birdFloat3 3.8s ease-in-out infinite 1s;
 }
 
-.animate-float-center {
+/* Hero poster card floating animations — renamed from animate-float-* so
+   the prefers-reduced-motion block below can target them independently
+   without affecting other animate-* utilities in the project.           */
+.hero-float-center {
   animation: floatPosterCenter 5s ease-in-out infinite;
 }
 
-.animate-float-left {
+.hero-float-left {
   animation: floatPosterLeft 5.5s ease-in-out infinite;
 }
 
-.animate-float-right {
+.hero-float-right {
   animation: floatPosterRight 6s ease-in-out infinite 0.5s;
 }
 
@@ -174,4 +177,26 @@
 }
 .saffron-gradient:hover {
   background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+}
+
+/* ── Reduced-motion accessibility ─────────────────────────────────────────
+   When the user has set "Prefer reduced motion" in their OS / browser,
+   all continuous floating and bird animations are disabled.
+   Hover scale transitions (non-looping) are intentionally preserved.    */
+@media (prefers-reduced-motion: reduce) {
+  .hero-float-center,
+  .hero-float-left,
+  .hero-float-right {
+    animation: none;
+  }
+
+  .animate-bird-1,
+  .animate-bird-2,
+  .animate-bird-3 {
+    animation: none;
+  }
+
+  .animate-spin-slow {
+    animation: none;
+  }
 }

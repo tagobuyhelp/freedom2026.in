@@ -187,7 +187,7 @@ export default function HomePage() {
             </div>
 
             {/* Right: Pricing Tiers */}
-            <div className="lg:col-span-4 grid grid-cols-3 gap-2.5">
+            <div className="lg:col-span-4 grid grid-cols-1 sm:grid-cols-3 gap-2.5">
               {[
                 { label: "Starter", price: "₹199", features: "3 Creatives", popular: false, color: "bg-[#f97316] hover:bg-[#ea580c]" },
                 { label: "Business", price: "₹499", features: "5 Creatives\n+ 1 Video", popular: true, color: "bg-[#137333] hover:bg-[#0f5c28]" },
@@ -254,7 +254,7 @@ export default function HomePage() {
                   href="/independence-day-poster"
                   className="inline-flex items-center gap-1 text-orange-600 hover:text-orange-700 font-bold text-xs"
                 >
-                  Explore Poster Maker <ArrowRight className="w-3.5 h-3.5" />
+                  Explore Independence Day Poster Maker <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
               <div className="mt-8 pt-4 border-t border-orange-100 flex justify-end">
@@ -351,7 +351,7 @@ export default function HomePage() {
               { title: "WhatsApp Status",desc: "Short status messages for everyone",       href: "/independence-day-status",   icon: <Smartphone className="w-4 h-4" />,   bg: "bg-emerald-50",border: "border-emerald-100/60",text: "text-emerald-600" },
               { title: "Video Ideas",    desc: "15-sec video ideas for social media",      href: "/independence-day-video",    icon: <Play className="w-4 h-4" />,         bg: "bg-purple-50", border: "border-purple-100/60", text: "text-purple-600" },
               { title: "Images",         desc: "Beautiful images & posters",               href: "/independence-day-images",   icon: <ImageIcon className="w-4 h-4" />,    bg: "bg-amber-50",  border: "border-amber-100/60",  text: "text-amber-600" },
-              { title: "Captions",       desc: "Instagram & Facebook captions",            href: "/independence-day-quotes",   icon: <Send className="w-4 h-4" />,         bg: "bg-teal-50",   border: "border-teal-100/60",   text: "text-teal-600" },
+              { title: "Quotes & Captions", desc: "Inspiring quotes and shareable captions",            href: "/independence-day-quotes",   icon: <Send className="w-4 h-4" />,         bg: "bg-teal-50",   border: "border-teal-100/60",   text: "text-teal-600" },
             ].map((card) => (
               <Link
                 key={card.title}
