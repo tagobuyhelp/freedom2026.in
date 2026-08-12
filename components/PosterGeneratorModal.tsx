@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { X, Download, Share2, Sparkles, CheckCircle2, AlertCircle } from "lucide-react";
+import { X, Download, Sparkles, CheckCircle2, AlertCircle } from "lucide-react";
 import IndianFlag from "./IndianFlag";
 import Script from "next/script";
 
@@ -112,7 +112,6 @@ function PosterLoadingState() {
 export default function PosterGeneratorModal({ isOpen, onClose, data }: PosterGeneratorModalProps) {
   const [posterStatus, setPosterStatus] = useState<PosterStatus | null>(null);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
-  const [isSharing, setIsSharing] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   // Fetch current status from server
@@ -148,103 +147,6 @@ export default function PosterGeneratorModal({ isOpen, onClose, data }: PosterGe
   }, [isOpen, data.posterId, data.isLoading, isUnlocked, data.template]);
 
   if (!isOpen) return null;
-
-  const handleShare = async () => {
-    if (!data.posterId || !data.shareActionToken || isSharing) return;
-    setErrorMsg(null);
-    setIsSharing(true);
-
-    try {
-      const { trackClientEvent, getSessionId } = await import("@/lib/analytics");
-
-      // 1. Track share_started immediately when user clicks Share
-      trackClientEvent("share_started", { posterId: data.posterId, templateId: data.template });
-
-      const shareData = {
-        title: "My Freedom Story — Independence Day 2026",
-        text: "I created my Freedom Story for Independence Day 2026!\n\nCreate your own Freedom Story and celebrate 15 August with your personalized poster. ❤️🇮🇳\n\nhttps://freedom2026.in",
-        url: "https://freedom2026.in",
-      };
-
-      // 2. Check if Web Share API is available
-      if (!navigator.share) {
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          await navigator.clipboard.writeText(shareData.url);
-          alert("Web Share is not supported on this browser. Link copied to clipboard!");
-        } else {
-          alert("Web Share is not supported on this browser.");
-        }
-        // DO NOT call /api/poster/share, DO NOT increment share count
-        return;
-      }
-
-      // 3. Record start time before launching native share sheet
-      const shareStartTime = Date.now();
-
-      // Trigger native share sheet and WAIT for user to complete or cancel
-      await navigator.share(shareData);
-
-      const elapsedTime = Date.now() - shareStartTime;
-
-      // Guard: If navigator.share() resolves in under 500ms without actual user interaction,
-      // it means the OS wrapper or browser auto-resolved immediately without native share completion.
-      if (elapsedTime < 500) {
-        console.log(`Share dismissed or auto-resolved too quickly (${elapsedTime}ms). Count not incremented.`);
-        return;
-      }
-
-      // ONLY REACHED IF navigator.share() RESOLVED AFTER REAL USER ENGAGEMENT (>500ms)
-      // (If user pressed Cancel, navigator.share() rejected and control jumped to catch block)
-
-      // 4. Record share action on server
-      const res = await fetch("/api/poster/share", {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "x-session-id": getSessionId()
-        },
-        body: JSON.stringify({
-          posterId: data.posterId,
-          shareActionToken: data.shareActionToken,
-        }),
-      });
-
-      const json = await res.json();
-      if (!res.ok) {
-        if (res.status === 429) {
-          setErrorMsg("Please wait a moment before sharing again.");
-        } else {
-          setErrorMsg(json.error || "Could not register share action on server.");
-        }
-        return;
-      }
-
-      if (json.success) {
-        // 5. ONLY AFTER server accepted the share action, track share_completed
-        trackClientEvent("share_completed", { 
-          posterId: data.posterId, 
-          templateId: data.template,
-          shareCount: json.shareCount
-        });
-
-        if (json.unlocked) {
-          trackClientEvent("share_unlock_completed", {
-            posterId: data.posterId,
-            templateId: data.template
-          });
-        }
-
-        // 6. Refresh authoritative status from server
-        await fetchStatus();
-      }
-    } catch (error: any) {
-      // User cancelled native share sheet or share failed
-      console.log("Share sheet cancelled or rejected by user. Count not incremented.", error?.name || error);
-      // DO NOT call /api/poster/share, DO NOT increment share count, DO NOT track share_completed
-    } finally {
-      setIsSharing(false);
-    }
-  };
 
   const handlePayment = async () => {
     if (!data.posterId) return;
@@ -311,7 +213,7 @@ export default function PosterGeneratorModal({ isOpen, onClose, data }: PosterGe
         modal: {
           ondismiss: function () {
             setIsProcessingPayment(false);
-            setErrorMsg("Payment cancelled. You can try again or unlock your poster by sharing.");
+            setErrorMsg("Payment cancelled. You can try again to unlock your poster.");
           },
         },
       };
@@ -357,15 +259,39 @@ export default function PosterGeneratorModal({ isOpen, onClose, data }: PosterGe
           </div>
 
           {/* Rendered Poster Preview */}
-          <div className="relative bg-slate-100 rounded-2xl overflow-hidden shadow-inner border border-slate-200 flex items-center justify-center mb-6 min-h-[400px]">
+          <div className="relative bg-slate-100 rounded-2xl overflow-hidden shadow-inner border border-slate-200 flex items-center justify-center mb-6 min-h-[400px] select-none">
             {data.isLoading ? (
               <PosterLoadingState />
             ) : data.posterUrl ? (
-              <img
-                src={data.posterUrl}
-                alt="Generated Poster Preview"
-                className="w-full h-auto object-contain"
-              />
+              <>
+                <img
+                  src={data.posterUrl}
+                  alt="Generated Poster Preview"
+                  className={`w-full h-auto object-contain ${!isUnlocked ? 'pointer-events-none' : ''}`}
+                  onContextMenu={(e) => { if (!isUnlocked) e.preventDefault(); }}
+                />
+                
+                {/* Client-Side Watermark Overlay */}
+                {!isUnlocked && (
+                  <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-center overflow-hidden z-10">
+                    <div className="absolute inset-0 bg-white/10" />
+                    
+                    {/* Repeating Diagonal Watermark Pattern */}
+                    <div className="rotate-[-25deg] flex flex-col gap-10 sm:gap-14 opacity-[0.35] w-[200%] scale-150">
+                      {[...Array(6)].map((_, i) => (
+                        <div key={i} className="flex gap-10 whitespace-nowrap text-white font-black text-3xl sm:text-5xl tracking-widest uppercase drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
+                           Freedom2026.in Preview • Freedom2026.in Preview • Freedom2026.in Preview • Freedom2026.in Preview
+                        </div>
+                      ))}
+                    </div>
+                    
+                    {/* Center Badge */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/70 text-white font-extrabold text-sm sm:text-base px-5 py-2.5 rounded-full backdrop-blur-md border border-white/20 shadow-2xl whitespace-nowrap tracking-wide">
+                       PREVIEW ONLY
+                    </div>
+                  </div>
+                )}
+              </>
             ) : (
               <div className="p-4 text-center text-red-500 text-sm font-medium">
                 Something went wrong while creating your poster. Please try again.
@@ -407,41 +333,11 @@ export default function PosterGeneratorModal({ isOpen, onClose, data }: PosterGe
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {/* Share Option */}
-                  <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-center">
-                    <p className="text-sm font-bold text-slate-800 mb-1">Share with {posterStatus?.shareThreshold || 10} friends to unlock your free download.</p>
-                    <div className="flex items-center justify-center gap-2 mb-3">
-                      <div className="h-2 w-32 bg-slate-200 rounded-full overflow-hidden">
-                        <div 
-                          className="h-full bg-blue-500 transition-all duration-500" 
-                          style={{ width: `${Math.min(100, ((posterStatus?.shareCount || 0) / (posterStatus?.shareThreshold || 10)) * 100)}%` }}
-                        />
-                      </div>
-                      <span className="text-xs font-bold text-slate-500">
-                        {posterStatus?.shareCount || 0} / {posterStatus?.shareThreshold || 10} Shares
-                      </span>
-                    </div>
-                    <button
-                      onClick={handleShare}
-                      disabled={isSharing || !posterStatus}
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-sm transition-transform hover:scale-[1.01] disabled:opacity-70"
-                    >
-                      <Share2 className="w-4 h-4" />
-                      <span>{isSharing ? "Opening Share..." : "🇮🇳 Share My Freedom Story"}</span>
-                    </button>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <div className="h-px bg-slate-200 flex-1" />
-                    <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">OR</span>
-                    <div className="h-px bg-slate-200 flex-1" />
-                  </div>
-
                   {/* Payment Option */}
                   <button
                     onClick={handlePayment}
                     disabled={isProcessingPayment || !posterStatus}
-                    className="w-full bg-slate-800 hover:bg-slate-900 text-white py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-md transition-transform hover:scale-[1.01] disabled:opacity-70"
+                    className="w-full bg-[#f97316] hover:bg-[#ea580c] text-white py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-orange-500/25 transition-transform hover:scale-[1.01] disabled:opacity-70"
                   >
                     {isProcessingPayment ? (
                       <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
