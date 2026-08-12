@@ -33,7 +33,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Poster session expired' }, { status: 400 });
     }
 
-    if (session.status === 'unlocked' || session.paymentUnlocked || session.shareUnlocked) {
+    if (session.status !== 'pending_payment') {
+      return NextResponse.json({ error: 'Invalid session state for payment' }, { status: 400 });
+    }
+
+    if (session.paymentUnlocked || session.shareUnlocked) {
       return NextResponse.json({ error: 'Poster is already unlocked' }, { status: 400 });
     }
 

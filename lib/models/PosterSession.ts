@@ -5,7 +5,7 @@ export interface IPosterSession extends Document {
   templateId: string;
   name: string;
   city: string;
-  status: 'generated' | 'unlocked' | 'expired';
+  status: 'pending_payment' | 'generated' | 'unlocked' | 'expired';
   unlockMethod: 'share' | 'payment' | null;
   shareCount: number;
   shareThreshold: number;
@@ -29,7 +29,7 @@ const PosterSessionSchema = new Schema<IPosterSession>(
     templateId: { type: String, required: true },
     name: { type: String, required: true },
     city: { type: String, required: true },
-    status: { type: String, enum: ['generated', 'unlocked', 'expired'], default: 'generated', index: true },
+    status: { type: String, enum: ['pending_payment', 'generated', 'unlocked', 'expired'], default: 'generated', index: true },
     unlockMethod: { type: String, enum: ['share', 'payment', null], default: null },
     shareCount: { type: Number, default: 0 },
     shareThreshold: { type: Number, required: true },

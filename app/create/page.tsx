@@ -4,6 +4,7 @@ import React, { useState, useRef } from "react";
 import { Sparkles, Camera, Check, AlertCircle, ChevronRight } from "lucide-react";
 import IndianFlag from "@/components/IndianFlag";
 import PosterGeneratorModal from "@/components/PosterGeneratorModal";
+import Script from "next/script";
 
 const TEMPLATES_PREVIEW = [
   { id: "classic-india",  title: "Classic India",   image: "/images/classic-india-style.png",  gender: "Male",   isAvailable: true },
@@ -53,41 +54,117 @@ export default function CreatePage() {
     } catch (e) { console.error(e); }
   };
 
-  const confirmGeneration = async () => {
+  const startPaymentFlow = async () => {
     if (isGenerating) return;
-    setShowCommitment(false);
-    setIsGenerating(true); setError(null);
-    setPosterData({ name: name.trim(), city: city.trim(), posterUrl: null, posterId: null, shareActionToken: null, template: selectedTemplate, isLoading: true });
-    setModalOpen(true);
+    setIsGenerating(true); 
+    setError(null);
     
     try {
       const { trackClientEvent, getSessionId } = await import("@/lib/analytics");
       trackClientEvent("pre_generation_confirmed", { templateId: selectedTemplate });
+
+      // 1. Initialize PosterSession (no photo uploaded yet)
+      const initRes = await fetch("/api/poster/init", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name.trim(), city: city.trim(), templateId: selectedTemplate }),
+      });
+      const initData = await initRes.json();
+      if (!initRes.ok || !initData.success) throw new Error(initData.error || "Failed to initialize session.");
+      const posterId = initData.posterId;
+
+      // 2. Create Razorpay Order bound to this posterId
+      const orderRes = await fetch("/api/payment/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-session-id": getSessionId() },
+        body: JSON.stringify({ posterId }),
+      });
+      const orderData = await orderRes.json();
+      if (!orderRes.ok || !orderData.success) throw new Error(orderData.error || "Failed to create order");
+
+      // Hide the PreGenerationModal while Razorpay is open
+      setShowCommitment(false);
+      setIsGenerating(false);
+
+      // 3. Open Razorpay Checkout
+      const options = {
+        key: orderData.keyId,
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: "Freedom2026",
+        description: "Independence Day Poster Generation",
+        order_id: orderData.orderId,
+        handler: async function (response: any) {
+          // Razorpay Success Callback
+          await executeGeneration(posterId, response);
+        },
+        prefill: {
+          name: name.trim(),
+        },
+        theme: { color: "#f97316" },
+        modal: {
+          ondismiss: function () {
+            setError("Payment cancelled. You can try again.");
+          },
+        },
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.on("payment.failed", function (response: any) {
+        setError("Payment failed. Please try again.");
+      });
+      rzp.open();
+
+    } catch (err: any) { 
+      setError(err.message || "Something went wrong."); 
+      setIsGenerating(false);
+    }
+  };
+
+  const executeGeneration = async (posterId: string, paymentDetails: any) => {
+    setIsGenerating(true);
+    setPosterData({ name: name.trim(), city: city.trim(), posterUrl: null, posterId, shareActionToken: null, template: selectedTemplate, isLoading: true });
+    setModalOpen(true);
+    
+    try {
+      const { trackClientEvent, getSessionId } = await import("@/lib/analytics");
       trackClientEvent("poster_generation_started", { templateId: selectedTemplate });
       
       const formData = new FormData();
-      formData.append("name", name.trim()); formData.append("city", city.trim());
-      formData.append("templateId", selectedTemplate); formData.append("photo", photo!);
+      formData.append("posterId", posterId);
+      formData.append("razorpay_payment_id", paymentDetails.razorpay_payment_id);
+      formData.append("razorpay_order_id", paymentDetails.razorpay_order_id);
+      formData.append("razorpay_signature", paymentDetails.razorpay_signature);
+      formData.append("name", name.trim()); 
+      formData.append("city", city.trim());
+      formData.append("templateId", selectedTemplate); 
+      formData.append("photo", photo!);
       
       const res = await fetch("/api/poster/generate", { method: "POST", headers: { "x-session-id": getSessionId() }, body: formData });
       let data: any = {};
       try { data = await res.json(); } catch (e) { console.error(e); }
-      if (!res.ok || !data.success) throw new Error(data.error || data.details || "Something went wrong.");
-      setPosterData((prev) => ({ ...prev, posterUrl: data.posterUrl, posterId: data.posterId, shareActionToken: data.shareActionToken, isLoading: false }));
-    } catch (err: any) { setError(err.message || "Something went wrong."); setModalOpen(false); }
-    finally { setIsGenerating(false); }
+      if (!res.ok || !data.success) throw new Error(data.error || data.details || "Generation failed after payment.");
+      setPosterData((prev) => ({ ...prev, posterUrl: data.posterUrl, shareActionToken: data.shareActionToken, isLoading: false }));
+    } catch (err: any) { 
+      setError(err.message || "Something went wrong during generation. Your payment was captured, please contact support or retry."); 
+      setModalOpen(false); 
+    } finally { 
+      setIsGenerating(false); 
+    }
   };
 
   const isReady = !!name.trim() && !!city.trim() && !!photo;
   const selectedTmpl = TEMPLATES_PREVIEW.find(t => t.id === selectedTemplate);
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-28 sm:pb-0">
+    <>
+      <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
+      <div className="min-h-screen bg-slate-50 pb-28 sm:pb-0">
       {/* Header */}
       <div className="bg-white border-b border-slate-200 py-4 sm:py-10">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="inline-flex items-center gap-2 bg-orange-50 border border-orange-200 text-orange-700 text-xs font-bold px-3 py-1 rounded-full mb-2 sm:mb-3">
-            <IndianFlag className="w-4 h-3" /><span>FREE POSTER CREATOR</span>
+            <IndianFlag className="w-4 h-3" /><span>POSTER CREATOR</span>
           </div>
           <h1 className="text-xl sm:text-3xl lg:text-4xl font-black text-slate-900 mb-1 sm:mb-2 leading-tight">
             Create Your Independence Day 2026 Poster
@@ -287,8 +364,9 @@ export default function CreatePage() {
         </button>
       </div>
 
-      <PreGenerationModal isOpen={showCommitment} onClose={() => setShowCommitment(false)} onConfirm={confirmGeneration} isGenerating={isGenerating} />
+      <PreGenerationModal isOpen={showCommitment} onClose={() => setShowCommitment(false)} onConfirm={startPaymentFlow} isGenerating={isGenerating} />
       <PosterGeneratorModal isOpen={modalOpen} onClose={() => setModalOpen(false)} data={posterData} />
     </div>
+    </>
   );
 }

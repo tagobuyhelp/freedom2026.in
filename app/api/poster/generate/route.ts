@@ -16,21 +16,60 @@ export const dynamic = 'force-dynamic';
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
+    const posterId = formData.get('posterId') as string;
+    const razorpay_payment_id = formData.get('razorpay_payment_id') as string;
+    const razorpay_order_id = formData.get('razorpay_order_id') as string;
+    const razorpay_signature = formData.get('razorpay_signature') as string;
+    
+    // We get these from the client, but we will rely on DB for name/city/templateId if we wanted.
+    // To minimize changes, we still accept them and use them.
     const name = formData.get('name') as string;
     const city = formData.get('city') as string;
     const templateId = formData.get('templateId') as string;
     const photo = formData.get('photo') as File;
 
-    if (!name || !templateId || !photo) {
+    if (!posterId || !razorpay_payment_id || !razorpay_order_id || !razorpay_signature || !name || !templateId || !photo) {
       return NextResponse.json(
-        { error: 'Missing required fields (name, templateId, photo)' },
+        { error: 'Missing required fields or payment details' },
         { status: 400 }
       );
     }
 
+    // 1. Verify Payment Security
+    await dbConnect();
+    const session = await PosterSession.findOne({ posterId });
+    if (!session) {
+      return NextResponse.json({ error: 'Poster session not found' }, { status: 404 });
+    }
+    if (session.status !== 'pending_payment') {
+      return NextResponse.json({ error: 'Session already consumed or invalid state' }, { status: 400 });
+    }
+    if (session.razorpayOrderId !== razorpay_order_id) {
+      return NextResponse.json({ error: 'Order ID mismatch' }, { status: 400 });
+    }
+
+    // Verify signature
+    const text = session.razorpayOrderId + '|' + razorpay_payment_id;
+    const generated_signature = crypto
+      .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET!)
+      .update(text)
+      .digest('hex');
+
+    const isAuthentic = crypto.timingSafeEqual(
+      Buffer.from(generated_signature),
+      Buffer.from(razorpay_signature)
+    );
+
+    if (!isAuthentic) {
+      return NextResponse.json({ error: 'Payment signature verification failed' }, { status: 400 });
+    }
+
+    // NOTE: In production, we should fetch Razorpay API to verify status === 'captured' here.
+    // Assuming signature matches our order ID and amount is predefined, it's secure enough for now.
+
     const template = TEMPLATES.find((t) => t.id === templateId);
     if (!template) {
-      throw new Error("Invalid template ID");
+      return NextResponse.json({ error: 'Invalid template ID' }, { status: 400 });
     }
 
     // Convert user photo File to base64 for the API
@@ -264,33 +303,25 @@ The final result must be a faithful personalization of the original Classic Indi
       .png()
       .toBuffer();
 
-    // 1. Generate unique poster ID and secure share token
-    const posterId = uuidv4();
-    const shareActionToken = crypto.randomBytes(32).toString('hex');
+    // 1. We already have posterId and shareActionToken from the session
+    const shareActionToken = session.shareActionToken;
 
     // 2. Save full-res poster to local storage (outside public access)
     const posterStorageDir = path.join(process.cwd(), 'data', 'posters');
-    // Ensure directory exists (fallback)
     await fs.mkdir(posterStorageDir, { recursive: true }).catch(() => { });
     const filePath = path.join(posterStorageDir, `${posterId}.png`);
     await fs.writeFile(filePath, normalizedBuffer);
 
-    // 3. Connect to DB and save PosterSession
-    await dbConnect();
-    const ttlHours = parseInt(process.env.POSTER_SESSION_TTL_HOURS || '24', 10);
-    const expiresAt = new Date(Date.now() + ttlHours * 60 * 60 * 1000);
-    const shareThreshold = parseInt(process.env.POSTER_SHARE_THRESHOLD || '10', 10);
-
-    await PosterSession.create({
-      posterId,
-      templateId,
-      name,
-      city,
-      status: 'generated',
-      shareThreshold,
-      shareActionToken,
-      expiresAt,
-    });
+    // 3. Update the existing PosterSession to 'unlocked'
+    session.status = 'unlocked';
+    session.paymentUnlocked = true;
+    session.unlockMethod = 'payment';
+    session.aiGenerationStatus = 'success';
+    session.razorpayPaymentId = razorpay_payment_id;
+    session.paymentStatus = 'captured'; // Assumed from valid signature
+    session.unlockedAt = new Date();
+    
+    await session.save();
 
     const sessionId = request.headers.get('x-session-id');
     if (sessionId) {

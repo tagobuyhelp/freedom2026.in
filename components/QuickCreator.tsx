@@ -27,8 +27,8 @@ const TEMPLATE_CARDS = [
 ];
 
 const STYLE_TEMPLATES = [
-  { id: "classic-india", title: "Classic India", type: "Free", gender: "Male", isAvailable: true,  thumb: "/images/classic-india-style.png", alt: "Classic India Independence Day 2026 poster template" },
-  { id: "modern-india",  title: "Modern India",  type: "Free", gender: "Female", isAvailable: true, thumb: "/images/modern-india-style.png",  alt: "Modern India Independence Day 2026 poster template" },
+  { id: "classic-india", title: "Classic India", type: "", gender: "Male", isAvailable: true,  thumb: "/images/classic-india-style.png", alt: "Classic India Independence Day 2026 poster template" },
+  { id: "modern-india",  title: "Modern India",  type: "", gender: "Female", isAvailable: true, thumb: "/images/modern-india-style.png",  alt: "Modern India Independence Day 2026 poster template" },
   { id: "india-map",     title: "India Map",     type: "Coming Soon", isAvailable: false, thumb: "/images/india-map-style.png",     alt: "India Map Independence Day 2026 poster template" },
   { id: "portrait",      title: "Portrait",      type: "Coming Soon", isAvailable: false, thumb: "/images/portrait-style.png",      alt: "Portrait style Independence Day 2026 poster template" },
   { id: "bengali",       title: "Bengali",       type: "Coming Soon", isAvailable: false, thumb: "/images/bengali-style.png",       alt: "Bengali Independence Day 2026 poster template" },
@@ -361,12 +361,14 @@ export default function QuickCreator({ onGenerate }: QuickCreatorProps) {
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
             {STYLE_TEMPLATES.map((tmpl) => {
               const isAvailable = tmpl.isAvailable;
+              const isSelected = selectedTemplate === tmpl.id;
               return (
                 <div 
                   key={tmpl.id} 
                   onClick={() => {
                     if (isAvailable) {
                       setSelectedTemplate(tmpl.id);
+                      document.getElementById("creator")?.scrollIntoView({ behavior: "smooth" });
                     }
                   }}
                   className="group cursor-pointer relative"
@@ -376,10 +378,19 @@ export default function QuickCreator({ onGenerate }: QuickCreatorProps) {
                       {tmpl.gender}
                     </div>
                   )}
-                  <div className={`aspect-[3/4] rounded-xl overflow-hidden relative shadow-xs border border-slate-200 bg-white transition-all ${
-                    isAvailable ? "group-hover:shadow-md border-orange-400" : "opacity-75 grayscale"
+                  <div className={`aspect-[3/4] rounded-xl overflow-hidden relative transition-all border-2 ${
+                    isSelected
+                      ? "border-orange-500 shadow-md shadow-orange-500/25 ring-2 ring-orange-500/20"
+                      : isAvailable
+                      ? "border-slate-200 bg-white group-hover:shadow-md group-hover:border-orange-300"
+                      : "border-slate-100 opacity-75 grayscale cursor-not-allowed"
                   }`}>
                     <img src={tmpl.thumb} alt={tmpl.alt} className="w-full h-full object-cover" />
+                    {isSelected && (
+                      <div className="absolute top-1.5 left-1.5 w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center z-10 shadow-xs">
+                        <Check className="w-3 h-3 text-white" />
+                      </div>
+                    )}
                     {!isAvailable && (
                       <div className="absolute inset-0 bg-black/25 flex items-center justify-center backdrop-blur-[0.5px]">
                         <span className="bg-white/90 text-slate-800 text-[9px] font-bold px-1.5 py-0.5 rounded shadow-2xs">Soon</span>
@@ -387,9 +398,9 @@ export default function QuickCreator({ onGenerate }: QuickCreatorProps) {
                     )}
                   </div>
                   <div className="text-center mt-2">
-                    <div className="font-extrabold text-slate-900 text-xs truncate">{tmpl.title}</div>
-                    <div className={`text-[10px] font-bold ${isAvailable ? "text-[#15803d]" : "text-slate-400"}`}>
-                      {tmpl.type}
+                    <div className={`font-extrabold text-xs truncate ${isSelected ? "text-orange-600" : "text-slate-900"}`}>{tmpl.title}</div>
+                    <div className={`text-[10px] font-bold ${isSelected ? "text-orange-500" : isAvailable ? "text-[#15803d]" : "text-slate-400"}`}>
+                      {isSelected ? "Selected" : tmpl.type}
                     </div>
                   </div>
                 </div>

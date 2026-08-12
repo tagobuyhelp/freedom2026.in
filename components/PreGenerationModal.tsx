@@ -80,9 +80,7 @@ export default function PreGenerationModal({ isOpen, onClose, onConfirm, isGener
             
             {/* Text details */}
             <div className="text-left space-y-1 sm:space-y-1.5 flex-1 relative z-10">
-              <p className="text-[11px] sm:text-sm font-bold text-[#0f172a] mb-0.5 sm:mb-2 leading-none">
-                After generation, unlock your HD poster:
-              </p>
+
               <h4 className="text-[17px] sm:text-2xl font-black text-[#0f172a] flex items-center justify-start gap-1.5 sm:gap-2 leading-none">
                 <span className="text-orange-500">₹10</span>
                 <span className="text-[#94a3b8] text-sm sm:text-xl font-medium">—</span>
@@ -142,15 +140,15 @@ export default function PreGenerationModal({ isOpen, onClose, onConfirm, isGener
               <div className="flex items-center justify-center gap-1.5 sm:gap-2">
                 {isGenerating ? "Processing..." : (
                   <>
-                    <span className="hidden sm:inline">Continue & Generate</span>
-                    <span className="sm:hidden">Generate Poster</span>
+                    <span className="hidden sm:inline">Pay ₹10 & Generate</span>
+                    <span className="sm:hidden">Pay ₹10 & Generate</span>
                   </>
                 )}
                 {!isGenerating && <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />}
               </div>
               {!isGenerating && (
                 <span className="text-[9px] sm:text-[11px] text-orange-100 font-medium mt-0 sm:mt-0.5 font-normal tracking-wide opacity-90 hidden sm:block">
-                  AI generation will start after confirmation
+                  AI generation will start after payment confirmation.
                 </span>
               )}
             </button>
