@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { Sparkles, Camera, Check, AlertCircle, ChevronRight } from "lucide-react";
+import { Sparkles, Camera, Check, AlertCircle, ChevronRight, ChevronLeft } from "lucide-react";
 import IndianFlag from "@/components/IndianFlag";
 import PosterGeneratorModal from "@/components/PosterGeneratorModal";
 import Script from "next/script";
@@ -9,10 +9,12 @@ import Script from "next/script";
 const TEMPLATES_PREVIEW = [
   { id: "classic-india",  title: "Classic India",   image: "/images/classic-india-style.png",  gender: "Male",   isAvailable: true },
   { id: "modern-india",   title: "Modern India",    image: "/images/modern-india-style.png",   gender: "Female", isAvailable: true },
-  { id: "bengali",        title: "Bengali",         image: "/images/bengali-style.png",                          isAvailable: false },
-  { id: "hindi",          title: "Hindi",           image: "/images/hindi-style.png",                            isAvailable: false },
-  { id: "india-map",      title: "India Map",       image: "/images/india-map-style.png",                        isAvailable: false },
-  { id: "business",       title: "Business",        image: "/images/professional-style.png",                     isAvailable: false },
+  { id: "portrait",       title: "Portrait",        image: "/images/portrait-style.png", gender: "Female", isAvailable: true },
+  { id: "bengali",        title: "Bengali",         image: "/images/bengali-style.png", gender: "Female", isAvailable: true },
+  { id: "hindi",          title: "Hindi",           image: "/images/hindi-style.png", gender: "Male",   isAvailable: true },
+  { id: "student",        title: "Student",         image: "/images/student-style.png", gender: "Male",   isAvailable: true },
+  { id: "india-map",      title: "India Map",       image: "/images/india-map-style.png",                        isAvailable: true },
+  { id: "business",       title: "Business",        image: "/images/professional-style.png", gender: "Male",   isAvailable: true },
 ];
 
 import PreGenerationModal from "@/components/PreGenerationModal";
@@ -23,6 +25,14 @@ export default function CreatePage() {
   const [selectedTemplate, setSelectedTemplate] = useState("classic-india");
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const scrollLeft = () => {
+    if (scrollRef.current) scrollRef.current.scrollBy({ left: -200, behavior: 'smooth' });
+  };
+  const scrollRight = () => {
+    if (scrollRef.current) scrollRef.current.scrollBy({ left: 200, behavior: 'smooth' });
+  };
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -130,6 +140,13 @@ export default function CreatePage() {
       const { trackClientEvent, getSessionId } = await import("@/lib/analytics");
       trackClientEvent("poster_generation_started", { templateId: selectedTemplate });
       
+      if (!paymentDetails?.razorpay_payment_id || !paymentDetails?.razorpay_order_id || !paymentDetails?.razorpay_signature) {
+        throw new Error("Payment confirmation missing required payment parameters from Razorpay.");
+      }
+      if (!photo) {
+        throw new Error("Photo is required for poster generation. Please select your photo.");
+      }
+      
       const formData = new FormData();
       formData.append("posterId", posterId);
       formData.append("razorpay_payment_id", paymentDetails.razorpay_payment_id);
@@ -138,7 +155,7 @@ export default function CreatePage() {
       formData.append("name", name.trim()); 
       formData.append("city", city.trim());
       formData.append("templateId", selectedTemplate); 
-      formData.append("photo", photo!);
+      formData.append("photo", photo);
       
       const res = await fetch("/api/poster/generate", { method: "POST", headers: { "x-session-id": getSessionId() }, body: formData });
       let data: any = {};
@@ -181,11 +198,21 @@ export default function CreatePage() {
           {/* Template Picker - order 1 on mobile */}
           <div className="lg:col-span-7 order-1 lg:order-2">
             <div className="bg-white rounded-2xl border border-slate-200 p-3 sm:p-6 shadow-xs">
-              <h2 className="text-sm sm:text-base font-black text-slate-900 mb-3 flex items-center gap-2">
-                <span className="w-5 h-5 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-xs font-black">1</span>
-                Choose Your Template
-              </h2>
-              <div className="flex gap-3 overflow-x-auto scrollbar-none pb-2 pt-3 pr-2">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-sm sm:text-base font-black text-slate-900 flex items-center gap-2">
+                  <span className="w-5 h-5 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-xs font-black">1</span>
+                  Choose Your Template
+                </h2>
+                <div className="hidden sm:flex gap-1">
+                  <button onClick={scrollLeft} className="p-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors">
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <button onClick={scrollRight} className="p-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors">
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+              <div ref={scrollRef} className="flex gap-3 overflow-x-auto scrollbar-none pb-2 pt-4 pr-4 scroll-smooth">
                 {TEMPLATES_PREVIEW.map((tmpl) => {
                   const isSelected = selectedTemplate === tmpl.id;
                   return (

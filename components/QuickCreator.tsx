@@ -3,7 +3,7 @@
 import React, { useState, useRef } from "react";
 import Link from "next/link";
 import {
-  Upload, Sparkles, User, MapPin, Check, ChevronRight,
+  Upload, Sparkles, User, MapPin, Check, ChevronRight, ChevronLeft,
   Edit3, Download, Share2, ArrowRight, Info
 } from "lucide-react";
 import IndianFlag from "./IndianFlag";
@@ -22,19 +22,19 @@ interface QuickCreatorProps {
 const TEMPLATE_CARDS = [
   { id: "classic-india", title: "Classic", tag: "Free", gender: "Male", isAvailable: true, thumb: "/images/classic-india-style.png", alt: "Classic India Independence Day 2026 poster template" },
   { id: "modern-india",  title: "Modern",  tag: "Free", gender: "Female", isAvailable: true, thumb: "/images/modern-india-style.png",  alt: "Modern India Independence Day 2026 poster template" },
-  { id: "india-map",     title: "India",   tag: "Free", isAvailable: false, thumb: "/images/india-map-style.png",     alt: "India Map Independence Day 2026 poster template" },
-  { id: "portrait",      title: "Portrait",tag: "Free", isAvailable: false, thumb: "/images/portrait-style.png",      alt: "Portrait style Independence Day 2026 poster template" },
+  { id: "india-map",     title: "India",   tag: "Free", isAvailable: true, thumb: "/images/india-map-style.png",     alt: "India Map Independence Day 2026 poster template" },
+  { id: "business",      title: "Business",tag: "Free", gender: "Male", isAvailable: true, thumb: "/images/professional-style.png", alt: "Business Independence Day 2026 poster template" },
 ];
 
 const STYLE_TEMPLATES = [
   { id: "classic-india", title: "Classic India", type: "", gender: "Male", isAvailable: true,  thumb: "/images/classic-india-style.png", alt: "Classic India Independence Day 2026 poster template" },
   { id: "modern-india",  title: "Modern India",  type: "", gender: "Female", isAvailable: true, thumb: "/images/modern-india-style.png",  alt: "Modern India Independence Day 2026 poster template" },
-  { id: "india-map",     title: "India Map",     type: "Coming Soon", isAvailable: false, thumb: "/images/india-map-style.png",     alt: "India Map Independence Day 2026 poster template" },
-  { id: "portrait",      title: "Portrait",      type: "Coming Soon", isAvailable: false, thumb: "/images/portrait-style.png",      alt: "Portrait style Independence Day 2026 poster template" },
-  { id: "bengali",       title: "Bengali",       type: "Coming Soon", isAvailable: false, thumb: "/images/bengali-style.png",       alt: "Bengali Independence Day 2026 poster template" },
-  { id: "hindi",         title: "Hindi",         type: "Coming Soon", isAvailable: false, thumb: "/images/hindi-style.png",         alt: "Hindi Independence Day 2026 poster template" },
-  { id: "student",       title: "Student",       type: "Coming Soon", isAvailable: false, thumb: "/images/student-style.png",       alt: "Student Independence Day 2026 poster template" },
-  { id: "professional",  title: "Business",      type: "Coming Soon", isAvailable: false, thumb: "/images/professional-style.png",  alt: "Professional Independence Day 2026 poster template" },
+  { id: "india-map",     title: "India Map",     type: "", isAvailable: true, thumb: "/images/india-map-style.png",     alt: "India Map Independence Day 2026 poster template" },
+  { id: "portrait",      title: "Portrait",      type: "", gender: "Female", isAvailable: true, thumb: "/images/portrait-style.png",      alt: "Portrait style Independence Day 2026 poster template" },
+  { id: "bengali",       title: "Bengali",       type: "", gender: "Female", isAvailable: true, thumb: "/images/bengali-style.png",       alt: "Bengali Independence Day 2026 poster template" },
+  { id: "hindi",         title: "Hindi",         type: "", gender: "Male", isAvailable: true, thumb: "/images/hindi-style.png",         alt: "Hindi Independence Day 2026 poster template" },
+  { id: "student",       title: "Student",       type: "", gender: "Male", isAvailable: true, thumb: "/images/student-style.png",       alt: "Student Independence Day 2026 poster template" },
+  { id: "business",      title: "Business",      type: "", gender: "Male", isAvailable: true, thumb: "/images/professional-style.png",  alt: "Professional Independence Day 2026 poster template" },
 ];
 
 export default function QuickCreator({ onGenerate }: QuickCreatorProps) {
@@ -45,6 +45,14 @@ export default function QuickCreator({ onGenerate }: QuickCreatorProps) {
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const styleScrollRef = useRef<HTMLDivElement>(null);
+
+  const scrollLeftStyle = () => {
+    if (styleScrollRef.current) styleScrollRef.current.scrollBy({ left: -300, behavior: 'smooth' });
+  };
+  const scrollRightStyle = () => {
+    if (styleScrollRef.current) styleScrollRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+  };
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -192,7 +200,7 @@ export default function QuickCreator({ onGenerate }: QuickCreatorProps) {
                   Choose Template
                 </label>
                 <div
-                  className="flex items-center gap-2 overflow-x-auto scrollbar-none pb-1 pt-3"
+                  className="flex items-center gap-2 overflow-x-auto scrollbar-none pb-1 pt-3 pr-3"
                   role="radiogroup:ChooseTemplate"
                   aria-label="Select an Independence Day poster template"
                 >
@@ -348,17 +356,27 @@ export default function QuickCreator({ onGenerate }: QuickCreatorProps) {
               </p>
             </div>
             
-            <Link
-              href="/templates"
-              className="inline-flex items-center gap-1.5 text-[#15803d] hover:text-emerald-800 font-bold text-xs sm:text-sm shrink-0"
-            >
-              <span>View All Templates</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
+            <div className="flex items-center gap-3 shrink-0">
+              <Link
+                href="/templates"
+                className="inline-flex items-center gap-1.5 text-[#15803d] hover:text-emerald-800 font-bold text-xs sm:text-sm"
+              >
+                <span>View All Templates</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <div className="hidden lg:flex items-center gap-1 border-l border-amber-200/50 pl-3">
+                <button onClick={scrollLeftStyle} className="p-1.5 rounded-full bg-white hover:bg-amber-50 text-slate-600 transition-colors shadow-xs border border-amber-100">
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <button onClick={scrollRightStyle} className="p-1.5 rounded-full bg-white hover:bg-amber-50 text-slate-600 transition-colors shadow-xs border border-amber-100">
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
           </div>
 
-          {/* 8 Template Cards Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+          {/* Template Cards Scrollable Container */}
+          <div ref={styleScrollRef} className="flex gap-3 overflow-x-auto scrollbar-none pb-2 pt-3 pr-3 scroll-smooth">
             {STYLE_TEMPLATES.map((tmpl) => {
               const isAvailable = tmpl.isAvailable;
               const isSelected = selectedTemplate === tmpl.id;
@@ -371,7 +389,7 @@ export default function QuickCreator({ onGenerate }: QuickCreatorProps) {
                       document.getElementById("creator")?.scrollIntoView({ behavior: "smooth" });
                     }
                   }}
-                  className="group cursor-pointer relative"
+                  className="group cursor-pointer relative shrink-0 w-[110px] sm:w-[130px] lg:w-[150px]"
                 >
                   {tmpl.gender && isAvailable && (
                     <div className={`absolute -top-2 -right-2 shadow-sm px-1.5 py-0.5 rounded text-[8px] uppercase font-bold text-white tracking-wider z-20 ${tmpl.gender === "Male" ? "bg-blue-600" : "bg-pink-600"}`}>

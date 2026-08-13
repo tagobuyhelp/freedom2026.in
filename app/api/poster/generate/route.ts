@@ -28,9 +28,19 @@ export async function POST(request: Request) {
     const templateId = formData.get('templateId') as string;
     const photo = formData.get('photo') as File;
 
-    if (!posterId || !razorpay_payment_id || !razorpay_order_id || !razorpay_signature || !name || !templateId || !photo) {
+    const missingFields: string[] = [];
+    if (!posterId) missingFields.push('posterId');
+    if (!razorpay_payment_id) missingFields.push('razorpay_payment_id');
+    if (!razorpay_order_id) missingFields.push('razorpay_order_id');
+    if (!razorpay_signature) missingFields.push('razorpay_signature');
+    if (!name) missingFields.push('name');
+    if (!templateId) missingFields.push('templateId');
+    if (!photo || !(photo instanceof File) || photo.size === 0) missingFields.push('photo');
+
+    if (missingFields.length > 0) {
+      console.error(`Poster generation failed due to missing fields: ${missingFields.join(', ')}`);
       return NextResponse.json(
-        { error: 'Missing required fields or payment details' },
+        { error: `Missing required fields or payment details: ${missingFields.join(', ')}` },
         { status: 400 }
       );
     }
@@ -233,6 +243,933 @@ KEEP THE REFERENCE PERSON'S BODY, CLOTHING, POSE AND BODY LANGUAGE.
 CHANGE ONLY THE FACIAL IDENTITY TO MATCH THE UPLOADED FEMALE USER.
 
 The uploaded user photo is a FACE/IDENTITY REFERENCE, NOT a full-body or clothing reference.`;
+    } else if (template.id === 'business') {
+      prompt = `The supplied Business reference image is the MASTER REFERENCE.
+
+This is a MALE-ONLY business template.
+
+CRITICAL IDENTITY RULE:
+
+REFERENCE IMAGE = complete person presentation
+USER PHOTO = FACE / IDENTITY ONLY
+
+The final person MUST be male.
+
+Use the uploaded user's photo ONLY to transfer the user's recognizable facial identity.
+
+Preserve from the Business reference:
+- Male gender presentation
+- Professional business body
+- Suit
+- Shirt
+- Tie
+- Folded-arm pose
+- Body posture
+- Body proportions
+- Professional appearance
+- Overall lighting
+- Head/body positioning
+- Reference hairstyle where compatible with natural face integration
+- Complete composition
+
+DO NOT copy from the user's photo:
+- Clothing
+- T-shirt
+- Shirt
+- Kurta
+- Jacket
+- Suit
+- Tie
+- Accessories
+- Body
+- Body posture
+- Body language
+- Pose
+
+The user's uploaded clothing and body presentation MUST NEVER override the Business reference.
+
+The result should look like the ORIGINAL BUSINESS POSTER PERSON, but with the uploaded male user's real facial identity naturally integrated into that person.
+
+The face must NOT look pasted or artificially face-swapped.
+
+Maintain:
+- Natural facial proportions
+- Skin tone consistency
+- Lighting consistency
+- Facial shadows
+- Neck transition
+- Head angle
+- Perspective
+- Photorealistic integration
+
+COMPOSITION
+
+Treat the supplied Business poster as the MASTER visual reference.
+
+Preserve the composition as closely as possible, including:
+- Large Indian flag
+- India Gate
+- Indian monuments
+- Tricolor brush strokes
+- Birds
+- Patriotic background
+- Top patriotic quote
+- "HAPPY INDEPENDENCE DAY"
+- "2026"
+- "15TH AUGUST 2026"
+- "PROUD TO BE AN INDIAN"
+- Professional male subject
+- Right-side business/value statements
+- Bottom monument silhouette
+- Bottom business/value section
+- Overall premium corporate Independence Day aesthetic
+
+DO NOT redesign the poster.
+DO NOT create a different business poster.
+DO NOT replace the reference composition with a generic corporate design.
+
+TEXT
+
+Preserve the reference typography, hierarchy, placement and visual style.
+The Business template should remain a premium corporate Independence Day creative.
+
+Do not invent random text.
+Do not duplicate text.
+Do not introduce unrelated text.
+
+Text to integrate:
+${name.toUpperCase()}
+${city.toUpperCase()}
+
+FINAL QUALITY
+
+The final output must be:
+- Premium
+- Photorealistic
+- Corporate
+- Patriotic
+- Professionally composed
+- Consistent with the supplied Business reference
+- 4:5 aspect ratio
+- High resolution
+
+CRITICAL RULE:
+REFERENCE = BODY + CLOTHING + POSE + COMPOSITION
+USER PHOTO = FACE / IDENTITY ONLY
+
+This is a MALE-ONLY template.
+Do not allow the user's uploaded clothing, body, pose or gender presentation to change the reference person.
+Only the facial identity should come from the uploaded male user.`;
+    } else if (template.id === 'india-map') {
+      prompt = `The supplied India Map reference image is an APPROVED COMPLETE POSTER DESIGN.
+
+This is a TEXT-PERSONALIZED poster only.
+Do NOT use the uploaded user photo to generate a person.
+Do NOT generate a new person.
+Do NOT recreate a user's body or face.
+
+Treat the reference image as a fixed master composition, NOT as inspiration for creating a new design.
+
+MASTER COMPOSITION
+
+Preserve the reference composition as closely as possible:
+- Large India-shaped map as the primary central visual
+- Saffron/white/green India map treatment
+- India Gate integrated inside the map
+- Ashoka Chakra
+- "PROUD TO BE AN INDIAN" typography inside the map
+- Indian flag in the lower-right area
+- Person holding the Indian flag from behind
+- Crowd silhouettes at the bottom
+- Multiple Indian landmarks
+- Tricolor brush strokes
+- Patriotic sky
+- Birds
+- Overall warm cinematic lighting
+- Existing visual hierarchy
+- Existing typography hierarchy
+- Existing positioning and scale of major elements
+
+DO NOT redesign the poster.
+DO NOT create a generic India Map poster.
+DO NOT replace the reference composition with a different AI-generated composition.
+
+The final result should look like the supplied reference image with only the required personalization applied.
+
+COMPOSITION LOCK
+
+Do NOT:
+- Move the India map
+- Change the map shape
+- Remove India Gate
+- Move the Ashoka Chakra
+- Change the flag position
+- Change the flag-holding person's position
+- Change the crowd
+- Remove landmarks
+- Add unrelated monuments
+- Change the tricolor brush strokes
+- Change the overall lighting
+- Zoom into any single object
+- Crop important elements
+- Recompose the poster
+
+Keep the complete poster composition visible.
+
+DYNAMIC TEXT
+
+Preserve the existing reference text and typography style.
+
+Personalize the designated identity area using ONLY the following text:
+
+${name.toUpperCase()}
+${city.toUpperCase()}
+
+Do not invent names.
+Do not change spelling.
+Do not add random text.
+Do not duplicate text.
+Do not remove existing patriotic text.
+
+Typography should remain visually consistent with the reference.
+
+IMPORTANT AI INSTRUCTION
+
+This is NOT a full creative redesign request.
+Think of the task as: "Personalize an already finished India Map Independence Day poster."
+NOT: "Create a new Independence Day poster featuring an India map."
+
+The reference image should account for approximately 95% of the final visual composition.
+Only the approved dynamic text should change.
+
+OUTPUT
+
+Maintain the same premium cinematic patriotic visual quality as the supplied reference.
+Output aspect ratio: 4:5.
+The final result must be clean, premium, patriotic and production-ready.`;
+    } else if (template.id === 'portrait') {
+      prompt = `The supplied Portrait reference image is the MASTER REFERENCE.
+
+This is a FEMALE-ONLY Independence Day Portrait template.
+
+The supplied Portrait image is the complete approved master design.
+Treat the reference as a FIXED MASTER TEMPLATE, not as inspiration for creating a new poster.
+
+IDENTITY RULE
+
+REFERENCE IMAGE = BODY + CLOTHING + POSE + FLAG + COMPOSITION
+USER PHOTO = FACE / IDENTITY ONLY
+
+The final person MUST be female.
+Use the uploaded user's photo ONLY to preserve and transfer her recognizable facial identity.
+
+Preserve from the Portrait reference:
+- Female body presentation
+- White outfit
+- Orange/saffron dupatta
+- Hairstyle where compatible with natural face integration
+- Exact pose
+- Hand position
+- Indian flag position
+- Body proportions
+- Subject scale
+- Subject placement
+- Lighting
+- Overall composition
+
+DO NOT copy from the user's photo:
+- Clothing
+- Shirt
+- T-shirt
+- Saree
+- Kurta
+- Jacket
+- Accessories
+- Body
+- Body posture
+- Body language
+- Pose
+- Background
+
+The user's uploaded clothing MUST NOT override the reference clothing.
+The user's body MUST NOT override the reference body.
+The user's pose MUST NOT override the reference pose.
+Only the facial identity should come from the uploaded user photo.
+
+FACE INTEGRATION
+
+Preserve the user's:
+- Facial identity
+- Face structure
+- Eyes
+- Nose
+- Mouth
+- Jawline
+- Natural skin characteristics
+- Recognizable facial features
+
+Naturally integrate the user's face into the reference female subject.
+
+Maintain:
+- Correct face-to-body proportions
+- Natural neck transition
+- Correct head angle
+- Correct perspective
+- Matching lighting
+- Matching shadows
+- Consistent skin tone
+- Photorealistic facial integration
+
+The face must NOT look pasted, artificial, distorted or like an obvious face swap.
+
+COMPOSITION LOCK
+
+Preserve the complete Portrait reference composition.
+
+Keep unchanged:
+- Top orange/white/green brush strokes
+- HAPPY
+- INDEPENDENCE DAY
+- 2026
+- Doves/birds
+- 15 AUGUST 2026
+- PROUD TO BE AN INDIAN
+- India Gate
+- Red Fort
+- Female subject
+- Indian flag in her hand
+- Saffron dupatta
+- Ashoka Chakra
+- Tricolor brush strokes around the subject
+- Bottom crowd silhouettes
+- Indian flags held by the crowd
+- Overall lighting
+- Background
+- Visual hierarchy
+- Typography hierarchy
+
+DO NOT:
+- Redesign the poster
+- Create a new composition
+- Move the woman
+- Enlarge the woman
+- Change her pose
+- Change her clothing
+- Move the flag
+- Remove the landmarks
+- Add unrelated objects
+- Change the background
+- Zoom into the face
+- Crop important elements
+
+The final result should look like the ORIGINAL Portrait reference poster with the uploaded female user's facial identity naturally integrated.
+
+TEXT
+
+Do NOT add the user's name.
+Do NOT add the user's city.
+Do NOT add any additional personalized text.
+
+The reference text must remain exactly as part of the poster:
+
+HAPPY
+INDEPENDENCE DAY
+2026
+
+15 AUGUST 2026
+
+Proud to be an Indian
+
+Preserve the exact wording, spelling, typography hierarchy, placement and visual style of the reference.
+Do not invent text.
+Do not duplicate text.
+Do not add random text.
+
+MOST IMPORTANT RULE
+
+This is NOT a request to create a new Independence Day portrait.
+This is an identity personalization task.
+
+Think:
+REFERENCE PORTRAIT
++
+USER'S FEMALE FACIAL IDENTITY
+=
+FINAL PORTRAIT
+
+The reference design should account for approximately 95% of the final visual result.
+The user's photo should primarily affect ONLY the facial identity.
+
+OUTPUT
+
+Maintain the same premium, photorealistic, cinematic patriotic aesthetic as the supplied reference.
+Output: 4:5 aspect ratio.`;
+    } else if (template.id === 'bengali') {
+      prompt = `The supplied Bengali Independence Day poster is the approved MASTER DESIGN.
+Treat the reference as a fixed finished poster, not as inspiration for creating a different Bengali poster.
+
+This is a FEMALE-ONLY Bengali Independence Day template.
+
+IDENTITY RULE
+
+REFERENCE IMAGE = BODY + CLOTHING + POSE + COMPOSITION
+USER PHOTO = FACE / IDENTITY ONLY
+
+The final person MUST be female.
+Use the uploaded user's photo ONLY for facial identity.
+
+Preserve from the Bengali reference:
+- Female body presentation
+- White traditional outfit
+- Orange/saffron dupatta
+- Hairstyle where compatible
+- Body proportions
+- Pose
+- Posture
+- Hand/body presentation
+- Subject position
+- Subject scale
+- Lighting
+- Overall composition
+
+DO NOT copy from the user's uploaded photo:
+- Clothing
+- Saree
+- T-shirt
+- Shirt
+- Kurta
+- Jacket
+- Accessories
+- Body
+- Body posture
+- Body language
+- Pose
+
+The user's clothing must NEVER override the reference clothing.
+Only the user's recognizable facial identity should be transferred.
+
+FACE INTEGRATION
+
+Preserve the user's:
+- Facial identity
+- Face structure
+- Eyes
+- Nose
+- Mouth
+- Jawline
+- Natural skin characteristics
+- Recognizable facial features
+
+Naturally integrate the user's face into the Bengali reference person.
+
+Maintain:
+- Natural face-to-body proportions
+- Correct head angle
+- Correct perspective
+- Natural neck transition
+- Matching lighting
+- Matching shadows
+- Consistent skin tone
+- Photorealistic integration
+
+The result must look like the original Bengali poster person with the user's real facial identity naturally integrated.
+The face must NOT look pasted, artificial or distorted.
+
+COMPOSITION LOCK
+
+Preserve the complete Bengali reference composition.
+
+Keep unchanged:
+- Top saffron/white/green brush strokes
+- "গৌরব আমাদের, ঐক্য আমাদের শক্তি"
+- "স্বাধীনতা দিবস"
+- "২০২৬"
+- Indian flag and flagpole
+- Birds
+- India Gate
+- Red Fort
+- Female subject
+- Orange/saffron dupatta
+- Tricolor face paint
+- Tricolor brush strokes
+- Ashoka Chakra
+- Bottom five Bengali sections
+- Crowd silhouettes
+- Indian flags
+- Bottom Bengali slogan
+- Overall patriotic background
+- Lighting
+- Visual hierarchy
+- Typography hierarchy
+
+DO NOT redesign the poster.
+DO NOT create a different Bengali poster.
+DO NOT move the woman.
+DO NOT enlarge or shrink the woman unnecessarily.
+DO NOT move the flag.
+DO NOT replace the landmarks.
+DO NOT remove existing elements.
+DO NOT add unrelated objects.
+DO NOT change the overall composition.
+
+BENGALI TYPOGRAPHY
+
+The Bengali typography is an important part of the master design.
+Preserve the Bengali text accurately.
+
+The required reference text is:
+
+গৌরব আমাদের, ঐক্য আমাদের শক্তি
+
+স্বাধীনতা দিবস
+
+২০২৬
+
+১৫ আগস্ট ২০২৬
+
+গর্বিত ভারত, উজ্জ্বল ভবিষ্যৎ
+
+এক দেশ
+এক মানুষ
+এক গর্ব
+এক স্বপ্ন
+এক ভবিষ্যৎ
+
+চলো এগিয়ে যাই, দেশ গড়ি, ভবিষ্যৎ গড়ি
+
+IMPORTANT:
+The Bengali text must be rendered in correct Bengali script.
+Do NOT translate it into English or Hindi.
+Do NOT use random Bengali words.
+Do NOT alter the spelling.
+Do NOT duplicate text.
+Do NOT add random text.
+Maintain the reference typography style, hierarchy, placement and visual treatment.
+
+PERSONALIZATION
+
+Do NOT add the user's name.
+Do NOT add the user's city.
+Do NOT add additional personalized text.
+
+The Bengali reference itself is the complete finished design.
+The only personalization is the user's facial identity.
+
+MOST IMPORTANT RULE
+
+This is an IDENTITY PERSONALIZATION task, NOT a redesign task.
+
+Think:
+BENGALI MASTER POSTER
++
+USER'S FEMALE FACIAL IDENTITY
+=
+FINAL BENGALI POSTER
+
+The reference should account for approximately 95% of the final visual result.
+The user's photo should primarily affect ONLY the facial identity.
+
+OUTPUT
+
+Maintain:
+- Premium quality
+- Photorealistic female subject
+- Bengali cultural identity
+- Patriotic Independence Day aesthetic
+- Cinematic lighting
+- Accurate Bengali typography
+- Exact reference composition
+
+Output: 4:5 aspect ratio.`;
+    } else if (template.id === 'hindi') {
+      prompt = `The supplied Hindi Independence Day poster is the approved COMPLETE MASTER DESIGN.
+Treat the reference as a fixed finished poster, NOT as inspiration for creating a different poster.
+
+This is a MALE-ONLY Hindi Independence Day template.
+
+IDENTITY RULE
+
+REFERENCE IMAGE = BODY + CLOTHING + POSE + FLAG + COMPOSITION
+USER PHOTO = FACE / IDENTITY ONLY
+
+The final person MUST be male.
+Use the uploaded user's photo ONLY for facial identity.
+
+Preserve from the Hindi reference:
+- Male body presentation
+- White traditional kurta
+- Orange/saffron and green patriotic stole
+- Hairstyle where compatible with natural face integration
+- Body proportions
+- Exact pose
+- Posture
+- Hand position
+- Indian flag position
+- Subject placement
+- Subject scale
+- Lighting
+- Overall composition
+
+DO NOT copy from the user's uploaded photo:
+- Shirt
+- T-shirt
+- Suit
+- Jacket
+- Kurta
+- Saree
+- Accessories
+- Clothing
+- Body
+- Body posture
+- Body language
+- Pose
+
+The user's clothing MUST NOT override the reference clothing.
+Only the user's recognizable facial identity should be transferred.
+
+FACE INTEGRATION
+
+Preserve the user's:
+- Facial identity
+- Face structure
+- Eyes
+- Nose
+- Mouth
+- Jawline
+- Beard/facial hair where naturally compatible
+- Skin tone
+- Recognizable facial characteristics
+
+Naturally integrate the user's face into the reference male subject.
+
+Maintain:
+- Natural face-to-body proportions
+- Correct head angle
+- Correct perspective
+- Natural neck transition
+- Matching lighting
+- Matching shadows
+- Consistent skin tone
+- Photorealistic integration
+
+The result must look like the original Hindi poster person with the user's real facial identity naturally integrated.
+The face must NOT look pasted, artificial, distorted or like an obvious face swap.
+
+COMPOSITION LOCK
+
+Preserve the COMPLETE Hindi reference composition.
+
+Keep unchanged:
+- Top saffron/white/green brush strokes
+- "आज़ादी का अमृत महोत्सव"
+- "स्वतंत्रता दिवस"
+- "2026"
+- Indian flag and flagpole
+- Birds
+- India Gate
+- Red Fort
+- Male subject
+- White kurta
+- Tricolor stole
+- Patriotic face paint
+- Hand-held Indian flag
+- Tricolor brush strokes
+- Ashoka Chakra
+- Bottom crowd silhouettes
+- Bottom Indian flags
+- Bottom five sections
+- Overall patriotic landscape
+- Lighting
+- Visual hierarchy
+- Typography hierarchy
+
+DO NOT:
+- Redesign the poster
+- Create a new Hindi poster
+- Move the male subject
+- Change the pose
+- Change the clothing
+- Move the flag
+- Replace India Gate
+- Replace Red Fort
+- Remove landmarks
+- Add unrelated monuments
+- Add unrelated objects
+- Change the background
+- Zoom into the subject
+- Crop important elements
+- Recompose the poster
+
+The final result must look like the supplied Hindi reference with ONLY the user's facial identity personalized.
+
+HINDI TYPOGRAPHY
+
+Hindi typography is a critical part of this template.
+Preserve the reference text accurately and in Devanagari script.
+
+Required reference text:
+
+आज़ादी का अमृत महोत्सव
+
+स्वतंत्रता दिवस
+
+2026
+
+15 अगस्त 2026
+
+गर्व से कहो हम भारतीय हैं
+
+एक देश
+एक जनता
+एक गर्व
+एक पहचान
+एक भविष्य
+
+IMPORTANT:
+- Render Hindi text correctly in Devanagari.
+- Do NOT translate the Hindi text into English or Bengali.
+- Do NOT replace Hindi with random text.
+- Do NOT alter spelling.
+- Do NOT duplicate text.
+- Do NOT add random text.
+- Preserve the reference typography style, placement, scale and hierarchy.
+
+PERSONALIZATION
+
+Do NOT add the user's name.
+Do NOT add the user's city.
+Do NOT add any additional personalized text.
+
+The reference poster itself is the complete finished design.
+The ONLY user-specific personalization is the uploaded user's facial identity.
+
+MOST IMPORTANT RULE
+
+This is an IDENTITY PERSONALIZATION task, NOT a redesign task.
+
+Think:
+HINDI MASTER POSTER
++
+USER'S MALE FACIAL IDENTITY
+=
+FINAL HINDI POSTER
+
+The reference should account for approximately 95% of the final visual result.
+The user's photo should primarily affect ONLY the facial identity.
+
+OUTPUT
+
+Maintain:
+- Premium quality
+- Photorealistic male subject
+- Hindi cultural/localized identity
+- Patriotic Independence Day aesthetic
+- Cinematic lighting
+- Accurate Hindi typography
+- Exact reference composition
+
+Output aspect ratio: 4:5.`;
+    } else if (template.id === 'student') {
+      prompt = `The supplied Student Independence Day poster is the approved COMPLETE MASTER DESIGN.
+Treat the reference as a fixed finished poster, NOT as inspiration for creating a different student poster.
+
+This is a MALE-ONLY Student / Youth Independence Day template.
+
+IDENTITY RULE
+
+REFERENCE IMAGE = STUDENT BODY + CLOTHING + BACKPACK + BOOKS + POSE + COMPOSITION
+USER PHOTO = FACE / IDENTITY ONLY
+
+The final person MUST be male.
+Use the uploaded user's photo ONLY for facial identity.
+
+Preserve from the Student reference:
+- Male student body presentation
+- White shirt
+- Backpack
+- Orange and green books
+- Student appearance
+- Hairstyle where compatible with natural face integration
+- Body proportions
+- Exact pose
+- Posture
+- Hand position
+- Book position
+- Backpack position
+- Subject placement
+- Subject scale
+- Lighting
+- Overall composition
+
+DO NOT copy from the user's uploaded photo:
+- Shirt
+- T-shirt
+- Suit
+- Jacket
+- Kurta
+- Saree
+- Clothing
+- Accessories
+- Body
+- Body posture
+- Body language
+- Pose
+- Bags
+- Books
+
+The user's clothing MUST NOT override the reference student's clothing.
+The user's body MUST NOT override the reference student's body.
+The user's pose MUST NOT override the reference student's pose.
+
+Only the user's recognizable facial identity should be transferred.
+
+FACE INTEGRATION
+
+Preserve the user's:
+- Facial identity
+- Face structure
+- Eyes
+- Nose
+- Mouth
+- Jawline
+- Beard/facial hair where naturally compatible
+- Skin tone
+- Recognizable facial characteristics
+
+Naturally integrate the user's face into the reference student.
+
+Maintain:
+- Natural face-to-body proportions
+- Correct head angle
+- Correct perspective
+- Natural neck transition
+- Matching lighting
+- Matching shadows
+- Consistent skin tone
+- Photorealistic integration
+
+The result must look like the original Student poster person with the user's real facial identity naturally integrated.
+The face must NOT look pasted, artificial, distorted or like an obvious face swap.
+
+STUDENT IDENTITY MUST REMAIN
+
+The final person must continue to look like the SAME student from the reference.
+
+Keep:
+- White student shirt
+- Backpack
+- Books
+- Student posture
+- Student body presentation
+- Campus environment
+
+Do NOT transform the student into:
+- Businessman
+- Formal corporate professional
+- Traditional kurta-wearing person
+- Military person
+- Model
+- Generic adult portrait
+
+The uploaded user's appearance must not change the intended student identity of the reference.
+
+COMPOSITION LOCK
+
+Preserve the COMPLETE Student reference composition.
+
+Keep unchanged:
+- Top saffron/white/green brush strokes
+- HAPPY
+- INDEPENDENCE DAY
+- 2026
+- 15 AUGUST 2026
+- Proud to be an Indian
+- Large Indian flag
+- Birds
+- Ashoka Chakra
+- Campus / institutional background
+- Student crowd
+- Female and male student figures in the background
+- Main male student
+- Backpack
+- Books
+- Tricolor brush strokes
+- Bottom five sections
+- Bottom monument/city silhouette
+- Overall patriotic lighting
+- Visual hierarchy
+- Typography hierarchy
+
+DO NOT:
+- Redesign the poster
+- Create a different student poster
+- Move the main student
+- Change the student's pose
+- Remove the backpack
+- Remove the books
+- Change the student clothing
+- Move the Indian flag
+- Replace the campus background
+- Add unrelated monuments
+- Add unrelated objects
+- Change the overall lighting
+- Zoom into the face
+- Crop important elements
+- Recompose the poster
+
+The final result must look like the supplied Student reference with ONLY the user's facial identity personalized.
+
+TEXT
+
+Keep the reference text exactly as part of the master design:
+
+HAPPY
+INDEPENDENCE DAY
+2026
+15 AUGUST 2026
+Proud to be an Indian
+
+ONE NATION
+ONE PEOPLE
+ONE PRIDE
+ONE DREAM
+ONE FUTURE
+
+Do NOT add the user's name.
+Do NOT add the user's city.
+Do NOT add any additional personalized text.
+Do NOT invent text.
+Do NOT duplicate text.
+Do NOT change the existing wording.
+
+Maintain the reference typography style, placement, scale and hierarchy.
+
+MOST IMPORTANT RULE
+
+This is an IDENTITY PERSONALIZATION task, NOT a redesign task.
+
+Think:
+STUDENT MASTER POSTER
++
+USER'S MALE FACIAL IDENTITY
+=
+FINAL STUDENT POSTER
+
+The reference should account for approximately 95% of the final visual result.
+The user's photo should primarily affect ONLY the facial identity.
+
+OUTPUT
+
+Maintain:
+- Premium quality
+- Photorealistic male student
+- Youth/student identity
+- Patriotic Independence Day aesthetic
+- Cinematic lighting
+- Clean educational/campus atmosphere
+- Exact reference composition
+
+Output aspect ratio: 4:5.`;
     } else {
       prompt = `Create the final personalized version of the provided Classic India Independence Day poster.
 
@@ -282,13 +1219,13 @@ Do not duplicate text.
 The final result must be a faithful personalization of the original Classic India poster.`;
     }
     const aiConfig: OpenRouterProductionConfig = {
-      model: 'openai/gpt-image-2',
+      model: process.env.OPENROUTER_MODEL || 'openai/gpt-image-2',
       prompt,
       referenceImageBase64: imageUrl,
       userImageBase64: referenceImageUrl
     };
 
-    console.log(`Calling OpenRouter GPT Image 2 for full poster generation for ${name}...`);
+    console.log(`Calling OpenRouter Model (${aiConfig.model}) for full poster generation for ${name}...`);
     const aiResult = await generateOpenRouterImage(aiConfig);
 
     if (aiResult.error || !aiResult.imageBuffer) {

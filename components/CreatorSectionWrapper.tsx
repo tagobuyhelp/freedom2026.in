@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Script from "next/script";
 import QuickCreator from "./QuickCreator";
 import PosterGeneratorModal from "./PosterGeneratorModal";
 import PreGenerationModal from "./PreGenerationModal";
@@ -51,16 +52,88 @@ export default function CreatorSectionWrapper() {
     }
   };
 
-  const confirmGeneration = async () => {
+  const startPaymentFlow = async () => {
     if (!pendingData || isGenerating) return;
-    
-    setShowCommitment(false);
+    setIsGenerating(true);
+
+    try {
+      const { trackClientEvent, getSessionId } = await import("@/lib/analytics");
+      trackClientEvent("pre_generation_confirmed", { templateId: pendingData.template });
+
+      // 1. Initialize PosterSession
+      const initRes = await fetch("/api/poster/init", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: pendingData.name.trim(),
+          city: pendingData.city.trim(),
+          templateId: pendingData.template,
+        }),
+      });
+      const initData = await initRes.json();
+      if (!initRes.ok || !initData.success) {
+        throw new Error(initData.error || "Failed to initialize session.");
+      }
+      const posterId = initData.posterId;
+
+      // 2. Create Razorpay Order bound to this posterId
+      const orderRes = await fetch("/api/payment/create-order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-session-id": getSessionId(),
+        },
+        body: JSON.stringify({ posterId }),
+      });
+      const orderData = await orderRes.json();
+      if (!orderRes.ok || !orderData.success) {
+        throw new Error(orderData.error || "Failed to create payment order.");
+      }
+
+      setShowCommitment(false);
+      setIsGenerating(false);
+
+      // 3. Open Razorpay Checkout
+      const options = {
+        key: orderData.keyId,
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: "Freedom2026",
+        description: "Independence Day Poster Generation",
+        order_id: orderData.orderId,
+        handler: async function (response: any) {
+          await executeGeneration(posterId, response);
+        },
+        prefill: {
+          name: pendingData.name.trim(),
+        },
+        theme: { color: "#f97316" },
+        modal: {
+          ondismiss: function () {
+            alert("Payment cancelled. You can try again.");
+          },
+        },
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.on("payment.failed", function () {
+        alert("Payment failed. Please try again.");
+      });
+      rzp.open();
+    } catch (err: any) {
+      alert(err.message || "Something went wrong.");
+      setIsGenerating(false);
+    }
+  };
+
+  const executeGeneration = async (posterId: string, paymentDetails: any) => {
+    if (!pendingData) return;
     setIsGenerating(true);
     setPosterData({
-      name: pendingData.name,
-      city: pendingData.city,
+      name: pendingData.name.trim(),
+      city: pendingData.city.trim(),
       posterUrl: null,
-      posterId: null,
+      posterId,
       shareActionToken: null,
       template: pendingData.template,
       isLoading: true,
@@ -69,54 +142,54 @@ export default function CreatorSectionWrapper() {
 
     try {
       const { trackClientEvent, getSessionId } = await import("@/lib/analytics");
-      trackClientEvent("pre_generation_confirmed", { templateId: pendingData.template });
       trackClientEvent("poster_generation_started", { templateId: pendingData.template });
 
-      const formData = new FormData();
-      formData.append("name", pendingData.name);
-      formData.append("city", pendingData.city);
-      formData.append("templateId", pendingData.template);
-      
-      if (pendingData.photoFile) {
-        formData.append("photo", pendingData.photoFile);
-      } else {
-        alert("Please upload a photo first!");
-        setModalOpen(false);
-        setIsGenerating(false);
-        return;
+      if (
+        !paymentDetails?.razorpay_payment_id ||
+        !paymentDetails?.razorpay_order_id ||
+        !paymentDetails?.razorpay_signature
+      ) {
+        throw new Error("Payment confirmation missing required parameters from Razorpay.");
+      }
+      if (!pendingData.photoFile) {
+        throw new Error("Photo is required for poster generation. Please select your photo.");
       }
 
-      const response = await fetch("/api/poster/generate", {
+      const formData = new FormData();
+      formData.append("posterId", posterId);
+      formData.append("razorpay_payment_id", paymentDetails.razorpay_payment_id);
+      formData.append("razorpay_order_id", paymentDetails.razorpay_order_id);
+      formData.append("razorpay_signature", paymentDetails.razorpay_signature);
+      formData.append("name", pendingData.name.trim());
+      formData.append("city", pendingData.city.trim());
+      formData.append("templateId", pendingData.template);
+      formData.append("photo", pendingData.photoFile);
+
+      const res = await fetch("/api/poster/generate", {
         method: "POST",
-        headers: {
-          "x-session-id": getSessionId(),
-        },
+        headers: { "x-session-id": getSessionId() },
         body: formData,
       });
 
-      let result: any = {};
+      let data: any = {};
       try {
-        result = await response.json();
-      } catch (parseError) {
-        console.error("Failed to parse JSON response from server:", parseError);
+        data = await res.json();
+      } catch (e) {
+        console.error(e);
       }
-      
-      if (response.ok && result.success) {
-        setPosterData((prev) => ({
-          ...prev,
-          posterUrl: result.posterUrl,
-          posterId: result.posterId,
-          shareActionToken: result.shareActionToken,
-          isLoading: false,
-        }));
-      } else {
-        const errorMsg = result.error || result.details || "Server error while creating poster. Please try again.";
-        alert("Failed to generate poster: " + errorMsg);
-        setModalOpen(false);
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || data.details || "Generation failed after payment.");
       }
-    } catch (error: any) {
-      console.error("Poster generation error:", error);
-      alert("Network or server error while generating your poster. Please try again.");
+
+      setPosterData((prev) => ({
+        ...prev,
+        posterUrl: data.posterUrl,
+        shareActionToken: data.shareActionToken,
+        isLoading: false,
+      }));
+    } catch (err: any) {
+      alert(err.message || "Something went wrong during generation. Your payment was captured, please contact support or retry.");
       setModalOpen(false);
     } finally {
       setIsGenerating(false);
@@ -125,11 +198,12 @@ export default function CreatorSectionWrapper() {
 
   return (
     <>
+      <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
       <QuickCreator onGenerate={handlePreGenerate} />
       <PreGenerationModal 
         isOpen={showCommitment} 
         onClose={() => setShowCommitment(false)} 
-        onConfirm={confirmGeneration} 
+        onConfirm={startPaymentFlow} 
         isGenerating={isGenerating} 
       />
       <PosterGeneratorModal

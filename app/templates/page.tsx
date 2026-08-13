@@ -55,7 +55,7 @@ export default function TemplatesPage() {
           {/* ── Template grid ── */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-5">
             {TEMPLATES.map((tmpl) => {
-              const isAvailable = tmpl.id === "classic-india" || tmpl.id === "modern-india";
+              const isAvailable = tmpl.id === "classic-india" || tmpl.id === "modern-india" || tmpl.id === "business" || tmpl.id === "india-map" || tmpl.id === "portrait" || tmpl.id === "bengali" || tmpl.id === "hindi" || tmpl.id === "student";
               return (
                 <Link
                   key={tmpl.id}
