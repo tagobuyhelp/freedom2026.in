@@ -207,7 +207,7 @@ export const TEMPLATES = [
     isFeatured: true,
     isAvailable: true,
     tags: ["vision", "modern", "development", "infrastructure"],
-    thumbnailImage: "/images/national-vision-style.png",
+    thumbnailImage: "/images/National-Vision-Style.png",
   },
   {
     id: "premium-ai",
