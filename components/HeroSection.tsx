@@ -122,7 +122,31 @@ export default function HeroSection({ onScrollToCreator, onScrollToVideo }: Hero
               </div>
             </div>
 
+            {/* Stats Strip */}
+            <div className="pt-3 sm:pt-5 flex flex-wrap items-center justify-center lg:justify-start gap-4 sm:gap-8">
+              <div className="flex flex-col items-center lg:items-start">
+                <span className="text-2xl sm:text-3xl font-black text-[#0f172a] leading-none">50K+</span>
+                <span className="text-[10px] sm:text-xs font-semibold text-slate-500 mt-0.5">Posters Created</span>
+              </div>
+              <div className="w-px h-8 bg-slate-200 hidden sm:block" />
+              <div className="flex flex-col items-center lg:items-start">
+                <span className="text-2xl sm:text-3xl font-black text-[#f97316] leading-none">8+</span>
+                <span className="text-[10px] sm:text-xs font-semibold text-slate-500 mt-0.5">Templates</span>
+              </div>
+              <div className="w-px h-8 bg-slate-200 hidden sm:block" />
+              <div className="flex flex-col items-center lg:items-start">
+                <span className="text-2xl sm:text-3xl font-black text-[#15803d] leading-none">4.9★</span>
+                <span className="text-[10px] sm:text-xs font-semibold text-slate-500 mt-0.5">User Rating</span>
+              </div>
+              <div className="w-px h-8 bg-slate-200 hidden sm:block" />
+              <div className="flex flex-col items-center lg:items-start">
+                <span className="text-2xl sm:text-3xl font-black text-[#0f172a] leading-none">3</span>
+                <span className="text-[10px] sm:text-xs font-semibold text-slate-500 mt-0.5">Languages</span>
+              </div>
+            </div>
+
           </div>
+
 
           {/* ── Right Column: 3D Poster Stack matching Reference Image ── */}
           <div className="lg:col-span-6 relative flex flex-col items-center justify-center pt-2 lg:pt-0">

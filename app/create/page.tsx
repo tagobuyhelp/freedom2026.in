@@ -189,6 +189,29 @@ export default function CreatePage() {
           <p className="hidden sm:block text-slate-500 text-sm sm:text-base max-w-xl mx-auto">
             Add your name, photo and city, choose a template, and download your personalised poster in seconds.
           </p>
+
+          {/* Stats Strip */}
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-xs font-bold text-slate-600">
+            <div className="flex flex-col items-center">
+              <span className="text-base sm:text-lg font-black text-[#0f172a] leading-none">50K+</span>
+              <span className="text-[9px] sm:text-[10px] font-semibold text-slate-400 mt-0.5">Posters Created</span>
+            </div>
+            <div className="w-px h-6 bg-slate-200" />
+            <div className="flex flex-col items-center">
+              <span className="text-base sm:text-lg font-black text-[#f97316] leading-none">8+</span>
+              <span className="text-[9px] sm:text-[10px] font-semibold text-slate-400 mt-0.5">Templates</span>
+            </div>
+            <div className="w-px h-6 bg-slate-200" />
+            <div className="flex flex-col items-center">
+              <span className="text-base sm:text-lg font-black text-[#15803d] leading-none">4.9★</span>
+              <span className="text-[9px] sm:text-[10px] font-semibold text-slate-400 mt-0.5">User Rating</span>
+            </div>
+            <div className="w-px h-6 bg-slate-200" />
+            <div className="flex flex-col items-center">
+              <span className="text-base sm:text-lg font-black text-[#0f172a] leading-none">3</span>
+              <span className="text-[9px] sm:text-[10px] font-semibold text-slate-400 mt-0.5">Languages</span>
+            </div>
+          </div>
         </div>
       </div>
 
