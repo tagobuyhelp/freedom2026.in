@@ -27,6 +27,7 @@ export const TEMPLATE_CATEGORIES = [
  * @property {string} description
  * @property {boolean} isNew
  * @property {boolean} isFeatured
+ * @property {boolean} isAvailable
  * @property {string[]} tags
  * @property {string} [thumbnailImage]
  * @property {any} [canvasConfig]
