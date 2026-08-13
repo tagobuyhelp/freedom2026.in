@@ -368,91 +368,135 @@ Do not allow the user's uploaded clothing, body, pose or gender presentation to 
 Only the facial identity should come from the uploaded male user.`;
     } else if (template.id === 'india-map') {
       prompt = `The supplied India Map reference image is an APPROVED COMPLETE POSTER DESIGN.
+Do NOT redesign the concept. The current visual style is approved and should remain intact.
 
-This is a TEXT-PERSONALIZED poster only.
-Do NOT use the uploaded user photo to generate a person.
-Do NOT generate a new person.
-Do NOT recreate a user's body or face.
+USER IDENTITY — CRITICAL
+The current main person in the reference is back-facing. Change ONLY the person's presentation so that the personalized user can be clearly recognized.
+The main person should be:
+- Front-facing or natural 3/4 facing
+- Clearly visible from approximately waist/chest up
+- Looking naturally toward the viewer or slightly toward the flag
+- Naturally integrated into the patriotic scene
 
-Treat the reference image as a fixed master composition, NOT as inspiration for creating a new design.
+The user's uploaded photo should be used ONLY for facial identity.
 
-MASTER COMPOSITION
+REFERENCE = body + clothing + pose + flag + overall composition
+USER PHOTO = FACE / IDENTITY ONLY
 
-Preserve the reference composition as closely as possible:
-- Large India-shaped map as the primary central visual
-- Saffron/white/green India map treatment
-- India Gate integrated inside the map
+Preserve the reference person's:
+- Clothing
+- Body
+- Pose (adjusted naturally for front/3/4 facing)
+- Flag-holding concept
+- Patriotic presentation
+- Lighting
+- Overall visual style
+
+Do NOT transfer the user's clothing, body, accessories or background.
+The final face must be naturally integrated and photorealistic.
+
+INDIA MAP MUST REMAIN THE HERO BACKGROUND
+Preserve the existing:
+- Large India map
+- Saffron/orange upper map treatment
+- Green lower map treatment
+- India Gate inside the map
+- Landscape
 - Ashoka Chakra
-- "PROUD TO BE AN INDIAN" typography inside the map
-- Indian flag in the lower-right area
-- Person holding the Indian flag from behind
-- Crowd silhouettes at the bottom
-- Multiple Indian landmarks
+- Indian flag
 - Tricolor brush strokes
 - Patriotic sky
 - Birds
-- Overall warm cinematic lighting
-- Existing visual hierarchy
-- Existing typography hierarchy
-- Existing positioning and scale of major elements
+- Crowd
+- Monument silhouettes
 
-DO NOT redesign the poster.
-DO NOT create a generic India Map poster.
-DO NOT replace the reference composition with a different AI-generated composition.
+Do NOT replace the India map with a different design.
+Do NOT turn this into a normal portrait poster.
+The India Map must remain the dominant visual identity of the template.
 
-The final result should look like the supplied reference image with only the required personalization applied.
+MAIN PERSON PLACEMENT
+Move the main personalized person slightly upward and make the person large enough to be clearly visible.
+The subject must NOT:
+- Be cut off at the bottom
+- Touch the image boundary
+- Disappear into the crowd
+- Become too small
+- Be completely back-facing
 
-COMPOSITION LOCK
+The person's face must remain clearly visible.
+Maintain a natural relationship between the person and the India Map.
 
-Do NOT:
-- Move the India map
-- Change the map shape
-- Remove India Gate
-- Move the Ashoka Chakra
-- Change the flag position
-- Change the flag-holding person's position
-- Change the crowd
-- Remove landmarks
-- Add unrelated monuments
-- Change the tricolor brush strokes
-- Change the overall lighting
-- Zoom into any single object
-- Crop important elements
-- Recompose the poster
+CRITICAL FRAMING FIX
+The complete poster must fit inside the 4:5 output.
+Do NOT crop:
+- Top typography
+- HAPPY INDEPENDENCE DAY
+- 2026
+- India Map
+- India Gate
+- Main person
+- Indian flag
+- Ashoka Chakra
+- Tricolor brush strokes
+- Bottom crowd
+- Bottom monuments
+- Bottom decorative elements
 
-Keep the complete poster composition visible.
+Nothing important should touch or cross the image boundaries.
+If necessary, slightly zoom OUT the complete composition.
+Prioritize COMPLETE POSTER VISIBILITY over making the subject excessively large.
 
-DYNAMIC TEXT
-
-Preserve the existing reference text and typography style.
-
+PERSONALIZED TEXT
 Personalize the designated identity area using ONLY the following text:
 
 ${name.toUpperCase()}
 ${city.toUpperCase()}
 
-Do not invent names.
-Do not change spelling.
-Do not add random text.
+Place the name and city in a dedicated clean area.
+Do NOT place the name over the India map or over important landmarks.
+Do NOT combine the name and city into an unnatural text block.
+Do NOT invent or modify the user's name or city.
+
+EXISTING TEXT
+Preserve:
+HAPPY
+INDEPENDENCE DAY
+2026
+PROUD TO BE AN INDIAN
+
 Do not duplicate text.
-Do not remove existing patriotic text.
+Do not invent additional slogans.
+Maintain the existing typography hierarchy.
 
-Typography should remain visually consistent with the reference.
+DESIGN PRESERVATION
+The following must remain visually consistent with the approved reference:
+- Watercolor India map
+- Tricolor palette
+- India Gate
+- Ashoka Chakra
+- Indian flag
+- Patriotic crowd
+- Golden cinematic lighting
+- Saffron/green brush strokes
+- Premium Independence Day aesthetic
 
-IMPORTANT AI INSTRUCTION
+THIS IS NOT A REDESIGN. It is a controlled personalization and composition correction.
 
-This is NOT a full creative redesign request.
-Think of the task as: "Personalize an already finished India Map Independence Day poster."
-NOT: "Create a new Independence Day poster featuring an India map."
-
-The reference image should account for approximately 95% of the final visual composition.
-Only the approved dynamic text should change.
+MOST IMPORTANT RULE
+The final output should communicate immediately: "THIS IS THE USER'S PERSONALIZED INDEPENDENCE DAY POSTER"
+The user's face must be clearly visible.
+REFERENCE = approximately 90–95% of visual design
+USER PHOTO = primarily facial identity
+Do not let the uploaded user's clothing or body redesign the reference.
 
 OUTPUT
-
-Maintain the same premium cinematic patriotic visual quality as the supplied reference.
-Output aspect ratio: 4:5.
-The final result must be clean, premium, patriotic and production-ready.`;
+- 4:5 aspect ratio
+- Premium, Photorealistic, Cinematic, High-resolution
+- Complete poster inside frame
+- Clearly visible personalized face
+- No cropping
+- No random text
+- No unrelated objects`;
     } else if (template.id === 'portrait') {
       prompt = `The supplied Portrait reference image is the MASTER REFERENCE.
 
@@ -1081,6 +1125,40 @@ The uploaded user's appearance must not change the intended student identity of 
 
 COMPOSITION LOCK
 
+CRITICAL FRAMING REQUIREMENT:
+The entire supplied Student reference poster MUST fit completely inside the final 4:5 output.
+The AI must NOT crop, zoom, stretch, or reframe the reference composition.
+
+IMPORTANT:
+- The complete "HAPPY" text at the top MUST be fully visible.
+- "INDEPENDENCE DAY" MUST be fully visible.
+- "2026" MUST be fully visible.
+- "15 AUGUST 2026" MUST be fully visible.
+- "Proud to be an Indian" MUST be fully visible.
+- The complete main student MUST remain inside the frame.
+- The entire backpack and books must remain visible as in the reference.
+- The complete tricolor brush-stroke composition must remain visible.
+- The large Ashoka Chakra must remain fully visible.
+- ALL five bottom feature/icon sections MUST be fully visible.
+- The entire bottom monument/city silhouette MUST be visible.
+- Nothing important may be cut off by the top, bottom, left or right edges.
+
+NO CROPPING RULE:
+Do NOT allow any important text, icon, person, flag, monument or decorative element to touch the image boundary.
+Maintain a safe visual margin around the entire composition.
+The output should feel slightly zoomed OUT rather than zoomed IN if necessary to preserve the complete reference.
+If there is a conflict between enlarging the person and preserving the complete poster, ALWAYS prioritize preserving the COMPLETE POSTER.
+
+COMPOSITION PRIORITY:
+1. Complete reference composition
+2. Complete typography
+3. Complete main student
+4. Complete bottom feature section
+5. Correct identity integration
+6. Visual scale
+
+Never sacrifice the poster boundaries for a larger subject.
+
 Preserve the COMPLETE Student reference composition.
 
 Keep unchanged:
@@ -1148,8 +1226,45 @@ Do NOT invent text.
 Do NOT duplicate text.
 Do NOT change the existing wording.
 
-Maintain the reference typography style, placement, scale and hierarchy.
+CRITICAL FIX — TYPOGRAPHY SCALE:
+Reduce the overall typography scale by approximately 10–15% while preserving the existing typography hierarchy and style.
+Specifically:
+- Make "HAPPY" approximately 10–15% smaller.
+- Make "INDEPENDENCE DAY" approximately 10–15% smaller.
+- Make "2026" approximately 10–15% smaller.
+- Slightly reduce the size of "15 AUGUST 2026".
+- Slightly reduce "Proud to be an Indian".
+- Reduce spacing between the top typography elements proportionally.
 
+DO NOT remove any text.
+DO NOT change the font style.
+DO NOT redesign the typography.
+DO NOT make the text tiny.
+The typography should remain bold, premium and highly readable.
+
+TOP SAFE MARGIN:
+There MUST be a clear empty/safe margin above "HAPPY".
+"HAPPY" must be completely visible.
+No letter may touch or cross the top edge.
+The complete top typography block must fit comfortably inside the frame.
+
+BOTTOM SAFE MARGIN:
+The complete bottom feature section MUST be visible.
+All five icons and their labels (ONE NATION, ONE PEOPLE, ONE PRIDE, ONE DREAM, ONE FUTURE) must be fully visible.
+The bottom monument/city silhouette must also remain visible.
+Do NOT allow the bottom section to be cropped.
+
+IMPORTANT COMPOSITION RULE:
+DO NOT solve the problem by making the main student significantly smaller.
+The current student scale is good. Keep the main student approximately the same size.
+Instead:
+1. Reduce typography size by 10–15%.
+2. Reduce unnecessary vertical gaps.
+3. Slightly compress the overall upper typography block.
+4. Preserve enough space at the bottom for the complete five-icon section.
+5. Keep the complete poster inside the 4:5 frame.
+
+Maintain the reference typography style, placement, and hierarchy, but apply the 10-15% scale reduction as instructed.
 MOST IMPORTANT RULE
 
 This is an IDENTITY PERSONALIZATION task, NOT a redesign task.
