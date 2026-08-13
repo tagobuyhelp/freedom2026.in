@@ -22,19 +22,19 @@ interface QuickCreatorProps {
 const TEMPLATE_CARDS = [
   { id: "classic-india", title: "Classic", gender: "Male",   isAvailable: true, thumb: "/images/classic-india-style.png", alt: "Classic India Independence Day 2026 poster template" },
   { id: "modern-india",  title: "Modern",  gender: "Female", isAvailable: true, thumb: "/images/modern-india-style.png",  alt: "Modern India Independence Day 2026 poster template" },
-  { id: "india-map",     title: "India Map",                 isAvailable: true, thumb: "/images/india-map-style.png",     alt: "India Map Independence Day 2026 poster template" },
   { id: "business",      title: "Business",gender: "Male",   isAvailable: true, thumb: "/images/professional-style.png",  alt: "Business Independence Day 2026 poster template" },
+  { id: "india-map",     title: "India Map",                 isAvailable: true, thumb: "/images/india-map-style.png",     alt: "India Map Independence Day 2026 poster template" },
 ];
 
 const STYLE_TEMPLATES = [
   { id: "classic-india", title: "Classic India", gender: "Male",   isAvailable: true, thumb: "/images/classic-india-style.png", alt: "Classic India Independence Day 2026 poster template" },
   { id: "modern-india",  title: "Modern India",  gender: "Female", isAvailable: true, thumb: "/images/modern-india-style.png",  alt: "Modern India Independence Day 2026 poster template" },
+  { id: "business",      title: "Business",      gender: "Male",   isAvailable: true, thumb: "/images/professional-style.png",  alt: "Professional Independence Day 2026 poster template" },
   { id: "india-map",     title: "India Map",                       isAvailable: true, thumb: "/images/india-map-style.png",     alt: "India Map Independence Day 2026 poster template" },
   { id: "portrait",      title: "Portrait",      gender: "Female", isAvailable: true, thumb: "/images/portrait-style.png",      alt: "Portrait style Independence Day 2026 poster template" },
   { id: "bengali",       title: "Bengali",       gender: "Female", isAvailable: true, thumb: "/images/bengali-style.png",       alt: "Bengali Independence Day 2026 poster template" },
   { id: "hindi",         title: "Hindi",         gender: "Male",   isAvailable: true, thumb: "/images/hindi-style.png",         alt: "Hindi Independence Day 2026 poster template" },
   { id: "student",       title: "Student",       gender: "Male",   isAvailable: true, thumb: "/images/student-style.png",       alt: "Student Independence Day 2026 poster template" },
-  { id: "business",      title: "Business",      gender: "Male",   isAvailable: true, thumb: "/images/professional-style.png",  alt: "Professional Independence Day 2026 poster template" },
 ];
 
 export default function QuickCreator({ onGenerate }: QuickCreatorProps) {

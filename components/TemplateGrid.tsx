@@ -23,6 +23,13 @@ const TEMPLATES_LIST = [
     gradient: "from-slate-900 via-slate-800 to-orange-950",
   },
   {
+    id: "business",
+    title: "Business",
+    type: "Premium",
+    isPremium: true,
+    gradient: "from-slate-900 via-amber-950 to-slate-950",
+  },
+  {
     id: "india-map",
     title: "India Map",
     type: "",
@@ -58,13 +65,6 @@ const TEMPLATES_LIST = [
     type: "",
     isPremium: false,
     gradient: "from-cyan-600 via-blue-600 to-indigo-700",
-  },
-  {
-    id: "professional",
-    title: "Professional",
-    type: "Premium",
-    isPremium: true,
-    gradient: "from-slate-900 via-amber-950 to-slate-950",
   },
 ];
 
