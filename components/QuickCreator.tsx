@@ -24,7 +24,7 @@ const TEMPLATE_CARDS = [
   { id: "modern-india",  title: "Modern",  gender: "Female", isAvailable: true, thumb: "/images/modern-india-style.png",  alt: "Modern India Independence Day 2026 poster template" },
   { id: "business",      title: "Business",gender: "Male",   isAvailable: true, thumb: "/images/professional-style.png",  alt: "Business Independence Day 2026 poster template" },
   { id: "public-leader", title: "Public Leader",gender: "All",isAvailable: true, thumb: "/images/Public-Leader-Style.png", alt: "Public Leader Independence Day 2026 poster template" },
-  { id: "national-vision", title: "National Vision", gender: "All", isAvailable: true, thumb: "/images/national-vision-style.png", alt: "National Vision Independence Day 2026 poster template" },
+  { id: "national-vision", title: "National Vision", gender: "All", isAvailable: true, thumb: "/images/National-Vision-Style.png", alt: "National Vision Independence Day 2026 poster template" },
   { id: "india-map",     title: "India Map",                 isAvailable: true, thumb: "/images/india-map-style.png",     alt: "India Map Independence Day 2026 poster template" },
 ];
 
@@ -33,7 +33,7 @@ const STYLE_TEMPLATES = [
   { id: "modern-india",  title: "Modern India",  gender: "Female", isAvailable: true, thumb: "/images/modern-india-style.png",  alt: "Modern India Independence Day 2026 poster template" },
   { id: "business",      title: "Business",      gender: "Male",   isAvailable: true, thumb: "/images/professional-style.png",  alt: "Professional Independence Day 2026 poster template" },
   { id: "public-leader", title: "Public Leader", gender: "All",    isAvailable: true, thumb: "/images/Public-Leader-Style.png", alt: "Public Leader Independence Day 2026 poster template" },
-  { id: "national-vision", title: "National Vision", gender: "All", isAvailable: true, thumb: "/images/national-vision-style.png", alt: "National Vision Independence Day 2026 poster template" },
+  { id: "national-vision", title: "National Vision", gender: "All", isAvailable: true, thumb: "/images/National-Vision-Style.png", alt: "National Vision Independence Day 2026 poster template" },
   { id: "india-map",     title: "India Map",                       isAvailable: true, thumb: "/images/india-map-style.png",     alt: "India Map Independence Day 2026 poster template" },
   { id: "portrait",      title: "Portrait",      gender: "Female", isAvailable: true, thumb: "/images/portrait-style.png",      alt: "Portrait style Independence Day 2026 poster template" },
   { id: "bengali",       title: "Bengali",       gender: "Female", isAvailable: true, thumb: "/images/bengali-style.png",       alt: "Bengali Independence Day 2026 poster template" },
