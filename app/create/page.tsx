@@ -181,7 +181,7 @@ export default function CreatePage() {
       <div className="bg-white border-b border-slate-200 py-4 sm:py-10">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="inline-flex items-center gap-2 bg-orange-50 border border-orange-200 text-orange-700 text-xs font-bold px-3 py-1 rounded-full mb-2 sm:mb-3">
-            <IndianFlag className="w-4 h-3" /><span>POSTER CREATOR</span>
+            <IndianFlag className="w-4 h-3" /><span>AI POSTER CREATOR</span>
           </div>
           <h1 className="text-xl sm:text-3xl lg:text-4xl font-black text-slate-900 mb-1 sm:mb-2 leading-tight">
             Create Your Independence Day 2026 Poster

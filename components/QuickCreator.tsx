@@ -3,8 +3,8 @@
 import React, { useState, useRef } from "react";
 import Link from "next/link";
 import {
-  Upload, Sparkles, User, MapPin, Check, ChevronRight, ChevronLeft,
-  Edit3, Download, Share2, ArrowRight, Info
+  Upload, Sparkles, Check, ChevronRight, ChevronLeft,
+  Edit3, Download, Share2, ArrowRight, Camera, User, MapPin, AlertCircle
 } from "lucide-react";
 import IndianFlag from "./IndianFlag";
 import { trackClientEvent } from "@/lib/analytics";
@@ -20,21 +20,21 @@ interface QuickCreatorProps {
 }
 
 const TEMPLATE_CARDS = [
-  { id: "classic-india", title: "Classic", tag: "Free", gender: "Male", isAvailable: true, thumb: "/images/classic-india-style.png", alt: "Classic India Independence Day 2026 poster template" },
-  { id: "modern-india",  title: "Modern",  tag: "Free", gender: "Female", isAvailable: true, thumb: "/images/modern-india-style.png",  alt: "Modern India Independence Day 2026 poster template" },
-  { id: "india-map",     title: "India",   tag: "Free", isAvailable: true, thumb: "/images/india-map-style.png",     alt: "India Map Independence Day 2026 poster template" },
-  { id: "business",      title: "Business",tag: "Free", gender: "Male", isAvailable: true, thumb: "/images/professional-style.png", alt: "Business Independence Day 2026 poster template" },
+  { id: "classic-india", title: "Classic", gender: "Male",   isAvailable: true, thumb: "/images/classic-india-style.png", alt: "Classic India Independence Day 2026 poster template" },
+  { id: "modern-india",  title: "Modern",  gender: "Female", isAvailable: true, thumb: "/images/modern-india-style.png",  alt: "Modern India Independence Day 2026 poster template" },
+  { id: "india-map",     title: "India Map",                 isAvailable: true, thumb: "/images/india-map-style.png",     alt: "India Map Independence Day 2026 poster template" },
+  { id: "business",      title: "Business",gender: "Male",   isAvailable: true, thumb: "/images/professional-style.png",  alt: "Business Independence Day 2026 poster template" },
 ];
 
 const STYLE_TEMPLATES = [
-  { id: "classic-india", title: "Classic India", type: "", gender: "Male", isAvailable: true,  thumb: "/images/classic-india-style.png", alt: "Classic India Independence Day 2026 poster template" },
-  { id: "modern-india",  title: "Modern India",  type: "", gender: "Female", isAvailable: true, thumb: "/images/modern-india-style.png",  alt: "Modern India Independence Day 2026 poster template" },
-  { id: "india-map",     title: "India Map",     type: "", isAvailable: true, thumb: "/images/india-map-style.png",     alt: "India Map Independence Day 2026 poster template" },
-  { id: "portrait",      title: "Portrait",      type: "", gender: "Female", isAvailable: true, thumb: "/images/portrait-style.png",      alt: "Portrait style Independence Day 2026 poster template" },
-  { id: "bengali",       title: "Bengali",       type: "", gender: "Female", isAvailable: true, thumb: "/images/bengali-style.png",       alt: "Bengali Independence Day 2026 poster template" },
-  { id: "hindi",         title: "Hindi",         type: "", gender: "Male", isAvailable: true, thumb: "/images/hindi-style.png",         alt: "Hindi Independence Day 2026 poster template" },
-  { id: "student",       title: "Student",       type: "", gender: "Male", isAvailable: true, thumb: "/images/student-style.png",       alt: "Student Independence Day 2026 poster template" },
-  { id: "business",      title: "Business",      type: "", gender: "Male", isAvailable: true, thumb: "/images/professional-style.png",  alt: "Professional Independence Day 2026 poster template" },
+  { id: "classic-india", title: "Classic India", gender: "Male",   isAvailable: true, thumb: "/images/classic-india-style.png", alt: "Classic India Independence Day 2026 poster template" },
+  { id: "modern-india",  title: "Modern India",  gender: "Female", isAvailable: true, thumb: "/images/modern-india-style.png",  alt: "Modern India Independence Day 2026 poster template" },
+  { id: "india-map",     title: "India Map",                       isAvailable: true, thumb: "/images/india-map-style.png",     alt: "India Map Independence Day 2026 poster template" },
+  { id: "portrait",      title: "Portrait",      gender: "Female", isAvailable: true, thumb: "/images/portrait-style.png",      alt: "Portrait style Independence Day 2026 poster template" },
+  { id: "bengali",       title: "Bengali",       gender: "Female", isAvailable: true, thumb: "/images/bengali-style.png",       alt: "Bengali Independence Day 2026 poster template" },
+  { id: "hindi",         title: "Hindi",         gender: "Male",   isAvailable: true, thumb: "/images/hindi-style.png",         alt: "Hindi Independence Day 2026 poster template" },
+  { id: "student",       title: "Student",       gender: "Male",   isAvailable: true, thumb: "/images/student-style.png",       alt: "Student Independence Day 2026 poster template" },
+  { id: "business",      title: "Business",      gender: "Male",   isAvailable: true, thumb: "/images/professional-style.png",  alt: "Professional Independence Day 2026 poster template" },
 ];
 
 export default function QuickCreator({ onGenerate }: QuickCreatorProps) {
@@ -44,33 +44,37 @@ export default function QuickCreator({ onGenerate }: QuickCreatorProps) {
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const styleScrollRef = useRef<HTMLDivElement>(null);
 
   const scrollLeftStyle = () => {
-    if (styleScrollRef.current) styleScrollRef.current.scrollBy({ left: -300, behavior: 'smooth' });
+    if (styleScrollRef.current) styleScrollRef.current.scrollBy({ left: -300, behavior: "smooth" });
   };
   const scrollRightStyle = () => {
-    if (styleScrollRef.current) styleScrollRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+    if (styleScrollRef.current) styleScrollRef.current.scrollBy({ left: 300, behavior: "smooth" });
+  };
+
+  const processFile = (file: File) => {
+    if (file.size > 10 * 1024 * 1024) { setError("Please choose a photo smaller than 10 MB."); return; }
+    if (!file.type.match(/^image\/(jpeg|png|webp)$/)) { setError("Please upload a JPG, PNG or WebP image."); return; }
+    const url = URL.createObjectURL(file);
+    setPhotoUrl(url);
+    setPhotoFile(file);
+    setError(null);
+    trackClientEvent("photo_selected");
   };
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 10 * 1024 * 1024) {
-        setError("Please choose a photo smaller than 10 MB.");
-        return;
-      }
-      if (!file.type.match(/^image\/(jpeg|png|webp)$/)) {
-        setError("Please upload a JPG, PNG or WebP image.");
-        return;
-      }
-      const url = URL.createObjectURL(file);
-      setPhotoUrl(url);
-      setPhotoFile(file);
-      setError(null);
-      trackClientEvent("photo_selected");
-    }
+    if (file) processFile(file);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setDragOver(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) processFile(file);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -81,344 +85,353 @@ export default function QuickCreator({ onGenerate }: QuickCreatorProps) {
     }
     setError(null);
     trackClientEvent("poster_generation_started", { templateId: selectedTemplate });
-    onGenerate({
-      name: name.trim(),
-      city: city.trim(),
-      photoFile,
-      template: selectedTemplate,
-      language: "EN",
-    });
+    onGenerate({ name: name.trim(), city: city.trim(), photoFile, template: selectedTemplate, language: "EN" });
   };
+
+  const isReady = !!name.trim() && !!city.trim() && !!photoFile;
+  const completedSteps = [!!name.trim(), !!city.trim(), !!photoFile].filter(Boolean).length;
 
   return (
     <section
       id="creator"
-      className="py-6 sm:py-10 bg-white relative z-20 space-y-8"
+      className="py-8 sm:py-14 bg-gradient-to-b from-white to-slate-50/60 relative z-20 space-y-10"
       aria-label="Independence Day 2026 poster maker — create your personalized poster"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
 
-        {/* ══════════════════════════════════════════════════════════════════════
-            1. CREATE YOUR INDEPENDENCE DAY POSTER TOOL CARD
-        ══════════════════════════════════════════════════════════════════════ */}
-        <div className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-xs max-w-6xl mx-auto">
-          
-          {/* Section Header matching screenshot */}
-          <div className="text-center mb-6">
-            <h2 className="text-2xl sm:text-3xl font-black text-[#0f172a] tracking-tight">
-              Create Your Independence Day Poster
-            </h2>
-            <div className="my-1.5">
-              <IndianFlag className="w-5 h-3.5 mx-auto" />
-            </div>
-            <p className="text-xs sm:text-sm text-slate-500 font-medium">
-              Make yours in just a few seconds.
-            </p>
-          </div>
+        {/* ══ MAIN CREATOR CARD ══ */}
+        <div className="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden max-w-6xl mx-auto">
 
-          <form
-            onSubmit={handleSubmit}
-            className="space-y-6"
-            aria-label="Create your personalized Independence Day 2026 poster"
-          >
-            
-            {/* 4 Tool Fields Row matching screenshot */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 items-start">
+          {/* Top gradient accent bar */}
+          <div className="h-1.5 bg-gradient-to-r from-[#f97316] via-white to-[#15803d]" />
 
-              {/* 1. Your Name */}
-              <div className="lg:col-span-3">
-                <label htmlFor="creator-name" className="block text-xs font-bold text-slate-800 mb-1.5">
-                  Your Name
-                </label>
-                <input
-                  id="creator-name"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Enter your name"
-                  autoComplete="name"
-                  className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 font-medium placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500/25 focus:border-orange-500 text-sm transition-all h-[52px]"
-                />
+          <div className="p-6 sm:p-10">
+            {/* Header */}
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center gap-2 bg-orange-50 border border-orange-200 text-orange-700 text-[11px] font-extrabold px-3 py-1 rounded-full mb-3 tracking-wide uppercase">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>AI Poster Maker</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-black text-[#0f172a] tracking-tight">
+                Create Your Independence Day Poster
+              </h2>
+              <div className="flex items-center justify-center gap-1.5 mt-1.5">
+                <IndianFlag className="w-5 h-3.5" />
+                <p className="text-xs sm:text-sm text-slate-500 font-medium">
+                  Fill in the details below to get started
+                </p>
               </div>
 
-              {/* 2. Your City */}
-              <div className="lg:col-span-3">
-                <label htmlFor="creator-city" className="block text-xs font-bold text-slate-800 mb-1.5">
-                  Your City
-                </label>
-                <input
-                  id="creator-city"
-                  type="text"
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                  placeholder="Enter your city"
-                  autoComplete="address-level2"
-                  className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 font-medium placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500/25 focus:border-orange-500 text-sm transition-all h-[52px]"
-                />
-              </div>
-
-              {/* 3. Add Your Photo */}
-              <div className="lg:col-span-3">
-                <label className="block text-xs font-bold text-slate-800 mb-1.5">
-                  Add Your Photo <span className="text-orange-600">*</span>
-                </label>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handlePhotoUpload}
-                  accept="image/png, image/jpeg, image/jpg, image/webp"
-                  className="hidden"
-                />
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className={`w-full h-[52px] border-2 border-dashed rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-all px-3 ${
-                    photoUrl
-                      ? "border-emerald-500 bg-emerald-50/40"
-                      : "border-slate-300 hover:border-orange-500 bg-slate-50/50 hover:bg-orange-50/30"
-                  }`}
-                >
-                  {photoUrl ? (
-                    <div className="w-8 h-8 rounded-full overflow-hidden border border-emerald-500 shrink-0">
-                      <img src={photoUrl} alt="Preview" className="w-full h-full object-cover" />
+              {/* Progress indicator */}
+              <div className="flex items-center justify-center gap-2 mt-4">
+                {[1, 2, 3].map((step) => (
+                  <div key={step} className="flex items-center gap-2">
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black transition-all ${
+                      completedSteps >= step
+                        ? "bg-[#f97316] text-white shadow-sm shadow-orange-400/40"
+                        : "bg-slate-100 text-slate-400"
+                    }`}>
+                      {completedSteps >= step ? <Check className="w-3 h-3" /> : step}
                     </div>
-                  ) : (
-                    <Upload className="w-4 h-4 text-slate-600 shrink-0" />
-                  )}
-                  <div className="flex flex-col text-left leading-tight overflow-hidden">
-                    <span className={`text-xs font-bold truncate ${photoUrl ? "text-emerald-700" : "text-slate-800"}`}>
-                      {photoUrl ? "✓ Photo Ready" : "Upload Photo"}
-                    </span>
-                    <span className="text-[10px] text-slate-400">JPG, PNG, WebP (Max 10MB)</span>
+                    {step < 3 && <div className={`w-8 h-0.5 rounded-full transition-all ${completedSteps > step ? "bg-[#f97316]" : "bg-slate-200"}`} />}
                   </div>
-                </button>
+                ))}
+                <span className="ml-2 text-[11px] font-semibold text-slate-400">
+                  {completedSteps}/3 complete
+                </span>
               </div>
+            </div>
 
-              {/* 4. Choose Template Cards List */}
-              <div className="lg:col-span-3">
-                <label className="block text-xs font-bold text-slate-800 mb-1.5">
-                  Choose Template
-                </label>
-                <div
-                  className="flex items-center gap-2 overflow-x-auto scrollbar-none pb-1 pt-3 pr-3"
-                  role="radiogroup:ChooseTemplate"
-                  aria-label="Select an Independence Day poster template"
-                >
-                  {TEMPLATE_CARDS.map((tmpl) => {
-                    const isSelected = selectedTemplate === tmpl.id;
-                    const isAvailable = tmpl.isAvailable;
-                    return (
-                      <button
-                        key={tmpl.id}
-                        type="button"
-                        onClick={() => {
-                          if (isAvailable) {
-                            setSelectedTemplate(tmpl.id);
-                          }
-                        }}
-                        className={`flex flex-col items-center gap-1 p-1.5 rounded-xl border-2 transition-all shrink-0 cursor-pointer relative ${
-                          isSelected
-                            ? "border-[#f97316] bg-orange-50/50 shadow-xs"
-                            : "border-slate-200 bg-white opacity-70"
-                        }`}
-                      >
-                        {tmpl.gender && isAvailable && (
-                          <div className={`absolute -top-1.5 -right-1.5 shadow-sm px-1 py-0.5 rounded text-[7px] uppercase font-bold text-white tracking-wider z-20 ${tmpl.gender === "Male" ? "bg-blue-600" : "bg-pink-600"}`}>
-                            {tmpl.gender}
-                          </div>
-                        )}
-                        <div className="w-10 h-12 rounded-lg bg-slate-100 overflow-hidden relative border border-slate-200/50">
-                         <img src={tmpl.thumb} alt={tmpl.alt} className={`w-full h-full object-cover ${!isAvailable ? "grayscale" : ""}`} />
-                          {!isAvailable && (
-                            <div className="absolute inset-0 bg-black/30 flex items-center justify-center backdrop-blur-[0.5px]">
-                              <span className="bg-white/90 text-slate-800 text-[8px] font-bold px-1 py-0.5 rounded">Soon</span>
+            <form onSubmit={handleSubmit} className="space-y-6">
+
+              {/* Fields Row */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 items-start">
+
+                {/* Name */}
+                <div className="lg:col-span-3">
+                  <label htmlFor="creator-name" className="flex items-center gap-1.5 text-xs font-bold text-slate-700 mb-1.5">
+                    <User className="w-3.5 h-3.5 text-slate-400" />
+                    Your Name
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="creator-name"
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="e.g. Rahul Sharma"
+                      autoComplete="name"
+                      className={`w-full px-4 py-3 bg-white border-2 rounded-xl text-slate-900 font-medium placeholder-slate-300 focus:outline-none focus:ring-0 text-sm transition-all h-[52px] ${
+                        name.trim() ? "border-orange-400 bg-orange-50/20" : "border-slate-200 focus:border-orange-400"
+                      }`}
+                    />
+                    {name.trim() && (
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 bg-orange-500 rounded-full flex items-center justify-center">
+                        <Check className="w-2.5 h-2.5 text-white" />
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* City */}
+                <div className="lg:col-span-3">
+                  <label htmlFor="creator-city" className="flex items-center gap-1.5 text-xs font-bold text-slate-700 mb-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                    Your City
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="creator-city"
+                      type="text"
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                      placeholder="e.g. New Delhi"
+                      autoComplete="address-level2"
+                      className={`w-full px-4 py-3 bg-white border-2 rounded-xl text-slate-900 font-medium placeholder-slate-300 focus:outline-none focus:ring-0 text-sm transition-all h-[52px] ${
+                        city.trim() ? "border-orange-400 bg-orange-50/20" : "border-slate-200 focus:border-orange-400"
+                      }`}
+                    />
+                    {city.trim() && (
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 bg-orange-500 rounded-full flex items-center justify-center">
+                        <Check className="w-2.5 h-2.5 text-white" />
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Photo Upload */}
+                <div className="lg:col-span-3">
+                  <label className="flex items-center gap-1.5 text-xs font-bold text-slate-700 mb-1.5">
+                    <Camera className="w-3.5 h-3.5 text-slate-400" />
+                    Your Photo <span className="text-orange-500">*</span>
+                  </label>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handlePhotoUpload}
+                    accept="image/png, image/jpeg, image/jpg, image/webp"
+                    className="hidden"
+                  />
+                  <div
+                    onClick={() => fileInputRef.current?.click()}
+                    onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+                    onDragLeave={() => setDragOver(false)}
+                    onDrop={handleDrop}
+                    className={`w-full h-[52px] border-2 rounded-xl flex items-center gap-3 cursor-pointer transition-all px-3 select-none ${
+                      photoUrl
+                        ? "border-emerald-400 bg-emerald-50/40"
+                        : dragOver
+                        ? "border-orange-400 bg-orange-50/30 scale-[1.01]"
+                        : "border-dashed border-slate-300 hover:border-orange-400 bg-slate-50 hover:bg-orange-50/20"
+                    }`}
+                  >
+                    {photoUrl ? (
+                      <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-emerald-400 shrink-0 shadow-sm">
+                        <img src={photoUrl} alt="Preview" className="w-full h-full object-cover" />
+                      </div>
+                    ) : (
+                      <div className="w-9 h-9 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center shrink-0">
+                        <Upload className="w-4 h-4 text-slate-400" />
+                      </div>
+                    )}
+                    <div className="flex flex-col text-left leading-tight overflow-hidden min-w-0">
+                      <span className={`text-xs font-bold truncate ${photoUrl ? "text-emerald-700" : "text-slate-700"}`}>
+                        {photoUrl ? "✓ Photo Ready" : "Upload or drag photo"}
+                      </span>
+                      <span className="text-[10px] text-slate-400">JPG, PNG, WebP · Max 10MB</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Template Selector */}
+                <div className="lg:col-span-3">
+                  <label className="text-xs font-bold text-slate-700 mb-1.5 block">
+                    Choose Template
+                  </label>
+                  <div className="flex items-center gap-2 overflow-x-auto scrollbar-none pb-1 pt-3 pr-2">
+                    {TEMPLATE_CARDS.map((tmpl) => {
+                      const isSelected = selectedTemplate === tmpl.id;
+                      return (
+                        <button
+                          key={tmpl.id}
+                          type="button"
+                          onClick={() => setSelectedTemplate(tmpl.id)}
+                          className={`flex flex-col items-center gap-1 p-1.5 rounded-xl border-2 transition-all shrink-0 cursor-pointer relative ${
+                            isSelected
+                              ? "border-[#f97316] bg-orange-50/70 shadow-sm shadow-orange-200"
+                              : "border-slate-200 bg-white hover:border-orange-200"
+                          }`}
+                        >
+                          {tmpl.gender && (
+                            <div className={`absolute -top-1.5 -right-1.5 shadow-sm px-1 py-0.5 rounded text-[7px] uppercase font-bold text-white tracking-wider z-20 ${tmpl.gender === "Male" ? "bg-blue-600" : "bg-pink-500"}`}>
+                              {tmpl.gender}
                             </div>
                           )}
-                        </div>
-                        <span className="text-[10px] font-bold text-slate-800">{tmpl.title}</span>
-                      </button>
-                    );
-                  })}
-                  <div className="w-7 h-7 rounded-full border border-slate-200 flex items-center justify-center text-slate-500 shrink-0 cursor-pointer hover:bg-slate-50">
-                    <ChevronRight className="w-4 h-4" />
+                          <div className={`w-10 h-12 rounded-lg overflow-hidden relative border transition-all ${isSelected ? "border-orange-300" : "border-slate-200"}`}>
+                            <img src={tmpl.thumb} alt={tmpl.alt} className="w-full h-full object-cover" />
+                            {isSelected && (
+                              <div className="absolute inset-0 bg-orange-500/10 flex items-end justify-center pb-1">
+                                <Check className="w-3.5 h-3.5 text-orange-600 drop-shadow-sm" />
+                              </div>
+                            )}
+                          </div>
+                          <span className={`text-[10px] font-bold ${isSelected ? "text-orange-600" : "text-slate-600"}`}>{tmpl.title}</span>
+                        </button>
+                      );
+                    })}
+                    <Link
+                      href="/create"
+                      className="flex flex-col items-center gap-1 p-1.5 rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 hover:border-orange-300 hover:bg-orange-50/30 transition-all shrink-0 w-[54px]"
+                    >
+                      <div className="w-10 h-12 rounded-lg bg-slate-100 flex items-center justify-center">
+                        <ChevronRight className="w-4 h-4 text-slate-400" />
+                      </div>
+                      <span className="text-[10px] font-bold text-slate-400">More</span>
+                    </Link>
                   </div>
+                </div>
+
+              </div>
+
+              {/* Error */}
+              {error && (
+                <div className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-xl px-4 py-2.5">
+                  <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
+                  <p className="text-xs font-bold text-red-600">{error}</p>
+                </div>
+              )}
+
+              {/* Photo tip */}
+              <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/70 rounded-xl p-3.5 flex items-start gap-3 text-xs">
+                <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                  <Camera className="w-4 h-4 text-orange-600" />
+                </div>
+                <div>
+                  <span className="font-bold text-slate-900 block mb-0.5">📸 Best Photo Tips</span>
+                  <ul className="text-[11px] text-slate-600 leading-relaxed space-y-0.5">
+                    <li>• Clear portrait or selfie with face clearly visible</li>
+                    <li>• Well-lit photo — avoid dark, blurry or low-res images</li>
+                    <li>• No sunglasses, masks or hats covering your face</li>
+                  </ul>
                 </div>
               </div>
 
-            </div>
-
-            {/* Photo Guidelines / Tip Box */}
-            <div className="bg-orange-50/60 border border-orange-200/70 rounded-xl p-3.5 flex items-start gap-2.5 text-xs text-slate-700">
-              <Info className="w-4 h-4 text-orange-600 shrink-0 mt-0.5" />
-              <div className="space-y-0.5">
-                <span className="font-bold text-slate-900 block">
-                  Photo Instructions for Best Result:
-                </span>
-                <ul className="text-[11px] text-slate-600 leading-relaxed list-disc pl-4 space-y-0.5">
-                  <li>Upload a clear portrait or selfie with face clearly visible</li>
-                  <li>Use a well-lit photo (avoid dark, blurry, or low-resolution images)</li>
-                  <li>Avoid sunglasses, masks, or hats covering your face</li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Full-Width Solid Orange Button */}
-            <div className="pt-2">
-              {error && (
-                <p className="text-xs font-bold text-red-600 mb-2 text-center">{error}</p>
-              )}
+              {/* CTA Button */}
               <button
                 type="submit"
-                disabled={!name.trim() || !city.trim() || !photoFile}
-                className={`w-full py-3.5 rounded-xl font-extrabold text-base sm:text-lg flex items-center justify-center gap-2.5 transition-all ${
-                  !name.trim() || !city.trim() || !photoFile
-                    ? "bg-slate-200 text-slate-400 cursor-not-allowed"
-                    : "bg-[#f97316] hover:bg-[#ea580c] text-white shadow-md shadow-orange-500/20 hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+                disabled={!isReady}
+                className={`w-full py-4 rounded-2xl font-extrabold text-base sm:text-lg flex items-center justify-center gap-3 transition-all duration-200 ${
+                  isReady
+                    ? "bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/30 hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+                    : "bg-slate-100 text-slate-400 cursor-not-allowed"
                 }`}
               >
-                <span>Generate My Poster</span>
                 <Sparkles className="w-5 h-5" />
+                <span>{isReady ? "Generate My Poster →" : "Fill all details to continue"}</span>
               </button>
-            </div>
 
-          </form>
-
+            </form>
+          </div>
         </div>
 
-        {/* ══════════════════════════════════════════════════════════════════════
-            2. "CREATE. DOWNLOAD. SHARE." STEPS SECTION
-        ══════════════════════════════════════════════════════════════════════ */}
-        <div className="bg-[#f8fafc] border border-slate-200/70 rounded-3xl p-6 sm:p-8 max-w-6xl mx-auto">
-          <div className="text-center mb-8">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-[#0f172a] tracking-tight">
-              Create. Download. Share.
+        {/* ══ HOW IT WORKS STEPS ══ */}
+        <div className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 max-w-6xl mx-auto">
+          <div className="text-center mb-6">
+            <h2 className="text-xl sm:text-2xl font-black text-[#0f172a] tracking-tight">
+              How It Works
             </h2>
+            <p className="text-xs text-slate-500 font-medium mt-1">Ready in under 60 seconds</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
-            
-            {/* Step 01: Create */}
-            <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-2xs flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-[#f97316] text-white flex items-center justify-center shrink-0 shadow-md shadow-orange-500/20">
-                <Edit3 className="w-6 h-6 stroke-[2.2]" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[
+              { icon: Edit3,   num: "01", color: "bg-[#f97316]", shadow: "shadow-orange-400/25", title: "Create",   desc: "Add your name, photo and city." },
+              { icon: Download,num: "02", color: "bg-[#15803d]", shadow: "shadow-emerald-600/20", title: "Download", desc: "Get your personalized poster instantly." },
+              { icon: Share2,  num: "03", color: "bg-blue-600",  shadow: "shadow-blue-600/20",   title: "Share",    desc: "Share your Freedom Story everywhere." },
+            ].map(({ icon: Icon, num, color, shadow, title, desc }) => (
+              <div key={num} className="bg-slate-50/60 border border-slate-100 rounded-2xl p-5 flex items-center gap-4 hover:bg-white hover:shadow-sm hover:border-slate-200 transition-all">
+                <div className={`w-12 h-12 rounded-full ${color} text-white flex items-center justify-center shrink-0 shadow-md ${shadow}`}>
+                  <Icon className="w-5 h-5 stroke-[2.2]" />
+                </div>
+                <div>
+                  <div className={`text-[10px] font-black ${color.replace("bg-", "text-")}`}>{num}</div>
+                  <div className="font-extrabold text-slate-900 text-sm">{title}</div>
+                  <div className="text-xs text-slate-500 mt-0.5">{desc}</div>
+                </div>
               </div>
-              <div>
-                <div className="text-xs font-black text-[#f97316]">01</div>
-                <div className="font-extrabold text-slate-900 text-base">Create</div>
-                <div className="text-xs text-slate-500 mt-0.5">Add your name, photo and city.</div>
-              </div>
-            </div>
-
-            {/* Step 02: Download */}
-            <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-2xs flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-[#15803d] text-white flex items-center justify-center shrink-0 shadow-md shadow-emerald-600/20">
-                <Download className="w-6 h-6 stroke-[2.2]" />
-              </div>
-              <div>
-                <div className="text-xs font-black text-[#15803d]">02</div>
-                <div className="font-extrabold text-slate-900 text-base">Download</div>
-                <div className="text-xs text-slate-500 mt-0.5">Get your personalized poster or video instantly.</div>
-              </div>
-            </div>
-
-            {/* Step 03: Share */}
-            <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-2xs flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-md shadow-blue-600/20">
-                <Share2 className="w-6 h-6 stroke-[2.2]" />
-              </div>
-              <div>
-                <div className="text-xs font-black text-blue-600">03</div>
-                <div className="font-extrabold text-slate-900 text-base">Share</div>
-                <div className="text-xs text-slate-500 mt-0.5">Share your Freedom Story with friends and family.</div>
-              </div>
-            </div>
-
+            ))}
           </div>
         </div>
 
+        {/* ══ CHOOSE YOUR STYLE ══ */}
+        <div className="bg-gradient-to-br from-[#fffbf0] to-amber-50/40 border border-amber-200/60 rounded-3xl p-6 sm:p-8 max-w-6xl mx-auto">
 
-
-        {/* ══════════════════════════════════════════════════════════════════════
-            3. "CHOOSE YOUR STYLE 🇮🇳" TEMPLATE GALLERY SECTION
-        ══════════════════════════════════════════════════════════════════════ */}
-        <div className="bg-[#faf9f5] border border-amber-200/60 rounded-3xl p-6 sm:p-8 max-w-6xl mx-auto">
-          
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-xl sm:text-2xl font-black text-[#0f172a]">
-                  Choose Your Style
-                </h2>
+                <h2 className="text-xl sm:text-2xl font-black text-[#0f172a]">Choose Your Style</h2>
                 <IndianFlag className="w-5 h-3.5" />
               </div>
               <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1">
-                Pick a design and make it yours.
+                {STYLE_TEMPLATES.filter(t => t.isAvailable).length} templates available — pick a design and make it yours.
               </p>
             </div>
-            
+
             <div className="flex items-center gap-3 shrink-0">
-              <Link
-                href="/templates"
-                className="inline-flex items-center gap-1.5 text-[#15803d] hover:text-emerald-800 font-bold text-xs sm:text-sm"
-              >
-                <span>View All Templates</span>
+              <Link href="/templates" className="inline-flex items-center gap-1.5 text-[#15803d] hover:text-emerald-800 font-bold text-xs sm:text-sm">
+                <span>View All</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <div className="hidden lg:flex items-center gap-1 border-l border-amber-200/50 pl-3">
-                <button onClick={scrollLeftStyle} className="p-1.5 rounded-full bg-white hover:bg-amber-50 text-slate-600 transition-colors shadow-xs border border-amber-100">
+                <button onClick={scrollLeftStyle} className="p-1.5 rounded-full bg-white hover:bg-amber-100 text-slate-600 transition-colors shadow-xs border border-amber-100">
                   <ChevronLeft className="w-4 h-4" />
                 </button>
-                <button onClick={scrollRightStyle} className="p-1.5 rounded-full bg-white hover:bg-amber-50 text-slate-600 transition-colors shadow-xs border border-amber-100">
+                <button onClick={scrollRightStyle} className="p-1.5 rounded-full bg-white hover:bg-amber-100 text-slate-600 transition-colors shadow-xs border border-amber-100">
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Template Cards Scrollable Container */}
+          {/* Scrollable Template Gallery */}
           <div ref={styleScrollRef} className="flex gap-3 overflow-x-auto scrollbar-none pb-2 pt-3 pr-3 scroll-smooth">
             {STYLE_TEMPLATES.map((tmpl) => {
-              const isAvailable = tmpl.isAvailable;
               const isSelected = selectedTemplate === tmpl.id;
               return (
-                <div 
-                  key={tmpl.id} 
+                <div
+                  key={tmpl.id}
                   onClick={() => {
-                    if (isAvailable) {
+                    if (tmpl.isAvailable) {
                       setSelectedTemplate(tmpl.id);
                       document.getElementById("creator")?.scrollIntoView({ behavior: "smooth" });
                     }
                   }}
-                  className="group cursor-pointer relative shrink-0 w-[110px] sm:w-[130px] lg:w-[150px]"
+                  className="group cursor-pointer relative shrink-0 w-[110px] sm:w-[130px] lg:w-[148px]"
                 >
-                  {tmpl.gender && isAvailable && (
-                    <div className={`absolute -top-2 -right-2 shadow-sm px-1.5 py-0.5 rounded text-[8px] uppercase font-bold text-white tracking-wider z-20 ${tmpl.gender === "Male" ? "bg-blue-600" : "bg-pink-600"}`}>
+                  {tmpl.gender && (
+                    <div className={`absolute -top-2 -right-2 shadow-sm px-1.5 py-0.5 rounded text-[8px] uppercase font-bold text-white tracking-wider z-20 ${tmpl.gender === "Male" ? "bg-blue-600" : "bg-pink-500"}`}>
                       {tmpl.gender}
                     </div>
                   )}
-                  <div className={`aspect-[3/4] rounded-xl overflow-hidden relative transition-all border-2 ${
+                  <div className={`aspect-[3/4] rounded-xl overflow-hidden relative border-2 transition-all duration-200 ${
                     isSelected
-                      ? "border-orange-500 shadow-md shadow-orange-500/25 ring-2 ring-orange-500/20"
-                      : isAvailable
-                      ? "border-slate-200 bg-white group-hover:shadow-md group-hover:border-orange-300"
-                      : "border-slate-100 opacity-75 grayscale cursor-not-allowed"
+                      ? "border-orange-500 shadow-md shadow-orange-500/25 ring-2 ring-orange-500/20 scale-[1.02]"
+                      : "border-slate-200 group-hover:border-orange-300 group-hover:shadow-md group-hover:-translate-y-0.5"
                   }`}>
                     <img src={tmpl.thumb} alt={tmpl.alt} className="w-full h-full object-cover" />
                     {isSelected && (
-                      <div className="absolute top-1.5 left-1.5 w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center z-10 shadow-xs">
+                      <div className="absolute top-1.5 left-1.5 w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center z-10 shadow-sm">
                         <Check className="w-3 h-3 text-white" />
                       </div>
                     )}
-                    {!isAvailable && (
-                      <div className="absolute inset-0 bg-black/25 flex items-center justify-center backdrop-blur-[0.5px]">
-                        <span className="bg-white/90 text-slate-800 text-[9px] font-bold px-1.5 py-0.5 rounded shadow-2xs">Soon</span>
-                      </div>
+                    {isSelected && (
+                      <div className="absolute inset-0 bg-orange-500/5" />
                     )}
                   </div>
-                  <div className="text-center mt-2">
-                    <div className={`font-extrabold text-xs truncate ${isSelected ? "text-orange-600" : "text-slate-900"}`}>{tmpl.title}</div>
-                    <div className={`text-[10px] font-bold ${isSelected ? "text-orange-500" : isAvailable ? "text-[#15803d]" : "text-slate-400"}`}>
-                      {isSelected ? "Selected" : tmpl.type}
+                  <div className="text-center mt-2 px-1">
+                    <div className={`font-extrabold text-xs truncate ${isSelected ? "text-orange-600" : "text-slate-800"}`}>{tmpl.title}</div>
+                    <div className={`text-[10px] font-semibold mt-0.5 ${isSelected ? "text-orange-500" : "text-emerald-600"}`}>
+                      {isSelected ? "✓ Selected" : "Free"}
                     </div>
                   </div>
                 </div>
