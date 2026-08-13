@@ -51,9 +51,15 @@ export async function POST(request: Request) {
     if (!session) {
       return NextResponse.json({ error: 'Poster session not found' }, { status: 404 });
     }
-    if (session.status !== 'pending_payment') {
+
+    if (session.aiGenerationStatus === 'success') {
+      return NextResponse.json({ error: 'Poster has already been generated for this session.' }, { status: 400 });
+    }
+
+    if (session.status !== 'pending_payment' && session.status !== 'unlocked') {
       return NextResponse.json({ error: 'Session already consumed or invalid state' }, { status: 400 });
     }
+
     if (session.razorpayOrderId !== razorpay_order_id) {
       return NextResponse.json({ error: 'Order ID mismatch' }, { status: 400 });
     }
