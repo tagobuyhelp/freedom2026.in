@@ -126,7 +126,7 @@ export default function HeroSection({ onScrollToCreator, onScrollToVideo }: Hero
             <div className="pt-3 sm:pt-6 border-t border-slate-200/80 flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-7 text-[10px] sm:text-xs font-bold text-slate-700">
               <div className="flex items-center gap-1">
                 <Sun className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#f97316] stroke-[2.2]" />
-                <span>100% Free</span>
+                <span>Premium Quality</span>
               </div>
               <div className="flex items-center gap-1">
                 <UserCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-700 stroke-[2.2]" />

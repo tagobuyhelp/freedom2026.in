@@ -416,8 +416,8 @@ export default function QuickCreator({ onGenerate }: QuickCreatorProps) {
                   </div>
                   <div className="text-center mt-2 px-1">
                     <div className={`font-extrabold text-xs truncate ${isSelected ? "text-orange-600" : "text-slate-800"}`}>{tmpl.title}</div>
-                    <div className={`text-[10px] font-semibold mt-0.5 ${isSelected ? "text-orange-500" : "text-emerald-600"}`}>
-                      {isSelected ? "✓ Selected" : "Free"}
+                    <div className={`text-[10px] font-semibold mt-0.5 h-[15px] ${isSelected ? "text-orange-500" : "text-transparent"}`}>
+                      {isSelected ? "✓ Selected" : ""}
                     </div>
                   </div>
                 </div>
