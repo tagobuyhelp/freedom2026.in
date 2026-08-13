@@ -10,6 +10,7 @@ const TEMPLATES_PREVIEW = [
   { id: "classic-india",  title: "Classic India",   image: "/images/classic-india-style.png",  gender: "Male",   isAvailable: true },
   { id: "modern-india",   title: "Modern India",    image: "/images/modern-india-style.png",   gender: "Female", isAvailable: true },
   { id: "business",       title: "Business",        image: "/images/professional-style.png", gender: "Male",   isAvailable: true },
+  { id: "public-leader",  title: "Public Leader",   image: "/images/Public-Leader-Style.png", gender: "All",    isAvailable: true },
   { id: "portrait",       title: "Portrait",        image: "/images/portrait-style.png", gender: "Female", isAvailable: true },
   { id: "bengali",        title: "Bengali",         image: "/images/bengali-style.png", gender: "Female", isAvailable: true },
   { id: "hindi",          title: "Hindi",           image: "/images/hindi-style.png", gender: "Male",   isAvailable: true },

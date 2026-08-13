@@ -30,6 +30,13 @@ const TEMPLATES_LIST = [
     gradient: "from-slate-900 via-amber-950 to-slate-950",
   },
   {
+    id: "public-leader",
+    title: "Public Leader",
+    type: "Premium",
+    isPremium: true,
+    gradient: "from-blue-900 via-slate-900 to-orange-950",
+  },
+  {
     id: "india-map",
     title: "India Map",
     type: "",

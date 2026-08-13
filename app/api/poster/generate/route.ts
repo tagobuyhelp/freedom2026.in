@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     const razorpay_payment_id = formData.get('razorpay_payment_id') as string;
     const razorpay_order_id = formData.get('razorpay_order_id') as string;
     const razorpay_signature = formData.get('razorpay_signature') as string;
-    
+
     // We get these from the client, but we will rely on DB for name/city/templateId if we wanted.
     // To minimize changes, we still accept them and use them.
     const name = formData.get('name') as string;
@@ -366,6 +366,172 @@ USER PHOTO = FACE / IDENTITY ONLY
 This is a MALE-ONLY template.
 Do not allow the user's uploaded clothing, body, pose or gender presentation to change the reference person.
 Only the facial identity should come from the uploaded male user.`;
+    } else if (template.id === 'public-leader') {
+      prompt = `The supplied Public Leader reference poster is the MASTER VISUAL REFERENCE.
+This template is designed for people who want a dignified Indian public-leader / community-leader / political-leader style Independence Day poster.
+
+IMPORTANT:
+Do NOT redesign the visual concept.
+Do NOT create a completely different poster.
+The supplied reference must control the composition, visual hierarchy, environment, lighting and patriotic design.
+
+1. TEMPLATE PURPOSE
+The final poster should make the uploaded user look like a confident Indian public leader addressing people on Independence Day.
+The visual message should communicate: Leadership, Patriotism, Public service, Unity, Confidence, National pride.
+The design must remain generic and must NOT imitate any specific real politician or public figure.
+
+2. USER IDENTITY — CRITICAL
+USER PHOTO = FACIAL IDENTITY ONLY
+Use the uploaded user photo primarily for: Face identity, Facial structure, Eyes, Nose, Mouth, Jawline, Skin tone, Recognizable facial features, Beard/facial hair where applicable, Natural hairstyle where compatible.
+The final person must clearly resemble the uploaded user.
+The face must look naturally photographed as part of the reference scene.
+Do NOT create an artificial pasted face.
+Do NOT make the person look like a generic AI model.
+
+3. REFERENCE PERSON VS USER PHOTO
+REFERENCE IMAGE controls: Body, Clothing, Podium, Raised-hand gesture, Pose, Microphones, Public-speaking presentation, Crowd, Background, Parliament, India Gate, Indian flag, Lighting, Composition, Typography, Color palette.
+USER PHOTO controls: Facial identity ONLY.
+Do NOT transfer the user's: Shirt, T-shirt, Jacket, Suit, Saree, Kurta, Accessories, Body, Body proportions, Body language, Pose, Background.
+The uploaded user's clothing must NEVER override the Public Leader reference clothing.
+
+4. LEADER PRESENTATION
+Preserve the reference's public-speaking composition.
+The person should be: Standing behind the podium, Confident, Dignified, Looking toward the audience/viewer, One hand naturally raised in a leadership/public-speaking gesture, Upper body clearly visible, Face clearly visible, Naturally positioned behind the podium.
+Keep the podium and microphones.
+The subject must feel like a generic Indian public leader, NOT a celebrity or a specific real politician.
+
+5. MALE + FEMALE SUPPORT
+This template should support both male and female users.
+If the uploaded user is male: Use natural male presentation while preserving the reference composition.
+If the uploaded user is female: Use natural female presentation while preserving the same leadership composition.
+Do NOT force the reference male's facial characteristics onto a female user.
+Do NOT force a male body onto a female user.
+The user's gender identity should remain natural.
+However, the visual design, podium, gesture, background and overall leadership composition must remain consistent.
+
+6. CLOTHING
+Preserve the reference's formal Indian leadership clothing style:
+- White traditional/Indian shirt or kurta
+- Dark navy/blue Nehru-style vest/jacket
+- Small Indian flag pin where appropriate
+For female users, adapt the same formal Indian leadership aesthetic naturally without copying clothing from the user's uploaded photograph.
+Do NOT use the user's original clothing.
+
+7. BACKGROUND — PRESERVE
+Keep the approved reference environment:
+LEFT: Parliament-style government building
+RIGHT: India Gate
+BACKGROUND: Indian flags, Patriotic crowd, Warm golden lighting, Festive Independence Day atmosphere, Birds, Subtle tricolor elements.
+Do NOT replace these with unrelated architecture.
+Do NOT introduce random landmarks.
+Do NOT change the concept into a generic studio portrait.
+
+8. PODIUM
+The podium is a major part of this template.
+Preserve: Wooden podium structure, Dark navy front panel, Microphones, Gold national emblem-style visual, Leadership presentation.
+The podium should remain realistic and premium.
+Do not allow the podium to cover the user's face.
+The user's face must remain completely visible above the podium.
+
+9. TEXT — NO NAME OR CITY
+IMPORTANT:
+DO NOT generate: User name, City, Location, Political party name, Political party logo, Candidate designation, Election slogan, Campaign slogan, Phone number, Website, Social media handle.
+This is a PERSONALIZED PATRIOTIC LEADER STYLE, not an election campaign poster.
+Use only the approved generic Independence Day text.
+
+10. MAIN TYPOGRAPHY
+Preserve the reference typography:
+HAPPY
+INDEPENDENCE DAY
+2026
+15 AUGUST 2026
+Proud to be an Indian
+
+Typography should remain: Bold, Premium, Clean, Highly readable, Navy + saffron + green, Centrally balanced.
+Do NOT add extra text. Do NOT duplicate text. Do NOT invent text.
+
+11. PODIUM MESSAGE
+Preserve the reference's podium message:
+ONE NATION
+ONE PEOPLE
+ONE PRIDE
+ONE DREAM
+ONE FUTURE
+Keep it integrated naturally into the podium.
+Do not add the user's name or city.
+
+12. BOTTOM SECTION
+Preserve the complete bottom five-section design:
+ONE NATION United in Diversity
+ONE PEOPLE Stronger Together
+ONE PRIDE Proud to be Indian
+ONE DREAM Better Tomorrow
+ONE FUTURE For Our Future Generations
+All five sections must be fully visible. Do NOT crop the bottom section.
+
+13. COMPOSITION LOCK & TOP SAFE MARGIN
+CRITICAL FRAMING REQUIREMENT:
+The entire supplied Public Leader reference poster MUST fit completely inside the final 4:5 output.
+The AI must NOT crop, zoom, stretch, or reframe the reference composition.
+
+### TOP SAFE MARGIN FIX (CRITICAL)
+- The word "HAPPY" at the very top MUST NOT touch the image boundary.
+- Move the entire typography group ("HAPPY", "INDEPENDENCE DAY", etc.) slightly downward.
+- Reduce the overall typography scale by approximately 15% to create a safe margin.
+- Leave at least 5% empty vertical safe space (padding) above the word "HAPPY".
+- The complete "HAPPY" text MUST be fully visible inside the frame.
+
+NO CROPPING RULE:
+Do NOT allow any important text, person, podium, flag, or monument to touch the image boundary.
+Maintain a safe visual margin around the entire composition.
+The output should feel slightly zoomed OUT rather than zoomed IN to preserve the complete reference.
+If there is a conflict between enlarging the person and preserving the complete poster, ALWAYS prioritize preserving the COMPLETE POSTER.
+
+The following MUST remain fully visible:
+- HAPPY (Must have white space / safe margin above)
+- INDEPENDENCE DAY
+- 2026
+- 15 AUGUST 2026
+- Proud to be an Indian
+- User's complete visible face
+- Raised hand
+- Podium
+- Microphones
+- Parliament
+- India Gate
+- Indian flag
+- Crowd
+- Ashoka Chakra elements
+- Bottom five feature sections
+- Bottom monument silhouette
+
+COMPOSITION PRIORITY:
+1. Complete poster boundaries and safe margins
+2. Top typography ("HAPPY") visibility
+3. Complete podium and person
+4. Bottom feature sections
+5. Identity integration
+
+14. FACIAL INTEGRATION
+The user's face must match the reference scene naturally.
+Maintain: Correct face-to-body proportion, Natural neck transition, Correct head angle, Matching perspective, Matching lighting, Matching shadows, Consistent skin tone, Natural expression.
+Do not make the face appear pasted onto the reference body.
+
+15. VISUAL STYLE
+Maintain the approved reference aesthetic: Premium, Cinematic, Photorealistic, Professional, Patriotic, Warm golden lighting, Saffron / white / green / navy palette, High visual impact, Social-media ready.
+Avoid excessive AI fantasy effects. Avoid cartoon styling. Avoid unrealistic facial features.
+
+16. POLITICAL SAFETY / GENERIC LEADER RULE
+This is NOT a specific political campaign template.
+Do NOT imitate: Narendra Modi, Rahul Gandhi, Mamata Banerjee, Any MLA, Any MP, Any Chief Minister, Any political celebrity, Any other real public figure.
+The final person must remain the uploaded user with their own facial identity.
+Do not add any political party logo, symbol, flag or campaign branding.
+
+17. FINAL GENERATION LOGIC
+Think of the generation as:
+PUBLIC LEADER MASTER DESIGN + USER'S REAL FACIAL IDENTITY + NATURAL LEADERSHIP PRESENTATION = FINAL PERSONALIZED POSTER
+The reference should control approximately 90–95% of the visual design.
+The uploaded user photo should primarily control facial identity.`;
     } else if (template.id === 'india-map') {
       prompt = `The supplied India Map reference image is an APPROVED COMPLETE POSTER DESIGN.
 Do NOT redesign the concept. The current visual style is approved and should remain intact.
@@ -1378,7 +1544,7 @@ The final result must be a faithful personalization of the original Classic Indi
     session.razorpayPaymentId = razorpay_payment_id;
     session.paymentStatus = 'captured'; // Assumed from valid signature
     session.unlockedAt = new Date();
-    
+
     await session.save();
 
     const sessionId = request.headers.get('x-session-id');

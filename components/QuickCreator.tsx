@@ -23,6 +23,7 @@ const TEMPLATE_CARDS = [
   { id: "classic-india", title: "Classic", gender: "Male",   isAvailable: true, thumb: "/images/classic-india-style.png", alt: "Classic India Independence Day 2026 poster template" },
   { id: "modern-india",  title: "Modern",  gender: "Female", isAvailable: true, thumb: "/images/modern-india-style.png",  alt: "Modern India Independence Day 2026 poster template" },
   { id: "business",      title: "Business",gender: "Male",   isAvailable: true, thumb: "/images/professional-style.png",  alt: "Business Independence Day 2026 poster template" },
+  { id: "public-leader", title: "Public Leader",gender: "All",isAvailable: true, thumb: "/images/Public-Leader-Style.png", alt: "Public Leader Independence Day 2026 poster template" },
   { id: "india-map",     title: "India Map",                 isAvailable: true, thumb: "/images/india-map-style.png",     alt: "India Map Independence Day 2026 poster template" },
 ];
 
@@ -30,6 +31,7 @@ const STYLE_TEMPLATES = [
   { id: "classic-india", title: "Classic India", gender: "Male",   isAvailable: true, thumb: "/images/classic-india-style.png", alt: "Classic India Independence Day 2026 poster template" },
   { id: "modern-india",  title: "Modern India",  gender: "Female", isAvailable: true, thumb: "/images/modern-india-style.png",  alt: "Modern India Independence Day 2026 poster template" },
   { id: "business",      title: "Business",      gender: "Male",   isAvailable: true, thumb: "/images/professional-style.png",  alt: "Professional Independence Day 2026 poster template" },
+  { id: "public-leader", title: "Public Leader", gender: "All",    isAvailable: true, thumb: "/images/Public-Leader-Style.png", alt: "Public Leader Independence Day 2026 poster template" },
   { id: "india-map",     title: "India Map",                       isAvailable: true, thumb: "/images/india-map-style.png",     alt: "India Map Independence Day 2026 poster template" },
   { id: "portrait",      title: "Portrait",      gender: "Female", isAvailable: true, thumb: "/images/portrait-style.png",      alt: "Portrait style Independence Day 2026 poster template" },
   { id: "bengali",       title: "Bengali",       gender: "Female", isAvailable: true, thumb: "/images/bengali-style.png",       alt: "Bengali Independence Day 2026 poster template" },
@@ -46,14 +48,6 @@ export default function QuickCreator({ onGenerate }: QuickCreatorProps) {
   const [error, setError] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const styleScrollRef = useRef<HTMLDivElement>(null);
-
-  const scrollLeftStyle = () => {
-    if (styleScrollRef.current) styleScrollRef.current.scrollBy({ left: -300, behavior: "smooth" });
-  };
-  const scrollRightStyle = () => {
-    if (styleScrollRef.current) styleScrollRef.current.scrollBy({ left: 300, behavior: "smooth" });
-  };
 
   const processFile = (file: File) => {
     if (file.size > 10 * 1024 * 1024) { setError("Please choose a photo smaller than 10 MB."); return; }
@@ -382,19 +376,11 @@ export default function QuickCreator({ onGenerate }: QuickCreatorProps) {
                 <span>View All</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
-              <div className="hidden lg:flex items-center gap-1 border-l border-amber-200/50 pl-3">
-                <button onClick={scrollLeftStyle} className="p-1.5 rounded-full bg-white hover:bg-amber-100 text-slate-600 transition-colors shadow-xs border border-amber-100">
-                  <ChevronLeft className="w-4 h-4" />
-                </button>
-                <button onClick={scrollRightStyle} className="p-1.5 rounded-full bg-white hover:bg-amber-100 text-slate-600 transition-colors shadow-xs border border-amber-100">
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
             </div>
           </div>
 
-          {/* Scrollable Template Gallery */}
-          <div ref={styleScrollRef} className="flex gap-3 overflow-x-auto scrollbar-none pb-2 pt-3 pr-3 scroll-smooth">
+          {/* Wrap Template Gallery (Multiple Rows) */}
+          <div className="flex flex-wrap justify-center sm:justify-start gap-4 pb-2 pt-3">
             {STYLE_TEMPLATES.map((tmpl) => {
               const isSelected = selectedTemplate === tmpl.id;
               return (

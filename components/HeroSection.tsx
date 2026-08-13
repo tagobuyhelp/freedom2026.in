@@ -16,6 +16,7 @@ const HERO_IMAGES = [
   { src: "/images/classic-india-style.png", alt: "Classic India" },
   { src: "/images/modern-india-style.png", alt: "Modern India" },
   { src: "/images/professional-style.png", alt: "Business" },
+  { src: "/images/Public-Leader-Style.png", alt: "Public Leader" },
   { src: "/images/india-map-style.png", alt: "India Map" },
   { src: "/images/portrait-style.png", alt: "Portrait" },
   { src: "/images/bengali-style.png", alt: "Bengali" },
