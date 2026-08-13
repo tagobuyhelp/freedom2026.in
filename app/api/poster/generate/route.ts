@@ -532,6 +532,158 @@ Think of the generation as:
 PUBLIC LEADER MASTER DESIGN + USER'S REAL FACIAL IDENTITY + NATURAL LEADERSHIP PRESENTATION = FINAL PERSONALIZED POSTER
 The reference should control approximately 90–95% of the visual design.
 The uploaded user photo should primarily control facial identity.`;
+    } else if (template.id === 'national-vision') {
+      prompt = `Create the final personalized version of the provided National Vision Independence Day poster.
+
+The National Vision poster is the PRIMARY visual and design reference.
+
+==================================================
+1. MASTER DESIGN RATIO — CRITICAL
+==================================================
+The master poster design MUST be: 1086 × 1448 px (Aspect ratio: 3:4).
+Design the composition specifically for a 3:4 vertical poster.
+Do NOT create a 4:5 composition and crop it into 3:4.
+The entire visual hierarchy must be designed from the beginning for 3:4.
+
+==================================================
+2. CORE CONCEPT
+==================================================
+Create a premium patriotic Independence Day poster representing:
+NATIONAL VISION + INDIA'S DEVELOPMENT + MODERN INFRASTRUCTURE + TECHNOLOGY + INNOVATION + ECONOMIC GROWTH + A STRONGER FUTURE.
+The poster should communicate: "India is moving toward a stronger, smarter and more developed future."
+This is a modern patriotic vision poster. It is NOT a political campaign poster. It is NOT a rally poster. It is NOT a podium/public-speaker poster.
+
+==================================================
+3. USER PERSONALIZATION
+==================================================
+USER PHOTO = FACIAL IDENTITY ONLY.
+Use the uploaded user photo to preserve: Face identity, Facial structure, Eyes, Nose, Mouth, Jawline, Skin tone, Hair characteristics, Beard/facial hair where applicable, Recognizable facial features.
+The final person must clearly resemble the uploaded user.
+Do NOT paste the user's face unnaturally onto a generated body. The face must be naturally integrated into the scene.
+
+==================================================
+4. USER PRESENTATION
+==================================================
+The personalized person should appear as a: CONFIDENT, MODERN, PROFESSIONAL, VISIONARY INDIAN.
+Use a confident standing portrait.
+Preferred pose: Arms naturally folded, Upright posture, Slightly looking toward the future, Calm and confident facial expression, Premium professional appearance.
+Do NOT use: Podium, Microphones, Raised-hand speech gesture, Political rally pose.
+The subject should represent India's future rather than a politician.
+
+==================================================
+5. CLOTHING
+==================================================
+Use a premium Indian professional style.
+Preferred: White traditional Indian shirt / kurta, Dark navy Nehru-style vest, Small Indian flag pin, Clean premium styling.
+For female users, naturally adapt the clothing into an elegant professional Indian style.
+Do NOT transfer the user's original clothing from the uploaded photo.
+
+==================================================
+6. BACKGROUND — MODERN INDIA
+==================================================
+Create a sophisticated "Future India" environment.
+LEFT / BACKGROUND: Modern Indian skyline, High-rise buildings, Advanced transportation, Metro infrastructure, Renewable energy.
+CENTER: India Gate, Indian national architectural elements.
+RIGHT: Parliament-style Indian government architecture, Large Indian national flag.
+LOWER / BACKGROUND: Solar panels, Modern infrastructure, India development visualization, Economic growth graph, India map / digital India visualization.
+The elements should feel integrated into one realistic environment.
+
+==================================================
+7. NATIONAL DEVELOPMENT VISUAL LANGUAGE
+==================================================
+The design should visually represent: Infrastructure, Technology, Renewable Energy, Transportation, Digital India, Economic Growth, Innovation, Modern Cities.
+Include subtle visual elements such as: Metro/train, Solar panels, Modern skyline, Digital network elements, India map, Rising growth graph, Renewable energy, Modern roads/infrastructure.
+These elements must remain realistic and premium. Do NOT turn the poster into a technology advertisement. Patriotic identity must remain dominant.
+
+==================================================
+8. TOP TYPOGRAPHY
+==================================================
+Use this exact primary hierarchy:
+HAPPY
+INDEPENDENCE DAY
+2026
+15 AUGUST 2026
+Proud to be an Indian
+Typography: Bold, Premium, Modern, Highly readable, Navy, Saffron, India Green.
+The typography should have strong hierarchy.
+
+==================================================
+9. TEXT ACCURACY — CRITICAL
+==================================================
+Use ONLY approved template text. Do NOT invent random slogans. Do NOT generate random words. Do NOT duplicate text. Do NOT create misspelled words.
+
+==================================================
+10. SUPPORTING VISION TEXT
+==================================================
+Use a small supporting vision section similar to the reference design.
+Use only controlled text:
+OUR VISION
+OUR MISSION
+OUR NATION
+If additional development messaging is required, use fixed template text only. Do NOT let the AI invent long paragraphs.
+
+==================================================
+11. NO NAME / CITY
+==================================================
+IMPORTANT: DO NOT add: User name, City, Location, Political party name, Political party logo, Candidate designation, Election campaign text, Phone number, Website, Social media handle.
+
+==================================================
+12. MAIN SUBJECT SCALE
+==================================================
+The user should be one of the strongest visual elements. The face must remain clearly visible. Do not make the person too small. Do not let background architecture overpower the subject. Maintain a premium portrait composition.
+
+==================================================
+13. BOTTOM SECTION
+==================================================
+Create a premium five-part patriotic footer. Use:
+ONE NATION United in Diversity
+ONE PEOPLE Stronger Together
+ONE PRIDE Proud to be Indian
+ONE DREAM Better Tomorrow
+ONE FUTURE For Our Future Generations
+Use clean simple icons. All five sections must be fully visible. Do NOT crop the footer.
+
+==================================================
+14. COLOR PALETTE
+==================================================
+Primary colors: Saffron, White, India Green, Deep Navy.
+Use warm golden-hour lighting.
+The overall appearance should be: Premium, Cinematic, Patriotic, Modern, Sophisticated.
+Avoid excessive neon colors. Avoid overly saturated futuristic effects.
+
+==================================================
+15. 3:4 COMPOSITION SAFETY — CRITICAL
+==================================================
+The entire poster must be designed for: 1086 × 1448 (3:4).
+Maintain generous safe margins. Do NOT place important elements close to the top or bottom edge.
+The following must ALWAYS remain completely visible:
+HAPPY, INDEPENDENCE DAY, 2026, 15 AUGUST 2026, Proud to be an Indian, User's face, Main subject, Indian flag, India Gate, Parliament, Development elements, Bottom five sections.
+If space becomes limited: REDUCE TEXT SIZE SLIGHTLY.
+Do NOT crop text. Do NOT move text outside the frame. Do NOT crop the subject. Do NOT crop the footer.
+
+==================================================
+16. VISUAL DIFFERENCE FROM OTHER TEMPLATES
+==================================================
+This template MUST remain visually different from PUBLIC LEADER, PEOPLE'S LEADER, PORTRAIT, BUSINESS.
+Do NOT introduce: Podium, Microphones, Political rally, Large cheering crowd, Speech gesture.
+National Vision should be identified by: Modern India, Development, Technology, Infrastructure, Growth, Future, Professional portrait.
+
+==================================================
+17. GENDER SUPPORT
+==================================================
+The template must work for both Male and Female. For female users: Natural female appearance, Appropriate professional Indian clothing, Natural body proportions, Same National Vision composition. Do NOT force male styling onto female users.
+
+==================================================
+18. FACIAL QUALITY & 19. REAL-PERSON RESTRICTION
+==================================================
+Maintain accurate facial identity. Avoid generic AI faces or plastic skin. Do NOT imitate any real politician, celebrity or public figure. The final person must remain the uploaded user.
+
+==================================================
+20. FINAL VISUAL TARGET
+==================================================
+Visual formula:
+USER'S REAL IDENTITY + MODERN INDIA + INFRASTRUCTURE + TECHNOLOGY + INDIAN FLAG + INDIA GATE + PARLIAMENT + ECONOMIC GROWTH + PATRIOTIC DESIGN = NATIONAL VISION
+`;
     } else if (template.id === 'india-map') {
       prompt = `The supplied India Map reference image is an APPROVED COMPLETE POSTER DESIGN.
 Do NOT redesign the concept. The current visual style is approved and should remain intact.
@@ -1521,9 +1673,12 @@ The final result must be a faithful personalization of the original Classic Indi
 
     console.log(`AI Gen successful. Time: ${aiResult.generationTimeMs}ms`);
 
-    // Ensure output is exactly 1080x1350 (Full Quality)
+    // Ensure output is correct size based on template (National Vision is 3:4, others are 4:5)
+    const targetWidth = template.id === 'national-vision' ? 1086 : 1080;
+    const targetHeight = template.id === 'national-vision' ? 1448 : 1350;
+
     const normalizedBuffer = await sharp(aiResult.imageBuffer)
-      .resize(1080, 1350, { fit: 'cover' })
+      .resize(targetWidth, targetHeight, { fit: 'cover' })
       .png()
       .toBuffer();
 
@@ -1555,14 +1710,17 @@ The final result must be a faithful personalization of the original Classic Indi
           sessionId,
           posterId,
           templateId,
-          properties: { generationTimeMs: aiResult.generationTimeMs, width: 1080, height: 1350 }
+          properties: { generationTimeMs: aiResult.generationTimeMs, width: targetWidth, height: targetHeight }
         }).catch(err => console.error('Analytics error:', err))
       );
     }
 
     // 4. Create a lower-resolution preview for the frontend
+    const previewWidth = template.id === 'national-vision' ? 543 : 540;
+    const previewHeight = template.id === 'national-vision' ? 724 : 675;
+
     const previewBuffer = await sharp(normalizedBuffer)
-      .resize(540, 675, { fit: 'cover' }) // Half resolution for preview
+      .resize(previewWidth, previewHeight, { fit: 'cover' }) // Half resolution for preview
       .jpeg({ quality: 75 })
       .toBuffer();
 

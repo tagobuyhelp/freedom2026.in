@@ -9,9 +9,11 @@ interface PreGenerationModalProps {
   onClose: () => void;
   onConfirm: () => void;
   isGenerating: boolean;
+  price?: number;
+  tierName?: string;
 }
 
-export default function PreGenerationModal({ isOpen, onClose, onConfirm, isGenerating }: PreGenerationModalProps) {
+export default function PreGenerationModal({ isOpen, onClose, onConfirm, isGenerating, price = 49, tierName = "STANDARD" }: PreGenerationModalProps) {
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
@@ -80,9 +82,16 @@ export default function PreGenerationModal({ isOpen, onClose, onConfirm, isGener
             
             {/* Text details */}
             <div className="text-left space-y-1 sm:space-y-1.5 flex-1 relative z-10">
-
+              <div className="flex items-center gap-2 mb-1.5 sm:mb-2">
+                <span className={`text-[9px] sm:text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded
+                  ${tierName === 'EXCLUSIVE' ? 'bg-orange-100 text-orange-700 border border-orange-200' : 
+                    tierName === 'PREMIUM' ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' : 
+                    'bg-slate-100 text-slate-700 border border-slate-200'}`}>
+                  {tierName}
+                </span>
+              </div>
               <h4 className="text-[17px] sm:text-2xl font-black text-[#0f172a] flex items-center justify-start gap-1.5 sm:gap-2 leading-none">
-                <span className="text-orange-500">₹49</span>
+                <span className="text-orange-500">₹{price}</span>
                 <span className="text-[#94a3b8] text-sm sm:text-xl font-medium">—</span>
                 Instant Download
               </h4>
@@ -140,8 +149,8 @@ export default function PreGenerationModal({ isOpen, onClose, onConfirm, isGener
               <div className="flex items-center justify-center gap-1.5 sm:gap-2">
                 {isGenerating ? "Processing..." : (
                   <>
-                    <span className="hidden sm:inline">Pay ₹49 & Generate</span>
-                    <span className="sm:hidden">Pay ₹49 & Generate</span>
+                    <span className="hidden sm:inline">Pay ₹{price} & Generate</span>
+                    <span className="sm:hidden">Pay ₹{price} & Generate</span>
                   </>
                 )}
                 {!isGenerating && <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />}

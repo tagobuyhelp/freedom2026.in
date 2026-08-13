@@ -41,7 +41,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Poster is already unlocked' }, { status: 400 });
     }
 
-    const priceInr = parseInt(process.env.POSTER_DOWNLOAD_PRICE_INR || '49', 10);
+    let priceInr = 49; // Default STANDARD tier price
+
+    const premiumTemplates = ['india-map', 'patriot-creator'];
+    const exclusiveTemplates = ['public-leader', 'peoples-leader', 'national-vision', 'constitution-democracy'];
+
+    if (exclusiveTemplates.includes(session.templateId)) {
+      priceInr = 79; // EXCLUSIVE tier price
+    } else if (premiumTemplates.includes(session.templateId)) {
+      priceInr = 69; // PREMIUM tier price
+    }
+
     const amountInPaise = priceInr * 100;
 
     const options = {

@@ -74,7 +74,19 @@ export async function GET(request: Request) {
     const paidConversionRate = unlockScreenViews > 0 ? (paidUnlocks / unlockScreenViews) * 100 : 0;
     const downloadConversionRate = generationsSuccess > 0 ? (downloads / generationsSuccess) * 100 : 0;
 
-    const revenue = paidUnlocks * 49; // ₹49 per paid unlock
+    // Calculate revenue dynamically from payment_success events
+    const paymentSuccessEvents = await AnalyticsEvent.find({ eventName: 'payment_success' }, { 'properties.amountInr': 1 }).lean();
+    let revenue = 0;
+    for (const ev of paymentSuccessEvents) {
+      if (ev.properties && typeof ev.properties.amountInr === 'number') {
+        let amount = ev.properties.amountInr;
+        if (amount === 10) {
+          amount = 49; // Fix for historical hardcoded data
+        }
+        revenue += amount;
+      }
+    }
+
     const revenuePerVisitor = visitors > 0 ? revenue / visitors : 0;
     const revenuePerGeneratedPoster = generationsSuccess > 0 ? revenue / generationsSuccess : 0;
 

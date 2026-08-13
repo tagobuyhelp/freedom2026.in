@@ -204,7 +204,15 @@ export default function CreatorSectionWrapper() {
         isOpen={showCommitment} 
         onClose={() => setShowCommitment(false)} 
         onConfirm={startPaymentFlow} 
-        isGenerating={isGenerating} 
+        isGenerating={isGenerating}
+        price={
+          ['public-leader', 'national-vision', 'peoples-leader', 'constitution-democracy'].includes(pendingData?.template || '') ? 79 :
+          ['india-map', 'patriot-creator'].includes(pendingData?.template || '') ? 69 : 49
+        }
+        tierName={
+          ['public-leader', 'national-vision', 'peoples-leader', 'constitution-democracy'].includes(pendingData?.template || '') ? 'EXCLUSIVE' :
+          ['india-map', 'patriot-creator'].includes(pendingData?.template || '') ? 'PREMIUM' : 'STANDARD'
+        }
       />
       <PosterGeneratorModal
         isOpen={modalOpen}

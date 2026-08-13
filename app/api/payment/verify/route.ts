@@ -108,7 +108,7 @@ export async function POST(request: Request) {
             sessionId,
             posterId,
             templateId: finalSession.templateId,
-            properties: { unlockMethod: 'payment', amountInr: 10 }
+            properties: { unlockMethod: 'payment', amountInr: payment.amount ? Number(payment.amount) / 100 : 49 }
           }).catch(err => console.error('Analytics error:', err))
         );
       }

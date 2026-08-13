@@ -7,15 +7,16 @@ import PosterGeneratorModal from "@/components/PosterGeneratorModal";
 import Script from "next/script";
 
 const TEMPLATES_PREVIEW = [
-  { id: "classic-india",  title: "Classic India",   image: "/images/classic-india-style.png",  gender: "Male",   isAvailable: true },
-  { id: "modern-india",   title: "Modern India",    image: "/images/modern-india-style.png",   gender: "Female", isAvailable: true },
-  { id: "business",       title: "Business",        image: "/images/professional-style.png", gender: "Male",   isAvailable: true },
-  { id: "public-leader",  title: "Public Leader",   image: "/images/Public-Leader-Style.png", gender: "All",    isAvailable: true },
-  { id: "portrait",       title: "Portrait",        image: "/images/portrait-style.png", gender: "Female", isAvailable: true },
-  { id: "bengali",        title: "Bengali",         image: "/images/bengali-style.png", gender: "Female", isAvailable: true },
-  { id: "hindi",          title: "Hindi",           image: "/images/hindi-style.png", gender: "Male",   isAvailable: true },
-  { id: "student",        title: "Student",         image: "/images/student-style.png", gender: "Male",   isAvailable: true },
-  { id: "india-map",      title: "India Map",       image: "/images/india-map-style.png",                        isAvailable: true },
+  { id: "classic-india",  title: "Classic India",   image: "/images/classic-india-style.png",  gender: "Male",   isAvailable: true, price: 49, tierName: "STANDARD" },
+  { id: "modern-india",   title: "Modern India",    image: "/images/modern-india-style.png",   gender: "Female", isAvailable: true, price: 49, tierName: "STANDARD" },
+  { id: "business",       title: "Business",        image: "/images/professional-style.png", gender: "Male",   isAvailable: true, price: 49, tierName: "STANDARD" },
+  { id: "public-leader",  title: "Public Leader",   image: "/images/Public-Leader-Style.png", gender: "All",    isAvailable: true, price: 79, tierName: "EXCLUSIVE" },
+  { id: "national-vision", title: "National Vision", image: "/images/national-vision-style.png", gender: "All", isAvailable: true, price: 79, tierName: "EXCLUSIVE" },
+  { id: "portrait",       title: "Portrait",        image: "/images/portrait-style.png", gender: "Female", isAvailable: true, price: 49, tierName: "STANDARD" },
+  { id: "bengali",        title: "Bengali",         image: "/images/bengali-style.png", gender: "Female", isAvailable: true, price: 49, tierName: "STANDARD" },
+  { id: "hindi",          title: "Hindi",           image: "/images/hindi-style.png", gender: "Male",   isAvailable: true, price: 49, tierName: "STANDARD" },
+  { id: "student",        title: "Student",         image: "/images/student-style.png", gender: "Male",   isAvailable: true, price: 49, tierName: "STANDARD" },
+  { id: "india-map",      title: "India Map",       image: "/images/india-map-style.png",                        isAvailable: true, price: 69, tierName: "PREMIUM" },
 ];
 
 import PreGenerationModal from "@/components/PreGenerationModal";
@@ -415,7 +416,14 @@ export default function CreatePage() {
         </button>
       </div>
 
-      <PreGenerationModal isOpen={showCommitment} onClose={() => setShowCommitment(false)} onConfirm={startPaymentFlow} isGenerating={isGenerating} />
+      <PreGenerationModal 
+        isOpen={showCommitment} 
+        onClose={() => setShowCommitment(false)} 
+        onConfirm={startPaymentFlow} 
+        isGenerating={isGenerating} 
+        price={TEMPLATES_PREVIEW.find(t => t.id === selectedTemplate)?.price || 49}
+        tierName={TEMPLATES_PREVIEW.find(t => t.id === selectedTemplate)?.tierName || 'STANDARD'}
+      />
       <PosterGeneratorModal isOpen={modalOpen} onClose={() => setModalOpen(false)} data={posterData} />
     </div>
     </>

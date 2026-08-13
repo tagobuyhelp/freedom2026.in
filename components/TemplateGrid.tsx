@@ -37,6 +37,13 @@ const TEMPLATES_LIST = [
     gradient: "from-blue-900 via-slate-900 to-orange-950",
   },
   {
+    id: "national-vision",
+    title: "National Vision",
+    type: "Premium",
+    isPremium: true,
+    gradient: "from-blue-900 via-indigo-950 to-orange-950",
+  },
+  {
     id: "india-map",
     title: "India Map",
     type: "",
