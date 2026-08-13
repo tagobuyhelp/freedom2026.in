@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Edit3, Play, Sun, UserCheck, Share2, Smartphone } from "lucide-react";
 import IndianFlag from "./IndianFlag";
 import FlyingBirds from "./FlyingBirds";
@@ -12,7 +12,26 @@ interface HeroSectionProps {
 
 import { trackClientEvent } from "@/lib/analytics";
 
+const HERO_IMAGES = [
+  { src: "/images/classic-india-style.png", alt: "Classic India" },
+  { src: "/images/modern-india-style.png", alt: "Modern India" },
+  { src: "/images/professional-style.png", alt: "Business" },
+  { src: "/images/india-map-style.png", alt: "India Map" },
+  { src: "/images/portrait-style.png", alt: "Portrait" },
+  { src: "/images/bengali-style.png", alt: "Bengali" },
+  { src: "/images/hindi-style.png", alt: "Hindi" },
+  { src: "/images/student-style.png", alt: "Student" },
+];
+
 export default function HeroSection({ onScrollToCreator, onScrollToVideo }: HeroSectionProps) {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % HERO_IMAGES.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
   const handleCreatorClick = () => {
     trackClientEvent("poster_creator_started");
     if (onScrollToCreator) {
@@ -157,47 +176,42 @@ export default function HeroSection({ onScrollToCreator, onScrollToVideo }: Hero
             {/* Cards Stack Container */}
             <div className="relative w-full max-w-xs sm:max-w-xl flex items-center justify-center py-2 sm:py-6 min-h-[270px] sm:min-h-[420px]">
               
-              {/* Left Side Card (Proud To Be Indian) */}
-              <div className="absolute left-1 sm:left-4 top-4 sm:top-10 w-28 sm:w-48 bg-white p-1 rounded-2xl shadow-xl border border-slate-200/90 hero-float-left hover:z-30 hover:scale-105 transition-all duration-300">
-                <div className="aspect-[4/5] rounded-xl overflow-hidden relative shadow-inner">
+              {/* Left Side Card */}
+              <div className="absolute left-1 sm:left-4 top-4 sm:top-10 w-28 sm:w-48 bg-white p-1 rounded-2xl shadow-xl border border-slate-200/90 hero-float-left hover:z-30 hover:scale-105 transition-all duration-500">
+                <div className="aspect-[4/5] rounded-xl overflow-hidden relative shadow-inner bg-slate-100">
                   <img
-                    src="/images/modern-india-style.png"
-                    alt="Modern India Independence Day 2026 poster template"
-                    className="w-full h-full object-cover"
-                    loading="eager"
-                    fetchPriority="high"
-                    width={480}
-                    height={600}
+                    key={`left-${HERO_IMAGES[(activeIndex + 1) % HERO_IMAGES.length].src}`}
+                    src={HERO_IMAGES[(activeIndex + 1) % HERO_IMAGES.length].src}
+                    alt={HERO_IMAGES[(activeIndex + 1) % HERO_IMAGES.length].alt}
+                    className="w-full h-full object-cover animate-fade-in"
+                    loading="lazy"
                   />
                 </div>
               </div>
 
-              {/* Right Side Card (Waving Flag Sunset) */}
-              <div className="absolute right-1 sm:right-4 top-6 sm:top-14 w-28 sm:w-48 bg-white p-1 rounded-2xl shadow-xl border border-slate-200/90 hero-float-right hover:z-30 hover:scale-105 transition-all duration-300">
-                <div className="aspect-[4/5] rounded-xl overflow-hidden relative shadow-inner">
+              {/* Right Side Card */}
+              <div className="absolute right-1 sm:right-4 top-6 sm:top-14 w-28 sm:w-48 bg-white p-1 rounded-2xl shadow-xl border border-slate-200/90 hero-float-right hover:z-30 hover:scale-105 transition-all duration-500">
+                <div className="aspect-[4/5] rounded-xl overflow-hidden relative shadow-inner bg-slate-100">
                   <img
-                    src="/images/india-map-style.png"
-                    alt="India Map Independence Day 2026 poster template"
-                    className="w-full h-full object-cover"
-                    loading="eager"
-                    fetchPriority="high"
-                    width={480}
-                    height={600}
+                    key={`right-${HERO_IMAGES[(activeIndex + 2) % HERO_IMAGES.length].src}`}
+                    src={HERO_IMAGES[(activeIndex + 2) % HERO_IMAGES.length].src}
+                    alt={HERO_IMAGES[(activeIndex + 2) % HERO_IMAGES.length].alt}
+                    className="w-full h-full object-cover animate-fade-in"
+                    loading="lazy"
                   />
                 </div>
               </div>
 
-              {/* Center Prominent Main Poster Card (TARIK AZIZ) */}
-              <div className="relative w-48 sm:w-80 bg-white p-1.5 sm:p-2 rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 z-20 hero-float-center hover:scale-[1.03] transition-transform duration-300">
-                <div className="aspect-[4/5.2] rounded-xl sm:rounded-2xl overflow-hidden relative shadow-inner">
+              {/* Center Prominent Main Poster Card */}
+              <div className="relative w-48 sm:w-80 bg-white p-1.5 sm:p-2 rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 z-20 hero-float-center hover:scale-[1.03] transition-all duration-500">
+                <div className="aspect-[4/5.2] rounded-xl sm:rounded-2xl overflow-hidden relative shadow-inner bg-slate-100">
                   <img
-                    src="/images/classic-india-style.png"
-                    alt="Personalized Independence Day 2026 poster with India Gate and tricolor design"
-                    className="w-full h-full object-cover"
+                    key={`center-${HERO_IMAGES[activeIndex].src}`}
+                    src={HERO_IMAGES[activeIndex].src}
+                    alt={HERO_IMAGES[activeIndex].alt}
+                    className="w-full h-full object-cover animate-fade-in"
                     loading="eager"
                     fetchPriority="high"
-                    width={480}
-                    height={624}
                   />
                 </div>
               </div>
@@ -206,10 +220,18 @@ export default function HeroSection({ onScrollToCreator, onScrollToVideo }: Hero
 
             {/* Pagination Carousel Dots */}
             <div className="flex items-center justify-center gap-1.5 sm:gap-2 mt-1 sm:mt-2 z-20">
-              <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#f97316] shadow-2xs" />
-              <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-slate-300" />
-              <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-slate-300" />
-              <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-slate-300" />
+              {HERO_IMAGES.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActiveIndex(i)}
+                  className={`rounded-full transition-all duration-300 ${
+                    activeIndex === i 
+                      ? "w-2.5 h-2.5 sm:w-3 sm:h-3 bg-[#f97316] shadow-2xs" 
+                      : "w-2 h-2 sm:w-2.5 sm:h-2.5 bg-slate-300 hover:bg-slate-400"
+                  }`}
+                  aria-label={`Go to slide ${i + 1}`}
+                />
+              ))}
             </div>
 
           </div>
