@@ -5,7 +5,7 @@ import { Sparkles, Camera, Check, AlertCircle, ChevronRight, ChevronLeft } from 
 import IndianFlag from "@/components/IndianFlag";
 import PosterGeneratorModal from "@/components/PosterGeneratorModal";
 import Script from "next/script";
-import { getCurrentPrice } from "@/lib/experiment";
+import { getTemplatePricing } from "@/lib/pricing";
 
 const TEMPLATES_PREVIEW = [
   { id: "classic-india",  title: "Classic India",   image: "/images/classic-india-style.png",  gender: "Male",   isAvailable: true, price: 49, tierName: "STANDARD" },
@@ -63,8 +63,13 @@ export default function CreatePage() {
     setShowCommitment(true);
     try {
       const { trackClientEvent } = await import("@/lib/analytics");
-      const basePrice = TEMPLATES_PREVIEW.find(t => t.id === selectedTemplate)?.price || 49;
-      trackClientEvent("pre_generation_offer_viewed", { templateId: selectedTemplate, price: getCurrentPrice(basePrice) });
+      const { basePrice, sellingPrice } = getTemplatePricing(selectedTemplate);
+      trackClientEvent("pre_generation_offer_viewed", {
+        templateId: selectedTemplate,
+        price: sellingPrice,
+        basePrice,
+        sellingPrice,
+      });
     } catch (e) { console.error(e); }
   };
 
@@ -75,8 +80,13 @@ export default function CreatePage() {
     
     try {
       const { trackClientEvent, getSessionId } = await import("@/lib/analytics");
-      const basePrice = TEMPLATES_PREVIEW.find(t => t.id === selectedTemplate)?.price || 49;
-      trackClientEvent("pre_generation_confirmed", { templateId: selectedTemplate, price: getCurrentPrice(basePrice) });
+      const { basePrice, sellingPrice } = getTemplatePricing(selectedTemplate);
+      trackClientEvent("pre_generation_confirmed", {
+        templateId: selectedTemplate,
+        price: sellingPrice,
+        basePrice,
+        sellingPrice,
+      });
 
       // 1. Initialize PosterSession (no photo uploaded yet)
       const initRes = await fetch("/api/poster/init", {
@@ -143,8 +153,13 @@ export default function CreatePage() {
     
     try {
       const { trackClientEvent, getSessionId } = await import("@/lib/analytics");
-      const basePrice = TEMPLATES_PREVIEW.find(t => t.id === selectedTemplate)?.price || 49;
-      trackClientEvent("poster_generation_started", { templateId: selectedTemplate, price: getCurrentPrice(basePrice) });
+      const { basePrice, sellingPrice } = getTemplatePricing(selectedTemplate);
+      trackClientEvent("poster_generation_started", {
+        templateId: selectedTemplate,
+        price: sellingPrice,
+        basePrice,
+        sellingPrice,
+      });
       
       if (!paymentDetails?.razorpay_payment_id || !paymentDetails?.razorpay_order_id || !paymentDetails?.razorpay_signature) {
         throw new Error("Payment confirmation missing required payment parameters from Razorpay.");
@@ -425,8 +440,7 @@ export default function CreatePage() {
         onClose={() => setShowCommitment(false)} 
         onConfirm={startPaymentFlow} 
         isGenerating={isGenerating} 
-        price={getCurrentPrice(TEMPLATES_PREVIEW.find(t => t.id === selectedTemplate)?.price || 49)}
-        tierName={TEMPLATES_PREVIEW.find(t => t.id === selectedTemplate)?.tierName || 'STANDARD'}
+        templateId={selectedTemplate}
         templateName={TEMPLATES_PREVIEW.find(t => t.id === selectedTemplate)?.title}
       />
       <PosterGeneratorModal isOpen={modalOpen} onClose={() => setModalOpen(false)} data={posterData} />

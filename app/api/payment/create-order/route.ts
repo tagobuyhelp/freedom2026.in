@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import Razorpay from 'razorpay';
 import dbConnect from '@/lib/db';
 import { PosterSession } from '@/lib/models/PosterSession';
-import { getCurrentPrice } from '@/lib/experiment';
+import { getTemplatePricing } from '@/lib/pricing';
 
 function getRazorpay() {
   const key_id = process.env.RAZORPAY_KEY_ID;
@@ -42,18 +42,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Poster is already unlocked' }, { status: 400 });
     }
 
-    let priceInr = 49; // Default STANDARD tier price
-
-    const premiumTemplates = ['india-map', 'patriot-creator'];
-    const exclusiveTemplates = ['public-leader', 'peoples-leader', 'national-vision', 'constitution-democracy'];
-
-    if (exclusiveTemplates.includes(session.templateId)) {
-      priceInr = 79; // EXCLUSIVE tier price
-    } else if (premiumTemplates.includes(session.templateId)) {
-      priceInr = 69; // PREMIUM tier price
-    }
-
-    priceInr = getCurrentPrice(priceInr);
+    const { sellingPrice } = getTemplatePricing(session.templateId);
+    const priceInr = sellingPrice;
 
     const amountInPaise = priceInr * 100;
 

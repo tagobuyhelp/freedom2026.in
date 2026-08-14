@@ -5,8 +5,8 @@ import Script from "next/script";
 import QuickCreator from "./QuickCreator";
 import PosterGeneratorModal from "./PosterGeneratorModal";
 import PreGenerationModal from "./PreGenerationModal";
-import { getCurrentPrice } from "@/lib/experiment";
 import { TEMPLATES } from "@/data/templates";
+import { getTemplatePricing } from "@/lib/pricing";
 
 export default function CreatorSectionWrapper() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -48,9 +48,13 @@ export default function CreatorSectionWrapper() {
     setShowCommitment(true);
     try {
       const { trackClientEvent } = await import("@/lib/analytics");
-      const basePrice = ['public-leader', 'national-vision', 'peoples-leader', 'constitution-democracy'].includes(data.template) ? 79 :
-                        ['india-map', 'patriot-creator'].includes(data.template) ? 69 : 49;
-      trackClientEvent("pre_generation_offer_viewed", { templateId: data.template, price: getCurrentPrice(basePrice) });
+      const { basePrice, sellingPrice } = getTemplatePricing(data.template);
+      trackClientEvent("pre_generation_offer_viewed", {
+        templateId: data.template,
+        price: sellingPrice,
+        basePrice,
+        sellingPrice,
+      });
     } catch (e) {
       console.error(e);
     }
@@ -62,9 +66,13 @@ export default function CreatorSectionWrapper() {
 
     try {
       const { trackClientEvent, getSessionId } = await import("@/lib/analytics");
-      const basePrice = ['public-leader', 'national-vision', 'peoples-leader', 'constitution-democracy'].includes(pendingData.template) ? 79 :
-                        ['india-map', 'patriot-creator'].includes(pendingData.template) ? 69 : 49;
-      trackClientEvent("pre_generation_confirmed", { templateId: pendingData.template, price: getCurrentPrice(basePrice) });
+      const { basePrice, sellingPrice } = getTemplatePricing(pendingData.template);
+      trackClientEvent("pre_generation_confirmed", {
+        templateId: pendingData.template,
+        price: sellingPrice,
+        basePrice,
+        sellingPrice,
+      });
 
       // 1. Initialize PosterSession
       const initRes = await fetch("/api/poster/init", {
@@ -148,9 +156,13 @@ export default function CreatorSectionWrapper() {
 
     try {
       const { trackClientEvent, getSessionId } = await import("@/lib/analytics");
-      const basePrice = ['public-leader', 'national-vision', 'peoples-leader', 'constitution-democracy'].includes(pendingData.template) ? 79 :
-                        ['india-map', 'patriot-creator'].includes(pendingData.template) ? 69 : 49;
-      trackClientEvent("poster_generation_started", { templateId: pendingData.template, price: getCurrentPrice(basePrice) });
+      const { basePrice, sellingPrice } = getTemplatePricing(pendingData.template);
+      trackClientEvent("poster_generation_started", {
+        templateId: pendingData.template,
+        price: sellingPrice,
+        basePrice,
+        sellingPrice,
+      });
 
       if (
         !paymentDetails?.razorpay_payment_id ||
@@ -213,16 +225,7 @@ export default function CreatorSectionWrapper() {
         onClose={() => setShowCommitment(false)} 
         onConfirm={startPaymentFlow} 
         isGenerating={isGenerating}
-        price={
-          getCurrentPrice(
-            ['public-leader', 'national-vision', 'peoples-leader', 'constitution-democracy'].includes(pendingData?.template || '') ? 79 :
-            ['india-map', 'patriot-creator'].includes(pendingData?.template || '') ? 69 : 49
-          )
-        }
-        tierName={
-          ['public-leader', 'national-vision', 'peoples-leader', 'constitution-democracy'].includes(pendingData?.template || '') ? 'EXCLUSIVE' :
-          ['india-map', 'patriot-creator'].includes(pendingData?.template || '') ? 'PREMIUM' : 'STANDARD'
-        }
+        templateId={pendingData?.template}
         templateName={
           TEMPLATES.find(t => t.id === pendingData?.template)?.title
         }

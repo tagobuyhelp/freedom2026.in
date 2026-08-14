@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import IndianFlag from "./IndianFlag";
 import { trackClientEvent } from "@/lib/analytics";
+import { getTemplatePricing } from "@/lib/pricing";
 
 interface QuickCreatorProps {
   onGenerate: (data: {

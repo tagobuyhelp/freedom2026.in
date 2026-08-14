@@ -3,6 +3,7 @@ import crypto from 'crypto';
 import dbConnect from '@/lib/db';
 import { PosterSession } from '@/lib/models/PosterSession';
 import Razorpay from 'razorpay';
+import { getTemplatePricing } from '@/lib/pricing';
 
 function getRazorpay() {
   const key_id = process.env.RAZORPAY_KEY_ID;
@@ -102,13 +103,19 @@ export async function POST(request: Request) {
     if (finalSession) {
       const sessionId = request.headers.get('x-session-id');
       if (sessionId) {
+        const { basePrice, sellingPrice } = getTemplatePricing(finalSession.templateId);
         await import('@/lib/models/AnalyticsEvent').then(({ AnalyticsEvent }) => 
           AnalyticsEvent.create({
             eventName: 'payment_success',
             sessionId,
             posterId,
             templateId: finalSession.templateId,
-            properties: { unlockMethod: 'payment', amountInr: payment.amount ? Number(payment.amount) / 100 : 49 }
+            properties: { 
+              unlockMethod: 'payment', 
+              amountInr: payment.amount ? Number(payment.amount) / 100 : sellingPrice,
+              basePrice,
+              sellingPrice
+            }
           }).catch(err => console.error('Analytics error:', err))
         );
       }
