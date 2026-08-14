@@ -48,22 +48,25 @@ export default function PreGenerationModal({ isOpen, onClose, onConfirm, isGener
   };
 
   useEffect(() => {
-    const STORAGE_KEY = "offer_countdown_end_time";
+    const STORAGE_KEY = "offer_countdown_end_time_30m";
     const targetTimeStr = localStorage.getItem(STORAGE_KEY);
     let targetTime = targetTimeStr ? parseInt(targetTimeStr, 10) : 0;
 
     const now = Date.now();
-    // If no target exists or if the target is in the past, initialize a fresh 2-hour countdown
+    // If no target exists or if the target is in the past, initialize a fresh 30-minute countdown
     if (!targetTime || targetTime < now) {
-      targetTime = now + 2 * 60 * 60 * 1000;
+      targetTime = now + 30 * 60 * 1000;
       localStorage.setItem(STORAGE_KEY, targetTime.toString());
     }
 
     const calculateTimeLeft = () => {
-      const diff = targetTime - Date.now();
-      if (diff <= 0) {
-        return "00h : 00m : 00s";
+      const nowTime = Date.now();
+      if (targetTime < nowTime) {
+        // Auto restart the 30 minute timer
+        targetTime = nowTime + 30 * 60 * 1000;
+        localStorage.setItem(STORAGE_KEY, targetTime.toString());
       }
+      const diff = targetTime - nowTime;
       const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
       const m = Math.floor((diff / 1000 / 60) % 60);
       const s = Math.floor((diff / 1000) % 60);
