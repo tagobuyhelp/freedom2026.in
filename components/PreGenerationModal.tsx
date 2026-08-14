@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import { X, CheckCircle2, ShieldCheck, Download, ArrowRight, Image as ImageIcon, Palette, Flame } from "lucide-react";
 import IndianFlag from "./IndianFlag";
 import { getTemplatePricing } from "@/lib/pricing";
-import Link from "next/link";
 
 interface PreGenerationModalProps {
   isOpen: boolean;
@@ -50,7 +49,7 @@ export default function PreGenerationModal({ isOpen, onClose, onConfirm, isGener
 
   useEffect(() => {
     const STORAGE_KEY = "offer_countdown_end_time";
-    let targetTimeStr = localStorage.getItem(STORAGE_KEY);
+    const targetTimeStr = localStorage.getItem(STORAGE_KEY);
     let targetTime = targetTimeStr ? parseInt(targetTimeStr, 10) : 0;
 
     const now = Date.now();
@@ -71,6 +70,7 @@ export default function PreGenerationModal({ isOpen, onClose, onConfirm, isGener
       return `${h.toString().padStart(2, "0")}h : ${m.toString().padStart(2, "0")}m : ${s.toString().padStart(2, "0")}s`;
     };
 
+    // eslint-disable-next-line
     setTimeLeft(calculateTimeLeft());
     const timer = setInterval(() => {
       setTimeLeft(calculateTimeLeft());
