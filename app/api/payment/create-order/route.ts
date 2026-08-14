@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import Razorpay from 'razorpay';
 import dbConnect from '@/lib/db';
 import { PosterSession } from '@/lib/models/PosterSession';
+import { getCurrentPrice } from '@/lib/experiment';
 
 function getRazorpay() {
   const key_id = process.env.RAZORPAY_KEY_ID;
@@ -51,6 +52,8 @@ export async function POST(request: Request) {
     } else if (premiumTemplates.includes(session.templateId)) {
       priceInr = 69; // PREMIUM tier price
     }
+
+    priceInr = getCurrentPrice(priceInr);
 
     const amountInPaise = priceInr * 100;
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { X, CheckCircle2, ShieldCheck, Download, ArrowLeft, ArrowRight, Image as ImageIcon } from "lucide-react";
 import IndianFlag from "./IndianFlag";
 
@@ -11,9 +11,38 @@ interface PreGenerationModalProps {
   isGenerating: boolean;
   price?: number;
   tierName?: string;
+  templateName?: string;
 }
 
-export default function PreGenerationModal({ isOpen, onClose, onConfirm, isGenerating, price = 49, tierName = "STANDARD" }: PreGenerationModalProps) {
+export default function PreGenerationModal({ isOpen, onClose, onConfirm, isGenerating, price = 49, tierName = "STANDARD", templateName }: PreGenerationModalProps) {
+  const [timeLeft, setTimeLeft] = useState<string>("");
+
+  useEffect(() => {
+    if (price !== 29) return;
+    
+    const calculateTimeLeft = () => {
+      const cutoffTime = new Date('2026-08-14T07:30:00Z').getTime();
+      const now = Date.now();
+      const diff = cutoffTime - now;
+      
+      if (diff <= 0) {
+        return "00:00:00";
+      }
+      
+      const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const m = Math.floor((diff / 1000 / 60) % 60);
+      const s = Math.floor((diff / 1000) % 60);
+      return `${h.toString().padStart(2, '0')}h : ${m.toString().padStart(2, '0')}m : ${s.toString().padStart(2, '0')}s`;
+    };
+
+    setTimeLeft(calculateTimeLeft());
+    const timer = setInterval(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [price]);
+
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
@@ -53,7 +82,7 @@ export default function PreGenerationModal({ isOpen, onClose, onConfirm, isGener
                 <path d="M2 14l12-6" />
                 <path d="M6 20l12-4" />
               </svg>
-              Your Poster Is Ready to Create
+              Your Personalized Poster Is Ready!
               <svg className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20 8l-10-4" />
                 <path d="M22 14l-12-6" />
@@ -68,7 +97,7 @@ export default function PreGenerationModal({ isOpen, onClose, onConfirm, isGener
             </div>
 
             <p className="text-[#475569] font-medium max-w-sm mx-auto text-[13px] sm:text-[15px] px-2 sm:px-0 leading-snug">
-              AI will now create your personalized Independence Day poster using your photo, name and city.
+              Create your personalized Independence Day poster with AI using your photo, name and city.
             </p>
           </div>
 
@@ -82,19 +111,45 @@ export default function PreGenerationModal({ isOpen, onClose, onConfirm, isGener
             
             {/* Text details */}
             <div className="text-left space-y-1 sm:space-y-1.5 flex-1 relative z-10">
+              {templateName && (
+                <div className="flex items-center gap-1.5 mb-2 sm:mb-2.5">
+                  <svg className="w-3 h-3 text-orange-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="3" /><path d="M3 12h3m12 0h3M12 3v3m0 12v3" />
+                  </svg>
+                  <span className="text-[10px] sm:text-[11px] text-slate-400 font-semibold">Your style:</span>
+                  <span className="text-[10px] sm:text-[11px] font-black text-orange-600 bg-orange-50 border border-orange-200 px-2 py-0.5 rounded-full">
+                    {templateName}
+                  </span>
+                </div>
+              )}
               <div className="flex items-center gap-2 mb-1.5 sm:mb-2">
-                <span className={`text-[9px] sm:text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded
-                  ${tierName === 'EXCLUSIVE' ? 'bg-orange-100 text-orange-700 border border-orange-200' : 
-                    tierName === 'PREMIUM' ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' : 
-                    'bg-slate-100 text-slate-700 border border-slate-200'}`}>
-                  {tierName}
-                </span>
+                {price === 29 && (
+                  <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-red-100 text-red-700 border border-red-200 animate-pulse">
+                    Limited-Time Price
+                  </span>
+                )}
               </div>
               <h4 className="text-[17px] sm:text-2xl font-black text-[#0f172a] flex items-center justify-start gap-1.5 sm:gap-2 leading-none">
                 <span className="text-orange-500">₹{price}</span>
-                <span className="text-[#94a3b8] text-sm sm:text-xl font-medium">—</span>
+                {price === 29 && (
+                  <span className="text-[#94a3b8] text-[13px] sm:text-lg line-through ml-0.5 decoration-red-400/50 decoration-2">₹49</span>
+                )}
+                <span className="text-[#94a3b8] text-sm sm:text-xl font-medium ml-0.5">—</span>
                 Instant Download
               </h4>
+              {price === 29 && timeLeft && (
+                <div className="mt-2 mb-1 flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-3">
+                  <span className="text-[10px] sm:text-[11px] font-bold text-red-600 bg-red-50 border border-red-100 px-2 py-0.5 rounded-full inline-flex w-fit">
+                    You save ₹20!
+                  </span>
+                  <span className="text-[10px] sm:text-[11px] font-bold text-slate-500 flex items-center gap-1">
+                    <svg className="w-3.5 h-3.5 text-orange-500 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Offer ends in {timeLeft}
+                  </span>
+                </div>
+              )}
               <div className="flex items-center justify-start gap-1.5 text-[10px] sm:text-sm font-semibold text-[#16a34a] pt-0.5 sm:pt-1 leading-none">
                 <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
                 <span>No watermarks, high-res</span>
