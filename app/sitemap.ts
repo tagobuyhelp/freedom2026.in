@@ -26,6 +26,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: "/independence-day-wallpaper", priority: 0.9, changeFrequency: "weekly" as const },
     { url: "/independence-day-wishes-bengali", priority: 0.8, changeFrequency: "weekly" as const },
     { url: "/independence-day-wishes-hindi", priority: 0.8, changeFrequency: "weekly" as const },
+    { url: "/new-year-2027", priority: 0.8, changeFrequency: "weekly" as const },
     { url: "/about", priority: 0.5, changeFrequency: "monthly" as const },
     { url: "/contact", priority: 0.5, changeFrequency: "monthly" as const },
     { url: "/privacy", priority: 0.3, changeFrequency: "monthly" as const },
