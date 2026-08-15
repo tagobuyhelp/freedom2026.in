@@ -88,9 +88,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid template ID' }, { status: 400 });
     }
 
-    // Convert user photo File to base64 for the API
-    const photoBuffer = Buffer.from(await photo.arrayBuffer());
-    const referenceImageUrl = `data:${photo.type};base64,${photoBuffer.toString('base64')}`;
+    // Convert and safely normalize user photo for the AI API (handles HEIC, large MB images etc)
+    const rawPhotoBuffer = Buffer.from(await photo.arrayBuffer());
+    
+    let photoBuffer;
+    try {
+      photoBuffer = await sharp(rawPhotoBuffer)
+        .resize(1024, 1024, { fit: 'inside', withoutEnlargement: true })
+        .jpeg({ quality: 90 })
+        .toBuffer();
+    } catch (sharpErr) {
+      console.error('Error normalizing user photo:', sharpErr);
+      return NextResponse.json({ error: 'Uploaded photo format is invalid or corrupted.' }, { status: 400 });
+    }
+    
+    const referenceImageUrl = `data:image/jpeg;base64,${photoBuffer.toString('base64')}`;
 
     // Read the reference poster as base64
     const bgPath = path.join(process.cwd(), 'public', template.thumbnailImage!);

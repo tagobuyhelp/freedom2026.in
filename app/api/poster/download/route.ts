@@ -55,7 +55,7 @@ export async function GET(request: Request) {
       return new NextResponse(fileBuffer, {
         headers: {
           'Content-Type': 'image/png',
-          'Content-Disposition': `attachment; filename="freedom2026-${session.name.replace(/\s+/g, '-').toLowerCase()}.png"`,
+          'Content-Disposition': `attachment; filename="freedom2026-poster.png"; filename*=UTF-8''freedom2026-${encodeURIComponent(session.name.replace(/\s+/g, '-'))}.png`,
           'Cache-Control': 'no-store, max-age=0',
         },
       });
